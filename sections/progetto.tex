@@ -1,16 +1,16 @@
 \chapter{Progetto}
 \label{progetto}
 
-In questo capitolo si propone il progetto realizzato per raggiungere gli obiettivi preposti: si è partiti dalla realizzazione di un classificatore basato su Random Forest~\ref{randomforest} per poi passare ad una versione più elaborata, utilizzando una rete neurale. Il passo successivo ha riguardato la creazione di una Generative Adversarial Network a partire da un Autoencoder.  
-
-la Sezione~\ref{citazioni} descrive come scrivere citazioni, la Sezione~\ref{oggetti-float} propone degli esempi di oggetti float, la Sezione~\ref{compilazione} descrive come compilare questo documento.
+In questo capitolo si propone il progetto realizzato per raggiungere gli obiettivi preposti: si è partiti dalla realizzazione di un classificatore basato su \textit{Random Forest} per poi passare ad una versione più elaborata, utilizzando una rete neurale. Il passo successivo ha riguardato la creazione di una \textit{Generative Adversarial Network} a partire da un Autoencoder.  
 
 
 \section{Classificatore Random Forest}
 \label{randomforest}
+La prima fase di questo studio è stata quella di implementare un classificatore in grado di separare efficacemente domini DGA da domini non malevoli. 
 
 \subsection{Input}
 \label{randomforestinput}
+I dataset di training e testing sono stati ricavati da \textit{Alexa Top 1M} per quel che riguarda i domini non malevoli, mentre grazie al repository fornito da \cite{github:dgarepo} è stato possibile ottenere un \textit{dataset} esaustivo di esempi DGA da diverse famiglie
 
 \subsection{Composizione Interna}
 \label{randomforestinterno}
@@ -41,58 +41,4 @@ la Sezione~\ref{citazioni} descrive come scrivere citazioni, la Sezione~\ref{ogg
 
 \subsection{Output}
 \label{advoutput}
-
-%\section{Citazioni}
-%\label{citazioni}
-%
-%Inserisco qualche citazione per mostrare la bibliografia. Per gli articoli accademici è quasi sempre possibile reperire i blocchi da inserire nel file bib da scholar~\cite{google:scholar}, come ad esempio~\cite{feige:zero}. Scholar in questo caso è una risorsa/sito online e per questo. Precediamo le citazione da uno spazio indivisibile tramite il carattere \textasciitilde.
-%
-%\section{Oggetti float}
-%\label{oggetti-float}
-%
-%Nella Sezione~\ref{figure-float} si propone un esempio di figura float, mentre nella Sezione~\ref{tabelle-float} si propone un esempio di tabella float.
-%
-%\subsection{Figure}
-%\label{figure-float}
-%
-%La Figura~\ref{fig:esempio} è un esempio di figura float.
-%
-%\begin{figure}[htb]
-%    \centering
-%    \includegraphics[width=.4\columnwidth]{figures/example.pdf}
-%    \caption{Esempio di figura float in latex.}
-%\label{fig:esempio}
-%\end{figure}
-%
-%\subsection{Tabelle}
-%\label{tabelle-float}
-%
-%La Tabella~\ref{tab:esempio} è un esempio di tabella.
-%
-%\begin{table}[htb]
-%    \centering
-%    \begin{tabular}{| c | l | r |}
-%        \hline
-%        allineamento centrale & allineamento a sinistra  & allineamento a destra
-%        \\
-%        \hline
-%        \hline
-%        centrale & sinistra & destra
-%        \\
-%        \hline
-%    \end{tabular}
-%    \caption{Esempio di tabella float in latex.}
-%\label{tab:esempio}
-%\end{table}
-%
-%\section{Compilazione}
-%\label{compilazione}
-%
-%Di seguito il codice da utilizzare per generare il pdf:
-%\begin{lstlisting}[language=bash]
-%$ pdflatex main.tex
-%$ bibtex main.aux
-%$ pdflatex main.tex
-%$ pdflatex main.tex
-%\end{lstlisting}
 
