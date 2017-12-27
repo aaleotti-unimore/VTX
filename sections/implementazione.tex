@@ -1,0 +1,59 @@
+\chapter{Introduzione}
+\label{introduzione}
+
+In questo capitolo si propongono degli esempi per gli oggetti utilizzati più di frequente in latex: la Sezione~\ref{citazioni} descrive come scrivere citazioni, la Sezione~\ref{oggetti-float} propone degli esempi di oggetti float, la Sezione~\ref{compilazione} descrive come compilare questo documento.
+
+\section{Citazioni}
+\label{citazioni}
+
+Inserisco qualche citazione per mostrare la bibliografia. Per gli articoli accademici è quasi sempre possibile reperire i blocchi da inserire nel file bib da scholar~\cite{google:scholar}, come ad esempio~\cite{feige:zero}. Scholar in questo caso è una risorsa/sito online e per questo. Precediamo le citazione da uno spazio indivisibile tramite il carattere \textasciitilde.
+
+\section{Oggetti float}
+\label{oggetti-float}
+
+Nella Sezione~\ref{figure-float} si propone un esempio di figura float, mentre nella Sezione~\ref{tabelle-float} si propone un esempio di tabella float.
+
+\subsection{Figure}
+\label{figure-float}
+
+La Figura~\ref{fig:esempio} è un esempio di figura float.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=.4\columnwidth]{figures/example.pdf}
+    \caption{Esempio di figura float in latex.}
+\label{fig:esempio}
+\end{figure}
+
+\subsection{Tabelle}
+\label{tabelle-float}
+
+La Tabella~\ref{tab:esempio} è un esempio di tabella.
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{| c | l | r |}
+        \hline
+        allineamento centrale & allineamento a sinistra  & allineamento a destra
+        \\
+        \hline
+        \hline
+        centrale & sinistra & destra
+        \\
+        \hline
+    \end{tabular}
+    \caption{Esempio di tabella float in latex.}
+\label{tab:esempio}
+\end{table}
+
+\section{Compilazione}
+\label{compilazione}
+
+Di seguito il codice da utilizzare per generare il pdf:
+\begin{lstlisting}[language=bash]
+$ pdflatex main.tex
+$ bibtex main.aux
+$ pdflatex main.tex
+$ pdflatex main.tex
+\end{lstlisting}
+
