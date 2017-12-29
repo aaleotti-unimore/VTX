@@ -1,7 +1,7 @@
 \chapter{Progetto}
 \label{progetto}
 
-In questo capitolo si propone il progetto realizzato per raggiungere gli obiettivi preposti: si è partiti dalla realizzazione di un classificatore basato su \textit{Random Forest} per poi passare ad una versione più elaborata, utilizzando una rete neurale. Il passo successivo ha riguardato la creazione di una \textit{Generative Adversarial Network} a partire da un Autoencoder.  
+In questo capitolo si propone il progetto realizzato per raggiungere gli obiettivi preposti: si è partiti dalla realizzazione di un classificatore basato su \textit{Random Forest} per poi passare ad una versione più elaborata, utilizzando una rete neurale. Il passo successivo ha riguardato la creazione di una \textit{Generative Adversarial Network} a partire da un \textit{Autoencoder}.  
 
 
 \section{Classificatore Random Forest}
@@ -52,11 +52,14 @@ dove $count(t)$ sono le occorrenze dello n-gramma nel dizionario. Ad esempio $S_
 	
 \end{itemize}
 
-L'implementazione di tali \textit{features} ha permesso di ottenere un \textit{dataset} in grado di modellare le caratteristiche linguistiche dei nomi di dominio mostrati al capitolo \ref{randomforestdataset}. 
+L'implementazione di tali \textit{features} ha permesso di ottenere un \textit{dataset} in grado di modellare le caratteristiche linguistiche dei nomi di dominio mostrati al capitolo \ref{randomforestdataset}. Da tale spunto è partita la fase iniziale di \textit{testing} 
 
 \subsection{Output}
 \label{randomforestoutput}
-L'obiettivo di tale classificatore
+L'obiettivo di tale classificatore è quello di riuscire a separare in maniera efficace i domini reali da quelli generati algoritmicamente. A tale proposito ???
+\todo{ampliare questa sezione e chiedere a Marchetti}
+\todo{indicare il capitolo coi risultati di Random Forest} 
+Durante la fase di sperimentazione il classificatore si è rivelato efficace rispetto la maggior parte delle famiglie di \textit{DGA}. Il caso particolare della famiglia \textit{suppobox} \cite{geffner2013end} ha messo in particolare difficoltà il classificatore in quanto tale algoritmo genera domini in maniera pseudo-casuale, concatenando due parole a partire da un \textit{subset} del dizionario inglese di 384 parole. A partire da questo risultato si scelto di procedere con la progettazione di un classificatore neurale in grado di superare tale problematica.
 
 \section{Classificatore Neurale}
 \label{classificatorenn}
