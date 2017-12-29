@@ -18,10 +18,19 @@ I \textit{dataset} di \textit{training} e \textit{testing} sono stati ricavati d
 
 A partire da tale dataset combinato si è proceduto alla creazione di un classificatore binario che fosse in grado di distinguere domini reali da domini generati algoritmicamente. 
 
-Il passo seguente  stato creare una serie di \textit{features} che fossero in grado di descrivere le caratteristiche linguistiche dei domini presi in esame. Per raggiungere tale obiettivo si è fatto riferimento a ricerche già esistenti. Di seguito viene illustrato l'insieme di tali \textit{features}
+Il passo seguente  stato creare una serie di \textit{features} che fossero in grado di descrivere le caratteristiche linguistiche dei domini presi in esame. Per raggiungere tale obiettivo si è fatto riferimento a ricerche già esistenti. Di seguito viene illustrato l'insieme di tali \textit{features}:
 
 \subsection{Features}
 \label{randomforestinterno}
+
+\begin{itemize}
+\item Meaningful Characters Ratio. Models the ratio of characters of the string p that comprise a meaningful word. Low values indicate automatic algorithms. Specifically, we split p into n meaningful subwords wi of at least 3 symbols: $|wi| >= 3$, leaving out as few symbols as possible: $R(d) = R(p) = max((sum from i=1 to n) |wi|)/|p|.$
+    If p = facebook, $R(p) = (|face| + |book|)/8 = 1$, the prefix is fully composed of meaningful words, whereas p = pub03str, $R(p) = (|pub|)/8 = 0.375$.
+    
+\item n-gram Normality Score: This class of features captures the pronounceability of a domain name. The more permissible the combinations of phonemes, the more pronounceable a word is. Domains with a low number of such combinations are likely DGA-generated.
+        We calculate this class of features by extracting the n-grams of p, which are the substrings of p of length n {1, 2, 3}, and counting their occurrences in the (English) language dictionary.
+        The features are thus parametric to $n: Sn(d) = Sn(p) := ((sum of n-gram t in p) count(t))/(|p|-n+1)$, where count(t) are the occurrences of the n-gram t in the dictionary L
+\end{itemize}
 
 
 
