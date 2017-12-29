@@ -6,36 +6,57 @@ In questo capitolo si propone il progetto realizzato per raggiungere gli obietti
 
 \section{Classificatore Random Forest}
 \label{randomforest}
-La prima fase di questo studio è stata quella di implementare un classificatore in grado di separare efficacemente domini DGA da domini non malevoli basandosi unicamente sulle caratteristiche linguistiche dei domini: infatti, ad un esame preliminare, i domini DGA presentano caratteristiche ben differenti da semplici frasi o parole che solitamente compongono i domini reali.
+La prima fase di questo studio è stata quella di implementare un classificatore in grado di separare efficacemente domini \textit{DGA} da domini non malevoli basandosi unicamente sulle caratteristiche linguistiche dei domini: infatti, ad un esame preliminare, i domini \textit{DGA} presentano caratteristiche ben differenti da semplici frasi o parole che solitamente compongono i domini reali.
 
 Si è scelto di utilizzare Random Forest in quanto ritenuto il più adatto al caso in esame. L'algoritmo è stato inoltre messo a confronto con \textit{Support Vector Machine} e \textit{Naive-Bayes}.
 
 All'interno del classificatore \textit{Random Forest} \cite{randomforest}, ogni albero dell'insieme è costruito a partire da un campione estratto con sostituzione dal \textit{training set}. In aggiunta, al momento della divisione del nodo durante la costruzione di un albero, la divisione scelta non è più la migliore soluzione tra tutte le \textit{features}. Al suo posto, la divisone che viene scelta è la migliore divisione all'interno di un \textit{subset} casuale tra tutte le \textit{features}. Come risultato di questa casualità, il \textit{bias} della foresta di solito aumenta leggermente (rispetto al \textit{bias} di un singolo albero non casuale) ma, a causa della media, la sua varianza diminuisce, di solito compensando l'aumento di \textit{bias}, quindi dando un modello generale migliore.
 
 \subsection{Dataset}
-\label{randomforestinput}
+\label{randomforestdataset}
 I \textit{dataset} di \textit{training} e \textit{testing} sono stati ricavati due fonti differenti: per quel che riguarda i domini reali si è fatto riferimento alla classifica dei domini più visitati al mondo fornita da \textit{Alexa Internet Inc.} \cite{amazon:alexa} , per un totale di 1 milione di siti realmente esistenti; mentre grazie al repository fornito da \cite{github:dgarepo} è stato possibile ottenere un \textit{dataset} esaustivo di esempi \textit{DGA} da diverse famiglie di \textit{malware}.
 
-A partire da tale dataset combinato si è proceduto alla creazione di un classificatore binario che fosse in grado di distinguere domini reali da domini generati algoritmicamente. 
+\todo{mostrare esempio diversi DGA}
 
-Il passo seguente  stato creare una serie di \textit{features} che fossero in grado di descrivere le caratteristiche linguistiche dei domini presi in esame. Per raggiungere tale obiettivo si è fatto riferimento a ricerche già esistenti. Di seguito viene illustrato l'insieme di tali \textit{features}:
+A partire da tale \textit{dataset} combinato si è proceduto alla creazione di un classificatore binario che fosse in grado di distinguere domini reali da domini generati algoritmicamente. 
+
+Il passo seguente  stato creare una serie di \textit{features} che fossero in grado di descrivere le caratteristiche linguistiche dei domini presi in esame.
+
+\todo{descrivere distribuzione caratteri Alexa vs dga}
+
+Per raggiungere tale obiettivo si è fatto riferimento a ricerche già esistenti \cite{180232} \cite{Yadav:2010:DAG:1879141.1879148} \cite{Yadav:2012:DAG:2428696.2428722} \cite{Schiavoni2014}. Di seguito viene illustrato l'insieme di tali \textit{features}:
 
 \subsection{Features}
 \label{randomforestinterno}
 
 \begin{itemize}
-\item Meaningful Characters Ratio. Models the ratio of characters of the string p that comprise a meaningful word. Low values indicate automatic algorithms. Specifically, we split p into n meaningful subwords wi of at least 3 symbols: $|wi| >= 3$, leaving out as few symbols as possible: $R(d) = R(p) = max((sum from i=1 to n) |wi|)/|p|.$
-    If p = facebook, $R(p) = (|face| + |book|)/8 = 1$, the prefix is fully composed of meaningful words, whereas p = pub03str, $R(p) = (|pub|)/8 = 0.375$.
+
+\item \textbf{Rapporto tra caratteri significativi}. Modella il rapporto dei caratteri della stringa $p$ che formano una parola significativa all'interno del dizionario Inglese. Un valore basso indica la presenza di algoritmi automatici. In dettaglio, si divide $p$ in $n$ sotto-parole significative $w_i$ di almeno $3$ caratteri: $|wi| \ge 3$ cercando di lasciare fuori meno caratteri possibili: $$R(d) = R(p) = \frac{max(\sum_{i=1}^n |wi|)}{\left | p \right |}$$ 
+Se $p = \text{facebook}$, $R(p) = \frac{(|\text{face}| + |\text{book}|)}{8} = 1$ allora il dominio è composto completamente da parole significative, mentre $p = \text{pub03str}$, $R(p) = \frac{|\text{pub}|}{8} = 0.375$. 
+
     
-\item n-gram Normality Score: This class of features captures the pronounceability of a domain name. The more permissible the combinations of phonemes, the more pronounceable a word is. Domains with a low number of such combinations are likely DGA-generated.
-        We calculate this class of features by extracting the n-grams of p, which are the substrings of p of length n {1, 2, 3}, and counting their occurrences in the (English) language dictionary.
-        The features are thus parametric to $n: Sn(d) = Sn(p) := ((sum of n-gram t in p) count(t))/(|p|-n+1)$, where count(t) are the occurrences of the n-gram t in the dictionary L
+
+\item \textbf{Punteggio di normalità degli n-grammi}: Questa classe di \textit{features} modella la pronunciabilità di un nome di dominio rispetto la lingua Inglese. Più la combinazione di fonemi del dominio è presente  all'interno del Dizionario Inglese più tale dominio è pronunciabile. Domini con un basso numero di tali combinazioni sono probabilmente generati algoritmicamente. Il calcolo avviene estraendo lo n-gramma di $p$ di lunghezza $n \in \{1, 2, 3 \}$ e contando il numero di occorrenze di tale n-gramma all'interno del Dizionario Inglese. Tali \textit{features} sono quindi parametriche rispetto ad n: 
+$$S_n(d) = S_n(p) \:= \frac{\sum_{\text{n-gramma t in p}} count(t)}{\left | p \right | - n + 1}$$ 
+dove $count(t)$ sono le occorrenze dello n-gramma nel dizionario. Ad esempio $S_2(facebook) = fa_{109} + ac_{343} + ce_{438} + eb_{29} + bo_{118} + oo_{114} + ok_{45} = 170.8$
+
+        
+
+\item \textbf{Rapporto tra caratteri numerici} Questa \textit{feature} rappresenta il rapporto tra i caratteri numerici presenti all'interno del nome di dominio rispetto la lunghezza totale della parola. Molte famiglie di \textit{malware} utilizzano \textit{DGA} che generano domini tramite una distribuzione uniforme di caratteri alfabetici minuscoli e numeri, questo porta a domini generati algoritmicamente che presentano una maggior presenza di numeri al loro interno rispetto ai domini reali.
+
+
+\item \textbf{Rapporto tra vocali e consonanti} Questa \textit{feature} modella il rapporto tra vocali e consonanti all'interno del nome di dominio.
+
+
+\item \textbf{Lunghezza del nome di dominio} Questa \textit{feature} calcola la lunghezza del dominio. Molte famiglie di \textit{malware} utilizzano \textit{DGA} che generano domini di lunghezza costante, generalmente molto lunghi rispetto ai domini reali.
+	
 \end{itemize}
 
-
+L'implementazione di tali \textit{features} ha permesso di ottenere un \textit{dataset} in grado di modellare le caratteristiche linguistiche dei nomi di dominio mostrati al capitolo \ref{randomforestdataset}. 
 
 \subsection{Output}
 \label{randomforestoutput}
+L'obiettivo di tale classificatore
 
 \section{Classificatore Neurale}
 \label{classificatorenn}
