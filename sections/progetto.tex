@@ -8,7 +8,7 @@ In questo capitolo si propone il progetto realizzato per raggiungere gli obietti
 \label{randomforest}
 La prima fase di questo studio è stata quella di implementare un classificatore in grado di separare efficacemente domini \textit{DGA} da domini non malevoli basandosi unicamente sulle caratteristiche linguistiche dei domini: infatti, ad un esame preliminare, i domini \textit{DGA} presentano caratteristiche ben differenti da semplici frasi o parole che solitamente compongono i domini reali.
 
-Si è scelto di utilizzare Random Forest in quanto ritenuto il più adatto al caso in esame. L'algoritmo è stato inoltre messo a confronto con \textit{Support Vector Machine} e \textit{Naive-Bayes}.
+Si è scelto di utilizzare Random Forest in quanto ritenuto il più adatto al caso in esame. L'algoritmo è stato inoltre messo a confronto con \textit{Support Vector Machine} e \textit{Naive-Bayes}. \todo{indicare SVM e GNB solo nei risultati?}
 
 All'interno del classificatore \textit{Random Forest} \cite{randomforest}, ogni albero dell'insieme è costruito a partire da un campione estratto con sostituzione dal \textit{training set}. In aggiunta, al momento della divisione del nodo durante la costruzione di un albero, la divisione scelta non è più la migliore soluzione tra tutte le \textit{features}. Al suo posto, la divisone che viene scelta è la migliore divisione all'interno di un \textit{subset} casuale tra tutte le \textit{features}. Come risultato di questa casualità, il \textit{bias} della foresta di solito aumenta leggermente (rispetto al \textit{bias} di un singolo albero non casuale) ma, a causa della media, la sua varianza diminuisce, di solito compensando l'aumento di \textit{bias}, quindi dando un modello generale migliore.
 
@@ -59,16 +59,28 @@ L'implementazione di tali \textit{features} ha permesso di ottenere un \textit{d
 L'obiettivo di tale classificatore è quello di riuscire a separare in maniera efficace i domini reali da quelli generati algoritmicamente. A tale proposito ???
 \todo{ampliare questa sezione e chiedere a Marchetti}
 \todo{indicare il capitolo coi risultati di Random Forest} 
-Durante la fase di sperimentazione il classificatore si è rivelato efficace rispetto la maggior parte delle famiglie di \textit{DGA}. Il caso particolare della famiglia \textit{suppobox} \cite{geffner2013end} ha messo in particolare difficoltà il classificatore in quanto tale algoritmo genera domini in maniera pseudo-casuale, concatenando due parole a partire da un \textit{subset} del dizionario inglese di 384 parole. A partire da questo risultato si scelto di procedere con la progettazione di un classificatore neurale in grado di superare tale problematica.
+Durante la fase di sperimentazione il classificatore si è rivelato efficace rispetto la maggior parte delle famiglie di \textit{DGA}. Il caso particolare della famiglia \textit{suppobox} \cite{geffner2013end} ha messo in particolare difficoltà il classificatore in quanto tale algoritmo genera domini in maniera pseudo-casuale, concatenando due parole a partire da un \textit{subset} del dizionario inglese di 384 parole. Tale caratteristica fa si che le \textit{features} linguistiche estratte da questa famiglia di \textit{malware} siano molto simili a quelle presenti nei domini reali.
+
+\todo{mostrare esempio suppobox}
+
+???????????????????
+
+A partire da questo risultato si scelto di procedere con la progettazione di un classificatore neurale in grado di superare tale problematica.
+
 
 \section{Classificatore Neurale}
 \label{classificatorenn}
+Questo classificatore neurale nasce con l'intento di superare le difficoltà incontrate dal precedente classificatore basato su \textit{Random Forest}, utilizzando le caratteristiche delle reti neurali, in grado di estrarre \textit{features} a partire dai dati grezzi. Si è scelto di partire dall'architettura di tipo \textit{Multilayer Perceptron} con l'obiettivo di ottenere risultati migliori rispetto al caso mostrato nella sezione precedente.
+
+I passi del progetto sono stati la codificazione dei domini in valori numerici, l'individuazione di una architettura ottimale per classificare i dati in esame ed un'ultima fase di \textit{tuning} degli iperparametri della rete neurale.
 
 \subsection{Input}
 \label{classificatorenninput}
+A partire dal \textit{dataset} creato per il precedente caso, si è deciso di convertire direttamente i nomi di dominio alfanumerici in vettori numerici, mappati secondo il dizionario di tutti i caratteri ammessi \cite{icann} (lettere minuscole a-z, numeri 0-9, tratto d'unione "-" ). L'obiettivo è quello di fornire al classificatore neurale in questione una rappresentazione il più possibile aderente ai dati reali, senza l'ausilio di \textit{features} ingegnerizzate a priori, lasciando così la libertà alla rete neurale di estrarre le caratteristiche piu appropriate per la distinzione dei domini.
 
 \subsection{Composizione Interna}
 \label{classificatorenninterno}
+L'architettura scelta in prima fase è stata quella del \textit{Multilayer Perceptron}, 
 
 \subsection{Output}
 \label{classificatorennoutput}
