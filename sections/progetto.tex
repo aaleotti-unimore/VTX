@@ -105,10 +105,17 @@ La struttura del \textit{MLP} in esame è stata raggiunta dopo una serie di test
 
 \item un modello allargato composto da un layer di input con un numero di neuroni pari alla dimensione delle stringhe codificate, due layer intermedi di dimensioni moltiplicate di diversi ordini rispetto al layer iniziale ed un layer finale di dimensione 1.
 
-\item un modello intermedio composto da un layer di input con un numero di neuroni pari alla dimensione delle stringhe codificate, un layer intermedio di dimensione 128, un layer di dimensione minore a 64 ed un layer finale di dimensione 1.
+\item un modello intermedio composto da un layer di input con un numero di neuroni pari alla dimensione delle stringhe codificate, un layer intermedio di dimensione 128, un layer di dimensione minore a 64 ed un layer finale di dimensione 1. (Figura \ref{fig:pieraz})
+
 \end{itemize}
 
-I tre modelli messi a confronto hanno mostrato comportamenti simili ma in diverse situazioni è emerso il modello intermedio
+I tre modelli messi a confronto hanno mostrato risultati simili, tuttavia  il modello intermedio si è dimostrato più performante, con un costo computazionale irrisorio rispetto al modello allargato. 
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=.4\columnwidth]{figures/pieraz_baseline.png}
+    \caption{Grafico del modello intermedio. Escluso il primo layer di input, si notino gli \textit{hidden layer} dense2 e dense3 di dimensioni rispettivamente 128 e 64 }
+\label{fig:pieraz}
+\end{figure}
 
 
 
