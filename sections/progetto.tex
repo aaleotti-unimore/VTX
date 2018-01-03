@@ -63,7 +63,7 @@ Durante la fase di sperimentazione il classificatore si è rivelato efficace ris
 
 \todo{mostrare esempio suppobox}
 
-???????????????????
+\todo{???????????????????}
 
 A partire da questo risultato si scelto di procedere con la progettazione di un classificatore neurale in grado di superare tale problematica.
 
@@ -72,15 +72,45 @@ A partire da questo risultato si scelto di procedere con la progettazione di un 
 \label{classificatorenn}
 Questo classificatore neurale nasce con l'intento di superare le difficoltà incontrate dal precedente classificatore basato su \textit{Random Forest}, utilizzando le caratteristiche delle reti neurali, in grado di estrarre \textit{features} a partire dai dati grezzi. Si è scelto di partire dall'architettura di tipo \textit{Multilayer Perceptron} con l'obiettivo di ottenere risultati migliori rispetto al caso mostrato nella sezione precedente.
 
-I passi del progetto sono stati la codificazione dei domini in valori numerici, l'individuazione di una architettura ottimale per classificare i dati in esame ed un'ultima fase di \textit{tuning} degli iperparametri della rete neurale.
+I passi del progetto sono stati la codificazione dei domini in valori numerici, l'individuazione di una architettura ottimale per classificare i dati in esame ed un'ultima fase di \textit{tuning} degli iperparametri della rete neurale. 
 
 \subsection{Input}
 \label{classificatorenninput}
-A partire dal \textit{dataset} creato per il precedente caso, si è deciso di convertire direttamente i nomi di dominio alfanumerici in vettori numerici, mappati secondo il dizionario di tutti i caratteri ammessi \cite{icann} (lettere minuscole a-z, numeri 0-9, tratto d'unione "-" ). L'obiettivo è quello di fornire al classificatore neurale in questione una rappresentazione il più possibile aderente ai dati reali, senza l'ausilio di \textit{features} ingegnerizzate a priori, lasciando così la libertà alla rete neurale di estrarre le caratteristiche piu appropriate per la distinzione dei domini.
+A partire dal \textit{dataset} creato per il precedente caso, si è deciso di convertire direttamente i nomi di dominio alfanumerici in vettori numerici, mappati secondo il dizionario di tutti i caratteri ammessi \cite{icann} (lettere minuscole a-z, numeri 0-9, tratto d'unione "-" ). L'obiettivo è quello di fornire al classificatore neurale in questione una rappresentazione il più possibile aderente ai dati reali, senza l'ausilio di \textit{features} ingegnerizzate a priori, lasciando così la libertà alla rete neurale di estrarre le caratteristiche più appropriate per la distinzione dei domini. Come scelta progettuale si è deciso di limitare la dimensione dei domini a 15 caratteri per ognuno, in modo da ottenere un \textit{dataset} di dimensioni fissate e sopperire alle differenti lunghezze di ogni dominio tramite un semplice \textit{padding} di zeri all'inizio di ogni stringa codificata.
+
+Assieme ai dati codificati è stato generato un vettore di \textit{target} nel quale viene indicato da 0 o da 1 se il dominio in esame è di tipo reale o generato algoritmicamente. L'obiettivo quindi è di attuare un classificatore binario in grado di prevedere correttamente a quale categoria appartiene un dominio esaminato 
 
 \subsection{Composizione Interna}
 \label{classificatorenninterno}
-L'architettura scelta in prima fase è stata quella del \textit{Multilayer Perceptron}, 
+L'architettura scelta in prima fase è stata quella del \textit{Multilayer Perceptron} \textit{(abbr. MLP)}, una tipologia di rete neurale \textit{feedforward} tipicamente formata da almeno tre livelli di nodi. Ad esclusione del livello di \textit{input} i livelli del MLP utilizzano  funzioni di attivazione non lineari che permettono di eseguire distinzioni tra dati non linearmente separabili. Considerando una rete formata da $m$ neuroni,  se si considera $d$ come numero di input, si avrà il seguente output
+$$y_j=y\left( \sum_{i=0}^d w_{ji}x_i \right)$$
+
+nel quale $x_i$ sono gli input e $w_{ji}$ sono i pesi di ogni input combinati con ogni output. 
+
+\todo{aggiungere ed estendere la teoria MLP nel capitolo precedente?}
+
+Nel caso in esame è stata utilizzata per i livelli interni la funzione di attivazione \textit{Rectifier Linear Unit} (ReLU) \cite{relu} definita dalla funzione 
+$$f(x) = x^+ = max(0,x)$$
+\todo{inserire grafo ReLU}
+dove $x$ rappresenta l'\textit{input} del neurone. 
+I vantaggi di tale funzione sono una migliorata \textit{performance} rispetto ad altre funzioni similari come \textit{tanh} e \textit{sigmoid} per quel che riguarda la convergenza della discesa stocastica del gradiente. 
+
+Per quel che riguarda la funzione di attivazione del livello di \textit{output} si è scelta la funzione \textit{sigmoidea}, definita dalla formula 
+$$P(t) = \frac{1}{1+e^{-t}}$$
+\todo{inserire grafo sigmoid}
+
+La struttura del \textit{MLP} in esame è stata raggiunta dopo una serie di test pratici in cui si sono messi a confronto tre modelli differenti di per numero di neuroni all'interno degli \textit{hidden layer}: 
+\begin{itemize}
+\item un modello ridotto composto da un layer di input con un numero di neuroni pari alla dimensione delle stringhe codificate, un layer intermedio di dimensione dimezzata rispetto al precedente ed il layer finale di uscita di dimensione 1 per attuare la classificazione binaria, oggetto di studio.
+
+\item un modello allargato composto da un layer di input con un numero di neuroni pari alla dimensione delle stringhe codificate, due layer intermedi di dimensioni moltiplicate di diversi ordini rispetto al layer iniziale ed un layer finale di dimensione 1.
+
+\item un modello intermedio composto da un layer di input con un numero di neuroni pari alla dimensione delle stringhe codificate, un layer intermedio di dimensione 128, un layer di dimensione minore a 64 ed un layer finale di dimensione 1.
+\end{itemize}
+
+I tre modelli messi a confronto hanno mostrato comportamenti simili ma in diverse situazioni è emerso il modello intermedio
+
+
 
 \subsection{Output}
 \label{classificatorennoutput}
