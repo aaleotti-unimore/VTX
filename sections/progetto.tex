@@ -1,7 +1,7 @@
 \chapter{Progetto}
 \label{progetto}
 
-In questo capitolo si propone il progetto realizzato per raggiungere gli obiettivi preposti: si è partiti dalla realizzazione di un classificatore basato su \textit{Random Forest} per poi passare ad una versione più elaborata, utilizzando una rete neurale. Il passo successivo ha riguardato la creazione di una \textit{Generative Adversarial Network} a partire da un \textit{Autoencoder}.  
+In questo capitolo si propone il progetto realizzato per raggiungere gli obiettivi preposti: si è partiti dalla realizzazione di un classificatore basato su \textit{Random Forest} per poi passare ad una versione più elaborata, utilizzando un \textit{Multilayer Perceptron}. Il passo successivo ha riguardato la creazione di una \textit{Generative Adversarial Network} a partire da un \textit{Autoencoder} in grado di rafforzare un classificatore generando domini sintetici
 
 
 \section{Classificatore Random Forest}
@@ -14,9 +14,9 @@ All'interno del classificatore \textit{Random Forest} \cite{randomforest}, ogni 
 
 \subsection{Dataset}
 \label{randomforestdataset}
-I \textit{dataset} di \textit{training} e \textit{testing} sono stati ricavati due fonti differenti: per quel che riguarda i domini reali si è fatto riferimento alla classifica dei domini più visitati al mondo fornita da \textit{Alexa Internet Inc.} \cite{amazon:alexa} , per un totale di 1 milione di siti realmente esistenti; mentre grazie al repository fornito da \cite{github:dgarepo} è stato possibile ottenere un \textit{dataset} esaustivo di esempi \textit{DGA} da diverse famiglie di \textit{malware}.
+I \textit{dataset} di \textit{training} e \textit{testing} sono stati ricavati due fonti differenti: per quel che riguarda i domini reali si è fatto riferimento alla classifica dei domini più visitati al mondo fornita da \textit{Alexa Internet Inc.} \cite{amazon:alexa} , per un totale di 1 milione di siti realmente esistenti; mentre grazie al repository fornito da \cite{github:dgarepo} è stato possibile ottenere un \textit{dataset} esaustivo di esempi \textit{DGA} da diverse famiglie di \textit{malware}. In particolare le famiglie di malware utilizzate per il training sono state: \todo{famiglie malware}
 
-\todo{mostrare esempio diversi DGA}
+\todo{mostrare tabella esempio diversi DGA}
 
 A partire da tale \textit{dataset} combinato si è proceduto alla creazione di un classificatore binario che fosse in grado di distinguere domini reali da domini generati algoritmicamente. 
 
@@ -24,7 +24,7 @@ Il passo seguente  stato creare una serie di \textit{features} che fossero in gr
 
 \todo{descrivere distribuzione caratteri Alexa vs dga}
 
-Per raggiungere tale obiettivo si è fatto riferimento a ricerche già esistenti \cite{180232} \cite{Yadav:2010:DAG:1879141.1879148} \cite{Yadav:2012:DAG:2428696.2428722} \cite{Schiavoni2014}. Di seguito viene illustrato l'insieme di tali \textit{features}:
+Per raggiungere tale obiettivo si è fatto riferimento a ricerche già esistenti: \cite{180232} \cite{Yadav:2010:DAG:1879141.1879148} \cite{Yadav:2012:DAG:2428696.2428722} \cite{Schiavoni2014}. Di seguito viene illustrato l'insieme di tali \textit{features}:
 
 \subsection{Features}
 \label{randomforestinterno}
@@ -40,8 +40,7 @@ Se $p = \text{facebook}$, $R(p) = \frac{(|\text{face}| + |\text{book}|)}{8} = 1$
 $$S_n(d) = S_n(p) \:= \frac{\sum_{\text{n-gramma t in p}} count(t)}{\left | p \right | - n + 1}$$ 
 dove $count(t)$ sono le occorrenze dello n-gramma nel dizionario. Ad esempio $S_2(facebook) = fa_{109} + ac_{343} + ce_{438} + eb_{29} + bo_{118} + oo_{114} + ok_{45} = 170.8$
 
-        
-
+       
 \item \textbf{Rapporto tra caratteri numerici} Questa \textit{feature} rappresenta il rapporto tra i caratteri numerici presenti all'interno del nome di dominio rispetto la lunghezza totale della parola. Molte famiglie di \textit{malware} utilizzano \textit{DGA} che generano domini tramite una distribuzione uniforme di caratteri alfabetici minuscoli e numeri, questo porta a domini generati algoritmicamente che presentano una maggior presenza di numeri al loro interno rispetto ai domini reali.
 
 
@@ -59,6 +58,7 @@ L'implementazione di tali \textit{features} ha permesso di ottenere un \textit{d
 L'obiettivo di tale classificatore è quello di riuscire a separare in maniera efficace i domini reali da quelli generati algoritmicamente. A tale proposito ???
 \todo{ampliare questa sezione e chiedere a Marchetti}
 \todo{indicare il capitolo coi risultati di Random Forest} 
+
 Durante la fase di sperimentazione il classificatore si è rivelato efficace rispetto la maggior parte delle famiglie di \textit{DGA}. Il caso particolare della famiglia \textit{suppobox} \cite{geffner2013end} ha messo in particolare difficoltà il classificatore in quanto tale algoritmo genera domini in maniera pseudo-casuale, concatenando due parole a partire da un \textit{subset} del dizionario inglese di 384 parole. Tale caratteristica fa si che le \textit{features} linguistiche estratte da questa famiglia di \textit{malware} siano molto simili a quelle presenti nei domini reali.
 
 \todo{mostrare esempio suppobox}
@@ -80,7 +80,7 @@ A partire dal \textit{dataset} creato per il precedente caso, si è deciso di co
 
 Assieme ai dati codificati è stato generato un vettore di \textit{target} nel quale viene indicato da 0 o da 1 se il dominio in esame è di tipo reale o generato algoritmicamente. L'obiettivo quindi è di attuare un classificatore binario in grado di prevedere correttamente a quale categoria appartiene un dominio esaminato 
 
-\subsection{Composizione Interna}
+\subsection{Architettura}
 \label{classificatorenninterno}
 L'architettura scelta in prima fase è stata quella del \textit{Multilayer Perceptron} \textit{(abbr. MLP)}, una tipologia di rete neurale \textit{feedforward} tipicamente formata da almeno tre livelli di nodi. Ad esclusione del livello di \textit{input} i livelli del MLP utilizzano  funzioni di attivazione non lineari che permettono di eseguire distinzioni tra dati non linearmente separabili. Considerando una rete formata da $m$ neuroni,  se si considera $d$ come numero di input, si avrà il seguente output
 $$y_j=y\left( \sum_{i=0}^d w_{ji}x_i \right)$$
@@ -99,7 +99,7 @@ Per quel che riguarda la funzione di attivazione del livello di \textit{output} 
 $$P(t) = \frac{1}{1+e^{-t}}$$
 \todo{inserire grafo sigmoid}
 
-La struttura del \textit{MLP} in esame è stata raggiunta dopo una serie di test pratici in cui si sono messi a confronto tre modelli differenti di per numero di neuroni all'interno degli \textit{hidden layer}: 
+La struttura finale del \textit{MLP} in esame è stata raggiunta dopo una serie di test sperimentali in cui si sono messi a confronto tre modelli differenti di per numero di neuroni all'interno degli \textit{hidden layer}: 
 \begin{itemize}
 \item un modello ridotto composto da un layer di input con un numero di neuroni pari alla dimensione delle stringhe codificate, un layer intermedio di dimensione dimezzata rispetto al precedente ed il layer finale di uscita di dimensione 1 per attuare la classificazione binaria, oggetto di studio.
 
@@ -109,21 +109,25 @@ La struttura del \textit{MLP} in esame è stata raggiunta dopo una serie di test
 
 \end{itemize}
 
-I tre modelli messi a confronto hanno mostrato risultati simili, tuttavia  il modello intermedio si è dimostrato più performante, con un costo computazionale irrisorio rispetto al modello allargato. 
+I tre modelli messi a confronto hanno mostrato risultati simili, tuttavia  il modello intermedio si è dimostrato più performante, con un costo computazionale irrisorio rispetto al modello allargato, pertanto è stato scelto come riferimento per gli studi successivi.
+
 \begin{figure}[htb]
     \centering
     \includegraphics[width=.4\columnwidth]{figures/pieraz_baseline.png}
-    \caption{Grafico del modello intermedio. Escluso il primo layer di input, si notino gli \textit{hidden layer} dense2 e dense3 di dimensioni rispettivamente 128 e 64 }
+    \caption{Grafico del modello intermedio. Escluso il layer di input iniziale, si notino gli \textit{hidden layer} dense2 e dense3 di dimensioni rispettivamente 128 e 64 }
 \label{fig:pieraz}
 \end{figure}
 
-
-
 \subsection{Output}
 \label{classificatorennoutput}
+L'intento della rete neurale proposta è quello di classificare autonomamente domini reali da domini generati algoritmicamente, con l'obiettivo di superare le fragilità del classificatore precedente (\ref{randomforest}) ed avere una linea di confronto affidabile per lo \textit{step} di lavoro successivo: l'introduzione di un sistema di \textit{adversarial learning} che possa rafforzare tale classificatore. 
+\todo{come ampliare??????????????}
 
 \section{Realizzazione Adversarial Learning}
 \label{adv}
+Ricerche precedenti hanno dimostrato che molti modelli di machine learning, incluse le reti neurali, sono vulnerabili agli \textit{adversarial examples} \cite{1312.6199},  \cite{1412.6572} . In particolare la ricerca proposta in \cite{1412.6572} introduce il metodo del \textit{fast gradient sign} per scoprire \textit{adversarial examples} perturbando un campione noto $x$ con una piccola quantità $\Delta x =  \in sign(\nabla_x J(\theta,x,y))$ dove $\theta$ rappresenta i parametri del modello e $J$ il costo necessario a classificare $x$ come $y$.
+Separatamente \cite{1406.2661} propone l'uso di \textit{Generative Adversarial Network abbr. GAN})  come \textit{framework} in grado di generare campioni artificiali provenienti dalla stessa distribuzione del training set.
+Le GAN incorporano due modelli: un generatore ed un discriminatore i quali competono in una serie di turni antagonisti. All'interno del contesto del lavoro presentato in questo elaborato, il generatore impara a creare nuovi domini artificiali mentre il discriminatore impara a distinguere tali domini artificiali da quelli reali. L'intento di tale lavoro è usare la GAN per produrre domini artificiali realistici e di conseguenza incrementare la precisione del classificatore presentato nella sezione precedente attraverso l'\textit{adversarial training}.
 
 \subsection{Input}
 \label{advinput}
