@@ -1,0 +1,33 @@
+\usetikzlibrary{shapes,arrows,fit,calc}
+\tikzstyle{box} = [draw, rectangle, rounded corners, thick, node distance=7em, text width=6em, text centered, minimum height=3.5em]
+\tikzstyle{container} = [draw, rectangle, dashed, inner sep=2em]
+\tikzstyle{line} = [draw, thick, -latex']
+
+\begin{tikzpicture}[auto]
+    \node [box] (emb) {Embedding Layer};
+    \node [box, below of=emb] (cnn) {Convolutional Layers};
+    \node [box, below of=resources] (sensors) {Sensors};
+    \node [box, below of=sensors] (processing) {Processing};
+
+    \coordinate (middle) at ($(resources.west)!0.5!(sensors.west)$);
+    \node [box, left of=middle, node distance=10em] (archive) {Archive};
+    \node [box, left of=archive, node distance=10em] (reporting) {Reporting};
+
+    \node[container, fit=(resources) (sensors)] (or) {};
+    \node at (or.north west) [above right,node distance=0 and 0] {OR};
+
+    \node[container, fit=(archive) (reporting)] (his) {};
+    \node at (his.north west) [above right,node distance=0 and 0] {HIS};
+
+    \path [line] (planning) -- (resources);
+    \path [line] (resources) -- (sensors);
+    \path [line] (sensors) -- (processing);
+
+    \path [line] (archive) |- (planning);
+    \path [line] (archive) |- (processing);
+    \path [line] (processing) -| (reporting);
+
+    \draw [line] (processing.east) -- ++(2,0) node(lowerright){} |- (planning.east);
+    \draw [line] (lowerright |- or.east) -- (or.east -| resources.south east);
+\end{tikzpicture}
+
