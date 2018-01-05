@@ -36,7 +36,7 @@ Se $p = \text{facebook}$, $R(p) = \frac{(|\text{face}| + |\text{book}|)}{8} = 1$
 
     
 
-\item \textbf{Punteggio di normalità degli n-grammi}: Questa classe di \textit{features} modella la pronunciabilità di un nome di dominio rispetto la lingua Inglese. Più la combinazione di fonemi del dominio è presente  all'interno del Dizionario Inglese più tale dominio è pronunciabile. Domini con un basso numero di tali combinazioni sono probabilmente generati algoritmicamente. Il calcolo avviene estraendo lo n-gramma di $p$ di lunghezza $n \in \{1, 2, 3 \}$ e contando il numero di occorrenze di tale n-gramma all'interno del Dizionario Inglese. Tali \textit{features} sono quindi parametriche rispetto ad n: 
+\item \textbf{Punteggio di normalità degli n-grammi}: Questa classe di \textit{features} modella la pronunciabilità di un nome di dominio rispetto la lingua Inglese. Più la combinazione di fonemi del dominio è presente  all'interno del Dizionario Inglese più tale dominio è pronunciabile. Domini con un basso numero di tali combinazioni sono probabilmente generati algoritmicamente. Il calcolo avviene estraendo lo n-gramma di $p$ di lunghezza $n \in \left \{1, 2, 3, 4, 5 \right \}$ e contando il numero di occorrenze di tale n-gramma all'interno del Dizionario Inglese. Tali \textit{features} sono quindi parametriche rispetto ad n: 
 $$S_n(d) = S_n(p) \:= \frac{\sum_{\text{n-gramma t in p}} count(t)}{\left | p \right | - n + 1}$$ 
 dove $count(t)$ sono le occorrenze dello n-gramma nel dizionario. Ad esempio $S_2(facebook) = fa_{109} + ac_{343} + ce_{438} + eb_{29} + bo_{118} + oo_{114} + ok_{45} = 170.8$
 
@@ -129,31 +129,42 @@ Ricerche precedenti hanno dimostrato che molti modelli di machine learning, incl
 Separatamente \cite{1406.2661} propone l'uso di \textit{Generative Adversarial Network (abbr. GAN})  come \textit{framework} in grado di generare campioni artificiali provenienti dalla stessa distribuzione del training set.
 Le GAN incorporano due modelli: un generatore ed un discriminatore i quali competono in una serie di turni antagonisti. All'interno del contesto del lavoro presentato in questo elaborato, il generatore impara a creare nuovi domini artificiali mentre il discriminatore impara a distinguere tali domini artificiali da quelli reali. L'intento di tale lavoro è usare la GAN per produrre domini artificiali realistici e di conseguenza incrementare la precisione del classificatore presentato nella sezione precedente attraverso l'\textit{adversarial training}.
 
-Il punto di partenza per il lavoro di progettazione di una \textit{GAN} è stato l'implementazione di un \textit{Autoencoder} funzionante.  Un \textit{Autoencoder} è un modello di rete neurale non supervisionata con lo scopo di riprodurre il proprio input passando attraverso una rappresentazione codificata, generalmente a dimensione inferiore\cite{MAL-006} \cite{Liou:2008:MWP:1411851.1412074}. Si supponga di avere un set di training $\left\{ x^{(1)}, x^{(2)}, x^{(3)}, \ldots \right\}$ dove $x^{(i)} \in \Re^n$. L'obiettivo di un autoencoder generico è $y^{(i)} = x^{(i)}$ cercando di imparare una funzione che approssima x $h_{W,b}(x) \approx x$
+Il punto di partenza per il lavoro di progettazione di una \textit{GAN} è stato l'implementazione di un \textit{Autoencoder} funzionante.  Un \textit{Autoencoder} è un modello di rete neurale non supervisionata con lo scopo di riprodurre il proprio input passando attraverso una rappresentazione codificata, generalmente a dimensione inferiore\cite{MAL-006} \cite{Liou:2008:MWP:1411851.1412074}. Si supponga di avere un set di training $\left\{ x^{(1)}, x^{(2)}, x^{(3)}, \ldots \right\}$ dove $x^{(i)} \in \mathbb{R}^n$. L'obiettivo di un autoencoder generico è $y^{(i)} = x^{(i)}$ cercando di imparare una funzione che approssima x $h_{W,b}(x) \approx x$
 
 Un \textit{autoencoder} tipicamente consiste in due macro-componenti:
 \begin{itemize}
 \item funzione \textbf{Encoder} $h = f(x)$ la quale trasforma l'input una rappresentazione codificata (generalmente a dimensione minore)
 \item funzione \textbf{Decoder} $r = g(h)$ in grado di ricostruire l'input a partire dalla rappresentazione codificata. 
 \end{itemize}
-La struttura è rappresentata in figura \ref{fig:autoencoder1}. 
 
-Tuttavia il reale obiettivo di un \textit{autoencoder }non è quello di imparare perfettamente a riprodurre l'input fornito (in quanto sarebbe un'operazione priva di utilità), bensì vengono introdotti vincoli che ne limitano la capacità di riproduzione ad una sola approssimazione dei dati di ingresso. Grazie a tali vincoli il modello è obbligato a dare priorità agli aspetti fondamentali dell'input, imparandone le proprietà fondamentali.
+Tuttavia il reale obiettivo di un \textit{autoencoder }non è quello di imparare perfettamente a riprodurre l'input fornito (in quanto sarebbe un'operazione priva di utilità), bensì vengono introdotti vincoli che ne limitano la capacità di riproduzione ad una sola approssimazione dei dati di ingresso. Grazie a tali vincoli il modello è obbligato a dare priorità agli aspetti fondamentali dell'input, imparandone le proprietà principali.
+
+\subsection{Architettura Autoencoder}
+\label{autoencoder}
+L'architettura dell'\textit{encoder} in esame è lascamente ispirata al lavoro mostrato in \cite{1508.06615} mentre il \textit{decoder} è approssimativamente una immagine speculare dell'\textit{encoder}.
+
+Si indichi $\mathbb{V}$ come il set di caratteri validi per i domini di rete; l'\textit{encoder } contiene un primo livello di Embedding nel quale viene  imparata una mappatura lineare da $\mathbb{V} \mapsto \mathbb{R}^d$, risultando in un vettore d-dimensionale per ogni carattere del dominio. Successivamente vengono applicati dei filtri convoluzionali alle mappature precedenti con l'obiettivo di catturare n-grammi significativi all'interno dei domini reali. All'interno del filtro convoluzionale vengono selezionate le caratteristiche più importanti attraverso \textit{average pooling}. Il layer successivo di concatenazione assembla l'output dei diversi filtri in un tensore di dimensione ridotta rispetto all'input iniziale e lo passa ad una LSTM la quale accumula stato lungo la sequenza di caratteri e ritorna in uscita il dominio codificato in forma di vettore mono-dimensionale.
+
+Il \textit{decoder} è lascamente l'inverso del processo di codifica: il dominio codificato dato in input viene ripetuto un numero di volte equivalente alla lunghezza massima di nome di dominio decisa a priori e passato ad una LSTM. La sequenza di emissioni da parte del layer LSTM viene fornita agli stessi filtri convoluzionali presenti all'interno dell'\textit{encoder}. Questo risulta in un vettore $\mathbb{V}$-dimensionale per ogni elemento della sequenza che compone il dominio.
+Lo step finale consiste di un dense layer con distribuzione temporale che agisce come regressore multinomiale. A causa dell'attivazione \textit{softmax} attuata sul \textit{dense layer}, l'output del decoder rappresenta una distribuzione multinomiale dei caratteri di $\mathbb{V}$ per ogni step temporale, la quale può essere campionata per produrre un nuovo nome di dominio contenente le caratteristiche principali dei nomi di dominio usati in input.
+
+Di seguito vengono illustrati in dettaglio le principali componenti che compongono l'\textit{autoencoder}.
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=.4\columnwidth]{figures/autoencoder1.png}
+	\input{sections/autoencoder_structure}
     \caption{Struttura generica di un autoencoder, il quale mappa l'input $x$ in un output $r$ attraverso una rappresentazione codificata $h$}
 \label{fig:autoencoder1}
 \end{figure}
 
-\section{Architettura Autoencoder}
-\label{autoencoder}
-L'architettura dell'\textit{autoencoder} in esame è lascamente ispirata al lavoro mostrato in \cite{1508.06615}
+\subsubsection{Embedding Layer}
 
-\input{sections/autoencoder_structure}
+\subsubsection{Rete Neurale Convoluzionale}
 
-\subsection{Composizione Interna}
+\subsubsection{Long Short Term Machine}
+
+
+\subsection{Generative Adversarial Network}
 \label{advinterno}
 
 \subsection{Output}
