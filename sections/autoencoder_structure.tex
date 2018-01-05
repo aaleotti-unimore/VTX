@@ -5,10 +5,9 @@
 \tikzstyle{line} = [draw, thick, -latex']
 
 \begin{tikzpicture}[auto]
-    \node [box] (emb) {Embedding Layer};
-    \coordinate[above of=emb, node distance=7em](begin_enc);
+    \node [box] (cnn) {Convolutional Filters};
+    \coordinate[above of=cnn, node distance=7em](begin_enc);
     \node at (begin_enc.north) [above,node distance=0 and 0] {Dominio};
-    \node [box, below of=emb] (cnn) {Convolutional Layers};
     \node [box, below of=cnn] (conc) {Concetenation Layer};
     \begin{scope}[on background layer]
    		 \node [box,above left=-17mm and -42mm of cnn ] (note1){ };
@@ -17,9 +16,9 @@
 	\coordinate[below of=LSTM,node distance=7em](end_enc);
     
     \node [box, right of=LSTM, node distance=17em] (rep) {Repeat Layer};
-   	\coordinate[below of=rep,node distance=7em](begin_dec);    
+   	\coordinate[below of=rep, node distance=7em](begin_dec);    
     \node [box, above of=rep] (LSTM2) {LSTM};
-    \node [box, above of=LSTM2] (cnn2) {Convolutional Layers};
+    \node [box, above of=LSTM2] (cnn2) {Convolutional Filters};
     \begin{scope}[on background layer]
    		 \node [box,above left=-17mm and -42mm of cnn2 ] (note1){ };
    	\end{scope}
@@ -31,15 +30,14 @@
     %\coordinate (middle) at ($(resources.east)!0.5!(sensors.east)$);
     %\node [box, left of=middle, node distance=10em] (archive) {Archive};
     %\node [box, left of=archive, node distance=10em] (reporting) {Reporting};
-    \node[container, fit=(emb) (LSTM)] (encoder) {};
+    \node[container, fit=(cnn) (LSTM)] (encoder) {};
     \node[container, fit=(dense) (rep)] (decoder) {};
     \node at (encoder.north west) [above right,node distance=0 and 0] {Encoder};
   	\node at (decoder.north west) [above right,node distance=0 and 0] {Decoder};
 
     %\node[container, fit=(archive) (reporting)] (his) {};
     %\node at (his.north west) [above right,node distance=0 and 0] {HIS};
-	\path [line] (begin_enc) -- (emb);
-    \path [line] (emb) -- (cnn);
+	\path [line] (begin_enc) -- (cnn);
     \path [line] (cnn) -- (conc);
     \path [line] (conc) -- (LSTM);
     
