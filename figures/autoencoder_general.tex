@@ -1,0 +1,36 @@
+\tikzstyle{box} = [draw, rectangle, fill=white, thick, node distance=7em, text centered, minimum height=15em, minimum width=2.4em]
+\tikzstyle{container} = [draw, rectangle, dashed, inner sep=2em]
+\tikzstyle{line} = [draw, dashed, -latex']
+\resizebox{10cm}{!}{%
+\begin{tikzpicture}[auto]
+	\node[box](in){$x$};
+	\node[box, right of=in, minimum height=12em](enc){$f(x)$};
+	\node[box, right of=enc, minimum height=7em](enc2){$h$};
+	\node[box, right of=enc2, minimum height=12em](dec){$g(h)$};
+	\node[box, right of=dec](out){$r$};
+	
+	\draw[line] (in.north east) -- (enc.south west);
+	\draw[line] (in.south east) -- (enc.north west);
+	\draw[line] (in.north east) -- (enc.north west);			 	    \draw[line] (in.south east) -- (enc.south west);
+
+	\draw[line] (enc.north east) -- (enc2.south west);
+	\draw[line] (enc.south east) -- (enc2.north west);
+	\draw[line] (enc.north east) -- (enc2.north west);			 	    \draw[line] (enc.south east) -- (enc2.south west);
+	
+	\draw[line] (enc2.north east) -- (dec.south west);
+	\draw[line] (enc2.south east) -- (dec.north west);
+	\draw[line] (enc2.north east) -- (dec.north west);			 	    \draw[line] (enc2.south east) -- (dec.south west);
+	
+	\draw[line] (dec.north east) -- (out.south west);
+	\draw[line] (dec.south east) -- (out.north west);
+	\draw[line] (dec.north east) -- (out.north west);			 	    \draw[line] (dec.south east) -- (out.south west);	
+	
+	\node[container, fit=(in)(enc2)](encoder){};
+	\node[container, fit=(out)(enc2)](decoder) at ([shift=({10 em:-1 em})]dec){};
+	
+	
+	\node at (encoder.north west) [above right,node distance=0 and 0] {Encoder};
+	\node at (decoder.south east) [below left,node distance=0 and 0] {Encoder};
+	
+\end{tikzpicture}
+}

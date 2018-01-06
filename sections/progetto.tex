@@ -137,6 +137,13 @@ Il punto di partenza per il lavoro di progettazione di una \textit{GAN} è stato
 \item funzione \textbf{Decoder} $r = g(h)$ in grado di ricostruire l'input a partire dalla rappresentazione codificata. 
 \end{itemize}
 
+\begin{figure}[htb]
+    \centering
+	\input{figures/autoencoder_general.tex}
+	\caption{Struttura generica di un autoencoder, il quale mappa l'input $x$ in un output $r$ attraverso una rappresentazione codificata $h$}
+\label{fig:autoencodergen}
+\end{figure}
+
 Tuttavia il reale obiettivo di un \textit{autoencoder }non è quello di imparare perfettamente a riprodurre l'input fornito (in quanto sarebbe un'operazione priva di utilità), bensì vengono introdotti vincoli che ne limitano la capacità di riproduzione ad una sola approssimazione dei dati di ingresso. Grazie a tali vincoli il modello è obbligato a dare priorità agli aspetti fondamentali dell'input, imparandone le proprietà principali. L'obiettivo di tale implementazione nel contesto di questo elaborato è poter cogliere le caratteristiche fondamentali che compongono i domini reali, per poterli riprodurre al meglio all'interno della \textit{GAN} e generare domini simili a quelli reali a partire da rumore casuale.
 
 \subsection{Dataset Autoencoder}
@@ -159,8 +166,7 @@ Lo step finale consiste di un dense layer con distribuzione temporale che agisce
 
 In figura \ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoencoder. Di seguito vengono illustrati in dettaglio le principali componenti che compongono l'\textit{autoencoder}. 
 
-
-\begin{figure}[htb]
+\begin{figure}[p]
     \centering
 	\input{figures/autoencoder.tex}
 	\caption{Struttura generica di un autoencoder, il quale mappa l'input $x$ in un output $r$ attraverso una rappresentazione codificata $h$}
@@ -168,9 +174,25 @@ In figura \ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoen
 \end{figure}
 
 \subsubsection{Encoder}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sit amet nibh nec justo suscipit porttitor. Vestibulum et turpis in orci volutpat interdum. Curabitur pellentesque augue eget justo elementum, sed pulvinar nisi suscipit. Proin fermentum pretium pharetra. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut sollicitudin felis vel velit sollicitudin ullamcorper. Quisque facilisis feugiat quam, a gravida purus feugiat vitae.
 
+Aenean non pretium odio, ut consectetur neque. Nam euismod facilisis ex at varius. Phasellus eget congue ante, eu porta nisl. Quisque eu egestas libero. Curabitur eleifend sed enim quis vehicula. Nam ullamcorper purus nulla, at aliquet dui imperdiet sit amet. Phasellus eu pharetra mauris. Nulla nec enim ac dui maximus cursus. Cras gravida eros sit amet tellus faucibus, in consequat nunc blandit. Sed ullamcorper varius varius. Nullam sed mauris porttitor, egestas urna tincidunt, fermentum libero.
+
+Nulla faucibus tellus nec pharetra varius. Sed lacinia quam eu urna interdum, et pretium felis sagittis. Quisque quis tincidunt lectus. Mauris sit amet pellentesque purus. Phasellus tincidunt, eros ac sagittis mollis, lacus risus dignissim erat, non pretium arcu metus sit amet felis. Aenean ac nulla dolor. Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec dui nulla, consequat suscipit ex eu, faucibus accumsan felis. Ut egestas euismod arcu, porta sollicitudin tortor pretium vel. Nunc in fermentum justo. Aliquam egestas ullamcorper ex quis placerat. Donec vulputate turpis ut dolor dignissim iaculis ut ut ipsum. Aliquam eu odio elementum, porttitor lorem eget, euismod ex. Donec id mi vel quam cursus congue ac vitae libero. Nam a mi nec nunc pulvinar maximus.
+
+Mauris ultricies luctus erat, a elementum neque laoreet sit amet. Aliquam eget nisl bibendum, tristique velit accumsan, pharetra purus. Maecenas fermentum vel mi id ultrices. In eu lectus nulla. Nulla vitae lobortis turpis. Praesent nisl purus, vehicula at tincidunt sit amet, sodales sed eros. Praesent iaculis purus eu leo varius, at viverra justo tempor. Fusce accumsan id purus eu laoreet. Aliquam eu lacus bibendum, euismod odio in, bibendum neque. Integer tincidunt pharetra maximus. Nullam facilisis libero vel lacus tincidunt, malesuada dignissim dui malesuada. Ut dictum imperdiet vulputate. Fusce massa purus, molestie sit amet justo ut, porttitor lobortis justo. Sed maximus et velit a gravida.
+
+Nulla sed ligula eu tortor vulputate vulputate. Sed ullamcorper facilisis augue, congue tincidunt risus placerat a. Vivamus quis felis massa. Cras hendrerit ex laoreet venenatis varius. In vitae quam aliquet, finibus urna ut, convallis tortor. Donec eget mi nisi. Etiam commodo tortor vitae eleifend laoreet. Pellentesque a tristique nibh, a aliquam magna
 \subsubsection{Decoder}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sit amet nibh nec justo suscipit porttitor. Vestibulum et turpis in orci volutpat interdum. Curabitur pellentesque augue eget justo elementum, sed pulvinar nisi suscipit. Proin fermentum pretium pharetra. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut sollicitudin felis vel velit sollicitudin ullamcorper. Quisque facilisis feugiat quam, a gravida purus feugiat vitae.
 
+Aenean non pretium odio, ut consectetur neque. Nam euismod facilisis ex at varius. Phasellus eget congue ante, eu porta nisl. Quisque eu egestas libero. Curabitur eleifend sed enim quis vehicula. Nam ullamcorper purus nulla, at aliquet dui imperdiet sit amet. Phasellus eu pharetra mauris. Nulla nec enim ac dui maximus cursus. Cras gravida eros sit amet tellus faucibus, in consequat nunc blandit. Sed ullamcorper varius varius. Nullam sed mauris porttitor, egestas urna tincidunt, fermentum libero.
+
+Nulla faucibus tellus nec pharetra varius. Sed lacinia quam eu urna interdum, et pretium felis sagittis. Quisque quis tincidunt lectus. Mauris sit amet pellentesque purus. Phasellus tincidunt, eros ac sagittis mollis, lacus risus dignissim erat, non pretium arcu metus sit amet felis. Aenean ac nulla dolor. Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec dui nulla, consequat suscipit ex eu, faucibus accumsan felis. Ut egestas euismod arcu, porta sollicitudin tortor pretium vel. Nunc in fermentum justo. Aliquam egestas ullamcorper ex quis placerat. Donec vulputate turpis ut dolor dignissim iaculis ut ut ipsum. Aliquam eu odio elementum, porttitor lorem eget, euismod ex. Donec id mi vel quam cursus congue ac vitae libero. Nam a mi nec nunc pulvinar maximus.
+
+Mauris ultricies luctus erat, a elementum neque laoreet sit amet. Aliquam eget nisl bibendum, tristique velit accumsan, pharetra purus. Maecenas fermentum vel mi id ultrices. In eu lectus nulla. Nulla vitae lobortis turpis. Praesent nisl purus, vehicula at tincidunt sit amet, sodales sed eros. Praesent iaculis purus eu leo varius, at viverra justo tempor. Fusce accumsan id purus eu laoreet. Aliquam eu lacus bibendum, euismod odio in, bibendum neque. Integer tincidunt pharetra maximus. Nullam facilisis libero vel lacus tincidunt, malesuada dignissim dui malesuada. Ut dictum imperdiet vulputate. Fusce massa purus, molestie sit amet justo ut, porttitor lobortis justo. Sed maximus et velit a gravida.
+
+Nulla sed ligula eu tortor vulputate vulputate. Sed ullamcorper facilisis augue, congue tincidunt risus placerat a. Vivamus quis felis massa. Cras hendrerit ex laoreet venenatis varius. In vitae quam aliquet, finibus urna ut, convallis tortor. Donec eget mi nisi. Etiam commodo tortor vitae eleifend laoreet. Pellentesque a tristique nibh, a aliquam magna
 
 \section{Generative Adversarial Network}
 \label{advinterno}
