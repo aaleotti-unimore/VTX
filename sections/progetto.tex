@@ -176,10 +176,31 @@ In figura \ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoen
 \subsubsection{Encoder}
 La composizione interna dell'\textit{encoder} è formata inizialmente da due diversi layer convoluzionali ad 1 dimensione: come mostrato in \cite{1508.06615} le reti convoluzionali sono in grado di cogliere le \textit{features} più importanti in una sequenza di caratteri. Ogni filtro all'interno della rete convoluzionale seleziona un n-gramma della dimensione della finestra.
 
-average pooling
+\begin{figure}[htb]
+    \centering
+	\input{figures/encoder.tex}
+	\caption{Struttura dell'\textit{autoencoder} in esame. L'input in ingresso dato dai domini viene codificato attraverso l'\textit{encoder} e dato in ingresso al \textit{decoder} che ne genera una approssimazione}
+\label{fig:encoder}
+\end{figure}
+
+encoder diagram
+
+CNN+diagramm
+average pooling why
+
+LSTM + diagram
 
 
 \subsubsection{Decoder}
+descrizione
+
+repeat layer why
+LSTM
+
+Convnet why
+
+multinomial regrassion + table
+
 
 
 \section{Generative Adversarial Network}
