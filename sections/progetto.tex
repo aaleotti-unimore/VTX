@@ -175,32 +175,13 @@ In figura \ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoen
 
 \subsubsection{Encoder}
 La composizione interna dell'\textit{encoder} è formata da una Rete Convoluzionale accoppiata ad una LSTM. A differenza del lavoro proposto in \cite{deepdga}, si è voluto mantenere la composizione dell'autoencoder il piu semplice possibile, in quanto la trasformazione in \textit{GAN} ed il suo \textit{tuning} in fase di \textit{training} è notoriamente difficoltoso, in presenza di molti parametri. 
-Come mostrato in \cite{1508.06615} le reti convoluzionali sono in grado di cogliere le \textit{features} più importanti in una sequenza di caratteri. Ogni filtro all'interno della rete convoluzionale seleziona un n-gramma della dimensione della finestra.
+Come mostrato in \cite{1508.06615} le reti convoluzionali sono in grado di cogliere le \textit{features} più importanti in una sequenza di caratteri. Nel modello utilizzato si indichi $\mathbb{V}$ come vocabolario dei caratteri ammissibili per i domini di rete, $d$ la dimensione dei domini codificati, and $\mathbf{Q} \in \mathbb{R}^{d \times |\mathcal{C}|}$  la matrice di codifica dei caratteri. Sia supposto che il dominio $k \in \mathcal{V}$ sia composto da una sequenza di caratteri $[c_1, \dots, c_{l}]$, dove $l$ è la lunghezza del dominio $k$.
+Allora la rappresentazione a livello di caratteri di $k$ è data dalla matrice $\mathbf{C}^k \in \mathbb{R}^{d \times l}$, dove la $j$ma colonna corrisponde alla codifica dei caratteri per $c_j$.
+Si applichi una convoluzione tra $\mathbf{C}^k$  ed un \textit{fitro} (o \textit{kernel}) $\mathbf{H} \in \mathbb{R}^{d \times w}$ di larghezza $w$, al quale viene aggiunto un \textit{bias} ed una non linearità per ottenere una \textit{feature map} $\mathbf{f}^k \in \mathbb{R}^{l - w + 1}$. In particolare l'$i$mo elemento di $\mathbf{f}^k$ è dato da:
+$$\mathbf{f}^k[i] = \mbox{tanh}(\langle \mathbf{C}^k[\ast, i:i+w-1], \mathbf{H} \rangle + b)$$
 
-in our model, the input at time $t$ is an output from a character-level convolutional neural network (CharCNN), which we describe in this section.  
-CNNs \cite{LeCun1989} have achieved state-of-the-art results on computer vision \cite{Krizhevsky2012} and have also been shown to be effective 
-for various NLP tasks \cite{Collobert2011}. Architectures employed for NLP applications differ in that they typically involve temporal rather 
-than spatial convolutions.
+where $\mathbf{C}^k[\ast, i:i+w-1]$ è la colonna da $i$ ad $(i+w-1)$ di $\mathbf{C}^k$ ed $$ \langle \mathbf{A}, \mathbf{B} \rangle = \Tr(\mathbf{A}\mathbf{B}^T)$$ è il prodotto interno di Frobenius.
 
-Let $\mathcal{C}$ be the vocabulary of characters, $d$ be the dimensionality of character embeddings,\footnote{Given that $|\mathcal{C}|$ 
-is usually small, some authors work with one-hot representations of characters. However we found that using lower dimensional representations of 
-characters (i.e. $d < |\mathcal{C}|$) performed slightly better.} and $\mathbf{Q} \in \mathbb{R}^{d \times |\mathcal{C}|}$  be the matrix character embeddings.
-Suppose that word $k \in \mathcal{V}$ is made up of a sequence of characters $[c_1, \dots, c_{l}]$, where $l$ is the length of word $k$.
-Then the character-level representation of $k$ is given by the matrix $\mathbf{C}^k \in \mathbb{R}^{d \times l}$, where the $j$-th column corresponds 
-to the character embedding for $c_j$ (i.e. the $c_j$-th column of $\mathbf{Q}$).\footnote{Two technical details warrant mention here: (1) we append 
-start-of-word and end-of-word characters to each word to better represent prefixes and suffixes and hence $\mathbf{C}^k$ actually has $l + 2$ columns;
- (2) for batch processing, we zero-pad $\mathbf{C}^k$ so that the number of columns is constant (equal to the max
-word length) for all words in $\mathcal{V}$.}
-
-We apply a narrow convolution between $\mathbf{C}^k$ and a {\em filter} (or {\em kernel}) $\mathbf{H} \in \mathbb{R}^{d \times w}$ of width $w$, 
-after which we add a bias and apply a nonlinearity to obtain a {\em feature map} $\mathbf{f}^k \in \mathbb{R}^{l - w + 1}$. Specifically, 
-the $i$-th element of $\mathbf{f}^k$ is given by:
-$$\mathbf{f}^k[i] = \mbox{tanh}(\langle \mathbf{C}^k[\ast, i:i+w-1] 
-, \mathbf{H} \rangle + b)$$
-
-%where $\mathbf{C}^k[\ast, i:i+w-1]$
-% is the $i$-to-$(i+w-1)$-th column of $\mathbf{C}^k$ and 
-%$\langle \mathbf{A}, \mathbf{B} \rangle = \Tr(\mathbf{A}\mathbf{B}^T)$ is the Frobenius inner product.
 Finally, we take the {\em max-over-time}
 \begin{equation}
 y^k = \max_{i} \mathbf{f}^k[i]
@@ -212,8 +193,6 @@ a character $n$-gram, where the size of the $n$-gram corresponds to the filter w
 We have described the process by which {\em one} feature is obtained from {\em one} filter matrix. Our CharCNN uses multiple filters of 
 varying widths to obtain the feature vector for $k$. So if we have a total of $h$ filters $\mathbf{H}_1, \dots, \mathbf{H}_h$, 
 then $\mathbf{y}^k = [y^k_1, \dots, y^k_h]$ is the input representation of $k$. For many NLP applications $h$ is typically chosen to be in $[100,1000]$.
-
-
 
 
 \begin{figure}[htbp]
