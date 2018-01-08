@@ -127,7 +127,7 @@ L'intento della rete neurale proposta è quello di classificare autonomamente do
 \label{adv}
 Ricerche precedenti hanno dimostrato che molti modelli di machine learning, incluse le reti neurali, sono vulnerabili agli \textit{adversarial examples} \cite{1312.6199},  \cite{1412.6572}. In particolare la ricerca proposta in \cite{1412.6572} introduce il metodo del \textit{fast gradient sign} per scoprire \textit{adversarial examples} perturbando un campione noto $x$ con una piccola quantità $\Delta x =  \in sign(\nabla_x J(\theta,x,y))$ dove $\theta$ rappresenta i parametri del modello e $J$ il costo necessario a classificare $x$ come $y$.
 Separatamente \cite{1406.2661} propone l'uso di \textit{Generative Adversarial Network (abbr. GAN})  come \textit{framework} in grado di generare campioni artificiali provenienti dalla stessa distribuzione del training set.
-Le \textit{GAN} incorporano due modelli: un generatore ed un discriminatore i quali competono in una serie di turni antagonisti. All'interno del contesto del lavoro presentato in questo elaborato, il generatore impara a creare nuovi domini artificiali mentre il discriminatore impara a distinguere tali domini artificiali da quelli reali. L'intento di tale lavoro è usare la \textit{GAN} per produrre domini artificiali realistici e di conseguenza incrementare la precisione del classificatore presentato nella sezione precedente attraverso l'\textit{adversarial training}.
+Le \textit{GAN} incorporano due modelli: un generatore ed un discriminatore i quali competono in una serie di turni antagonisti. All'interno del contesto del lavoro presentato in questo elaborato, il generatore impara a creare nuovi domini artificiali mentre il discriminatore impara a distinguere tali domini artificiali da quelli reali. L'intento di tale lavoro è usare la \textit{GAN} per produrre domini artificiali realistici e di conseguenza incrementare la precisione del classificatore presentato nella sezione precedente attraverso l'\textit{adversarial training}. I presupposti progettuali di questo elaborato sono ispirati alla ricerca presentata in \cite{deepdga}.
 
 \section{Autoencoder}
 \label{autoencoder}
@@ -157,7 +157,7 @@ Questo ulteriore passaggio è diventato necessario durante l'implementazione del
 
 \subsection{Architettura Autoencoder}
 \label{archautoencoder}
-L'architettura dell'\textit{encoder} in esame è lascamente ispirata al lavoro mostrato in \cite{1508.06615} mentre il \textit{decoder} è approssimativamente una immagine speculare dell'\textit{encoder}.
+L'architettura dell'\textit{encoder} in esame è ispirato al lavoro mostrato in \cite{1508.06615} mentre il \textit{decoder} è approssimativamente una immagine speculare dell'\textit{encoder}.
 
 Al domini codificati come indicato nella sezione precedente, vengono applicati dei filtri convoluzionali con l'obiettivo di catturare n-grammi significativi all'interno dei domini reali. Il layer successivo di concatenazione assembla l'output dei diversi filtri in un tensore di dimensione ridotta rispetto all'input iniziale e lo passa ad una LSTM la quale accumula stato lungo la sequenza di caratteri e ritorna in uscita il dominio codificato in forma di vettore mono-dimensionale.
 
@@ -174,12 +174,52 @@ In figura \ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoen
 \end{figure}
 
 \subsubsection{Encoder}
-La composizione interna dell'\textit{encoder} è formata inizialmente da due diversi layer convoluzionali ad 1 dimensione: come mostrato in \cite{1508.06615} le reti convoluzionali sono in grado di cogliere le \textit{features} più importanti in una sequenza di caratteri. Ogni filtro all'interno della rete convoluzionale seleziona un n-gramma della dimensione della finestra.
+La composizione interna dell'\textit{encoder} è formata da una Rete Convoluzionale accoppiata ad una LSTM. A differenza del lavoro proposto in \cite{deepdga}, si è voluto mantenere la composizione dell'autoencoder il piu semplice possibile, in quanto la trasformazione in \textit{GAN} ed il suo \textit{tuning} in fase di \textit{training} è notoriamente difficoltoso, in presenza di molti parametri. 
+Come mostrato in \cite{1508.06615} le reti convoluzionali sono in grado di cogliere le \textit{features} più importanti in una sequenza di caratteri. Ogni filtro all'interno della rete convoluzionale seleziona un n-gramma della dimensione della finestra.
 
-\begin{figure}[htb]
+in our model, the input at time $t$ is an output from a character-level convolutional neural network (CharCNN), which we describe in this section.  
+CNNs \cite{LeCun1989} have achieved state-of-the-art results on computer vision \cite{Krizhevsky2012} and have also been shown to be effective 
+for various NLP tasks \cite{Collobert2011}. Architectures employed for NLP applications differ in that they typically involve temporal rather 
+than spatial convolutions.
+
+Let $\mathcal{C}$ be the vocabulary of characters, $d$ be the dimensionality of character embeddings,\footnote{Given that $|\mathcal{C}|$ 
+is usually small, some authors work with one-hot representations of characters. However we found that using lower dimensional representations of 
+characters (i.e. $d < |\mathcal{C}|$) performed slightly better.} and $\mathbf{Q} \in \mathbb{R}^{d \times |\mathcal{C}|}$  be the matrix character embeddings.
+Suppose that word $k \in \mathcal{V}$ is made up of a sequence of characters $[c_1, \dots, c_{l}]$, where $l$ is the length of word $k$.
+Then the character-level representation of $k$ is given by the matrix $\mathbf{C}^k \in \mathbb{R}^{d \times l}$, where the $j$-th column corresponds 
+to the character embedding for $c_j$ (i.e. the $c_j$-th column of $\mathbf{Q}$).\footnote{Two technical details warrant mention here: (1) we append 
+start-of-word and end-of-word characters to each word to better represent prefixes and suffixes and hence $\mathbf{C}^k$ actually has $l + 2$ columns;
+ (2) for batch processing, we zero-pad $\mathbf{C}^k$ so that the number of columns is constant (equal to the max
+word length) for all words in $\mathcal{V}$.}
+
+We apply a narrow convolution between $\mathbf{C}^k$ and a {\em filter} (or {\em kernel}) $\mathbf{H} \in \mathbb{R}^{d \times w}$ of width $w$, 
+after which we add a bias and apply a nonlinearity to obtain a {\em feature map} $\mathbf{f}^k \in \mathbb{R}^{l - w + 1}$. Specifically, 
+the $i$-th element of $\mathbf{f}^k$ is given by:
+$$\mathbf{f}^k[i] = \mbox{tanh}(\langle \mathbf{C}^k[\ast, i:i+w-1] 
+, \mathbf{H} \rangle + b)$$
+
+%where $\mathbf{C}^k[\ast, i:i+w-1]$
+% is the $i$-to-$(i+w-1)$-th column of $\mathbf{C}^k$ and 
+%$\langle \mathbf{A}, \mathbf{B} \rangle = \Tr(\mathbf{A}\mathbf{B}^T)$ is the Frobenius inner product.
+Finally, we take the {\em max-over-time}
+\begin{equation}
+y^k = \max_{i} \mathbf{f}^k[i]
+\end{equation}
+as the feature corresponding to the filter $\mathbf{H}$ (when applied to word $k$). The idea is to capture the most important
+feature---the one with the highest value---for a given filter. A filter is essentially picking out
+a character $n$-gram, where the size of the $n$-gram corresponds to the filter width.
+
+We have described the process by which {\em one} feature is obtained from {\em one} filter matrix. Our CharCNN uses multiple filters of 
+varying widths to obtain the feature vector for $k$. So if we have a total of $h$ filters $\mathbf{H}_1, \dots, \mathbf{H}_h$, 
+then $\mathbf{y}^k = [y^k_1, \dots, y^k_h]$ is the input representation of $k$. For many NLP applications $h$ is typically chosen to be in $[100,1000]$.
+
+
+
+
+\begin{figure}[htbp]
     \centering
 	\input{figures/encoder.tex}
-	\caption{Struttura dell'\textit{autoencoder} in esame. L'input in ingresso dato dai domini viene codificato attraverso l'\textit{encoder} e dato in ingresso al \textit{decoder} che ne genera una approssimazione}
+	\caption{Struttura dell'\textit{encoder}. I}
 \label{fig:encoder}
 \end{figure}
 

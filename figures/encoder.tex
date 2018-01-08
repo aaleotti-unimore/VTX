@@ -11,80 +11,49 @@
 	\node [box, below of=batch](leaky) {Leaky ReLU activation};
 	\node [box, below of=leaky](dropout) {Dropout};
 	\node [box, below of=dropout](pooling){Average Pooling};
-	\node [draw=none, below of=pooling](invis){};
 
 	
-	\node [box, right of=conv, node distance=10em] (conv2) {Convolution Layer};
+	\node [box, right of=conv, node distance=12em] (conv2) {Convolution Layer};
 	\node [box, below of=conv2] (batch2) {Batch Normalization};
 	\node [box, below of=batch2](leaky2) {Leaky ReLU activation};
 	\node [box, below of=leaky2](dropout2) {Dropout};
 	\node [box, below of=dropout2](pooling2){Average Pooling};
-	\node [draw=none, below of=pooling2](invis2){};
 	
-	\node[draw=none, fit=(invis)(invis2)](invis3){};
-	\node[box,below of=invis3, node distance=2em](conc){Concatenation Layer};
-	\node[box,below of=conc](lstm){LSTM};
-	\coordinate[below of=LSTM,node distance=7em](end_enc);
-	\node at (end_enc.north) [below,node distance=0 and 0] {Dominio Codificato};
+	\node [draw=none, above of=conv](invis4){};
+	\node [draw=none, above of=conv2](invis5){};
+	\node [draw=none, fit=(invis4)(invis5)](invis6){};
+	\coordinate[above of=invis6,node distance=3em](begin_enc);
+	\node at (begin_enc.north) [above,node distance=0 and 0] (input){Dominio};
 
+	\node [draw=none, below of=pooling](invis){};
+	\node [draw=none, below of=pooling2](invis2){};
+	\node [draw=none, fit=(invis)(invis2)](invis3){};
 	
+	\node[box,below of=invis3, node distance=3em](conc){Concatenation Layer};
+	\node[box,below of=conc](lstm){LSTM};
+	\coordinate[below of=lstm,node distance=3em](end_enc);
+	\node at (end_enc.south) [below,node distance=0 and 0] (output){Dominio Codificato};
+
+	\node [container, fit=(conv)(pooling)](cnn){};
+	\node [container, fit=(conv2)(pooling2)](cnn2){};
+	\node at (cnn.north west) [above right,node distance=0 and 0] {Convnet};
+	\node at (cnn2.north east) [above left,node distance=0 and 0] {Convnet};
+
 	\path [line] (conv) -- (batch);
 	\path [line] (batch) -- (leaky);
 	\path [line] (leaky) -- (dropout);
-	\path [line] (pooling) -- (end_dec);
+	\path [line] (dropout) -- (pooling);
+	\path [line] (pooling) |- (conc);
 
-%  \node [box] (cnn) {Convolutional Filters};
-%    \coordinate[above of=cnn, node distance=7em](begin_enc);
-%    \node at (begin_enc.north) [above,node distance=0 and 0] {Dominio};
-%    \node [box, below of=cnn] (conc) {Concetenation Layer};
-%    \begin{scope}[on background layer]
-%   		 \node [box,above left=-17mm and -42mm of cnn ] (note1){ };
-%   	\end{scope}
-%    \node [box, below of=conc] (LSTM) {LSTM};
-%	\coordinate[below of=LSTM,node distance=7em](end_enc);
-%    
-%    \node [box, right of=LSTM, node distance=17em] (rep) {Repeat Layer};
-%   	\coordinate[below of=rep, node distance=7em](begin_dec);    
-%    \node [box, above of=rep] (LSTM2) {LSTM};
-%    \node [box, above of=LSTM2] (cnn2) {Convolutional Filters};
-%    \begin{scope}[on background layer]
-%   		 \node [box,above left=-17mm and -42mm of cnn2 ] (note1){ };
-%   	\end{scope}
-%	\node [box, above of=cnn2] (conc2) {Concetenation Layer};
-%	\node [box, above of=conc2] (dense) {Multinomial Regression};
-%	\coordinate[above of=dense, node distance=7em](end_dec);
-%    \node at (end_dec.north) [above,node distance=0 and 0] {Dominio};
-%
-%    %\coordinate (middle) at ($(resources.east)!0.5!(sensors.east)$);
-%    %\node [box, left of=middle, node distance=10em] (archive) {Archive};
-%    %\node [box, left of=archive, node distance=10em] (reporting) {Reporting};
-%    \node[container, fit=(cnn) (LSTM)] (encoder) {};
-%    \node[container, fit=(dense) (rep)] (decoder) {};
-%    \node at (encoder.north west) [above right,node distance=0 and 0] {Encoder};
-%  	\node at (decoder.north west) [above right,node distance=0 and 0] {Decoder};
-%
-%    %\node[container, fit=(archive) (reporting)] (his) {};
-%    %\node at (his.north west) [above right,node distance=0 and 0] {HIS};
-%	\path [line] (begin_enc) -- (cnn);
-%    \path [line] (cnn) -- (conc);
-%    \path [line] (conc) -- (LSTM);
-%    
-%    \path [line] (rep) -- (LSTM2);
-%	\path [line] (LSTM2) -- (cnn2);
-%	\path [line] (cnn2) -- (conc2);
-%	\path [line] (conc2) -- (dense);
-%	\path [line] (dense) -- (end_dec);
-%    
-%        
-%    \draw (LSTM) -- (end_enc);
-%    \path (end_enc) -- (begin_dec) node[midway] {Dominio Codificato};
-%    \draw (end_enc) -- (begin_dec);
-%    \draw [line] (begin_dec) -- (rep);
-
-    %\path [line] (archive) |- (planning);
-    %\path [line] (archive) |- (processing);
-    %\path [line] (processing) -| (reporting);
-
-    %\draw [line] (processing.east) -- ++(2,0) node(lowerright){} |- (planning.east);
-    %\draw [line] (lowerright |- or.east) -- (or.east -| resources.south east);
+	\path [line] (conv2) -- (batch2);
+	\path [line] (batch2) -- (leaky2);
+	\path [line] (leaky2) -- (dropout2);
+	\path [line] (dropout2) -- (pooling2);
+	\path [line] (pooling2) |- (conc);
+	
+	\path [line] (conc) -- (lstm);
+	\path [line] (lstm) -- (end_enc);
+	
+	\path [line] (begin_enc) -| (conv);
+	\path [line] (begin_enc) -| (conv2);
 \end{tikzpicture}
