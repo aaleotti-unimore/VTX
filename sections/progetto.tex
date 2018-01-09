@@ -166,7 +166,7 @@ Lo step finale consiste di un dense layer con distribuzione temporale che agisce
 
 In figura \ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoencoder. Di seguito vengono illustrati in dettaglio le principali componenti che compongono l'\textit{autoencoder}. 
 
-\begin{figure}[hp]
+\begin{figure}[p!]
     \centering
 	\input{figures/autoencoder.tex}
 	\caption{Struttura dell'\textit{autoencoder} in esame. L'input in ingresso dato dai domini viene codificato attraverso l'\textit{encoder} e dato in ingresso al \textit{decoder} che ne genera una approssimazione}
@@ -174,14 +174,13 @@ In figura \ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoen
 \end{figure}
 
 \subsubsection{Encoder}
-La composizione interna dell'\textit{encoder} è formata da una Rete Convoluzionale accoppiata ad una LSTM. A differenza del lavoro proposto in \cite{deepdga}, si è voluto mantenere la composizione dell'autoencoder il più semplice possibile, in quanto la trasformazione in \textit{GAN} ed il suo \textit{tuning} in fase di \textit{training} è notoriamente difficoltoso, in presenza di molti parametri. 
+La composizione interna dell'\textit{encoder} è formata da una Rete Convoluzionale accoppiata ad una LSTM. A differenza del lavoro proposto in \cite{deepdga}, si è voluto mantenere la composizione dell'autoencoder il più semplice possibile, in quanto la trasformazione in \textit{GAN} ed il suo \textit{tuning} in fase di \textit{training} è notoriamente difficoltoso in presenza di molti parametri. 
 
-<cos'è una rete convoluzionale> 
+Una Rete Convoluzionale è un modello di rete neurale usato generalmente per classificazione di immagini, in alternativa ai layer densamente connessi. Il vantaggio nell'uso delle reti convoluzionali è la capacità di quest'ultime di memorizzare pattern locali all'interno dello spazio di input mentre layer densamente connessi sono in grado di riconoscere solo pattern globali. Nel caso in esame si sono applicati due filtri convoluzionali in parallelo, con l'obiettivo di cogliere pattern locali all'interno dei domini, ovvero n-grammi significativi da poter replicare. Generalmente i filtri convoluzionali lavorano su di un tensore 3-dimensionale, chiamato \textit{feature map}, avente due assi spaziali ("altezza" e "larghezza") ed un asse di profondità; nel caso di riconoscimento di immagini tali assi corrispondono alle dimensioni dell'immagine di input ed al numero dei canali colore. Nel caso in esame si sono trattati di input tridimensionali ad altezza 1, larghezza equivalente alla dimensione massima dei domini nel dataset e canale di dimensione 1. L'operazione di convoluzione estrae frammenti dalla \textit{feature map} di input ed applica una trasformazione a tutti i frammenti, generando una \textit{output feature map} la quale è ancora in forma di tensore 3D, di dimensione ridotta, contenente sull'asse della profondità i valori dei \textit{filtri}. I filtri codificano determinati aspetti caratteristici dell'input, analizzando l'input in una "finestra" di dimensione fissata che scorre lungo la sequenza; ad ogni passo il filtro estrae il sotto-tensore 3-dimensionale per trasformarlo(tramite un prodotto tensore con una matrice di pesi (chiamato \textit{convolutional kernel}) in un vettore 1D di dimensione fissata. L'insieme di vettori vengono riassemblati in un tensore 3D con altezza e larghezza identiche alle precedenti e l'inseme di features come terzo asse.
 
-La Rete Convoluzionale è formata da un layer convoluzionale, in grado di cogliere pattern locali all'interno dei domini, con l'obiettivo di rilevare n-grammi significativi presenti nei domini reali e poterli successivamente riprodurre in maniera sintetica all'interno della GAN. 
-Parte integrante di una rete convoluzionale è il livello di \textit{pooling}, in cui le features piu importanti del livello precedente vengono ridotte in un tensore di dimensione secondo il valor medio. La decisione di utilizzare average pooling anziche max pooling è stata presa a causa dell'elevata instabilità intrinseca alle GAN, per le quali max pooling è un fattore contribuente. 
+Parte integrante di una rete convoluzionale è il livello di \textit{pooling}, in cui le features piu importanti del livello precedente vengono ridotte in un tensore di dimensione inferiore, secondo il valor medio all'interno della \textit{feature map}. La decisione di utilizzare average pooling anziche max pooling è stata presa a causa dell'elevata instabilità intrinseca alle GAN, per le quali max pooling è un fattore contribuente. 
 
-
+Il layer aggi
 
 <batch normalization>
 
@@ -196,7 +195,7 @@ Seconda fase della sottorete Encoder è la presenza di una Long Short-term Memor
 \begin{figure}[htbp]
     \centering
 	\input{figures/encoder.tex}
-	\caption{Struttura dell'\textit{encoder}. I}
+	\caption{Struttura dell'\textit{encoder}}
 \label{fig:encoder}
 \end{figure}
 
