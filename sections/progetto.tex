@@ -166,7 +166,7 @@ Lo step finale consiste di un dense layer con distribuzione temporale che agisce
 
 In figura \ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoencoder. Di seguito vengono illustrati in dettaglio le principali componenti che compongono l'\textit{autoencoder}. 
 
-\begin{figure}[p!]
+\begin{figure}[H]
     \centering
 	\input{figures/autoencoder.tex}
 	\caption{Struttura dell'\textit{autoencoder} in esame. L'input in ingresso dato dai domini viene codificato attraverso l'\textit{encoder} e dato in ingresso al \textit{decoder} che ne genera una approssimazione}
@@ -174,29 +174,40 @@ In figura \ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoen
 \end{figure}
 
 \subsubsection{Encoder}
-La composizione interna dell'\textit{encoder} è formata da una Rete Convoluzionale accoppiata ad una LSTM. A differenza del lavoro proposto in \cite{deepdga}, si è voluto mantenere la composizione dell'autoencoder il più semplice possibile, in quanto la trasformazione in \textit{GAN} ed il suo \textit{tuning} in fase di \textit{training} è notoriamente difficoltoso in presenza di molti parametri. 
+La composizione interna dell'\textit{encoder} è formata da una Rete Convoluzionale accoppiata ad una LSTM. A differenza del lavoro proposto in \cite{deepdga}, si è voluto mantenere la composizione dell'autoencoder il più semplice possibile, in quanto la trasformazione in \textit{GAN} ed il suo \textit{tuning} in fase di \textit{training} è notoriamente difficoltoso in presenza di molti parametri. In Figura \ref{fig:encoder} viene mostrata la struttura semplificata dell'encoder.
+
+\begin{figure}[H]
+    \centering
+	\includestandalone[width=\columnwidth]{figures/encoder}
+	\caption{Struttura dell'\textit{encoder}}
+\label{fig:encoder}
+\end{figure}
 
 Una Rete Convoluzionale è un modello di rete neurale usato generalmente per classificazione di immagini, in alternativa ai layer densamente connessi. Il vantaggio nell'uso delle reti convoluzionali è la capacità di quest'ultime di memorizzare pattern locali all'interno dello spazio di input mentre layer densamente connessi sono in grado di riconoscere solo pattern globali. Nel caso in esame si sono applicati due filtri convoluzionali in parallelo, con l'obiettivo di cogliere pattern locali all'interno dei domini, ovvero n-grammi significativi da poter replicare. Generalmente i filtri convoluzionali lavorano su di un tensore 3-dimensionale, chiamato \textit{feature map}, avente due assi spaziali ("altezza" e "larghezza") ed un asse di profondità; nel caso di riconoscimento di immagini tali assi corrispondono alle dimensioni dell'immagine di input ed al numero dei canali colore. Nel caso in esame si sono trattati di input tridimensionali ad altezza 1, larghezza equivalente alla dimensione massima dei domini nel dataset e canale di dimensione 1. L'operazione di convoluzione estrae frammenti dalla \textit{feature map} di input ed applica una trasformazione a tutti i frammenti, generando una \textit{output feature map} la quale è ancora in forma di tensore 3D, di dimensione ridotta, contenente sull'asse della profondità i valori dei \textit{filtri}. I filtri codificano determinati aspetti caratteristici dell'input, analizzando l'input in una "finestra" di dimensione fissata che scorre lungo la sequenza; ad ogni passo il filtro estrae il sotto-tensore 3-dimensionale per trasformarlo(tramite un prodotto tensore con una matrice di pesi (chiamato \textit{convolutional kernel}) in un vettore 1D di dimensione fissata. L'insieme di vettori vengono riassemblati in un tensore 3D con altezza e larghezza identiche alle precedenti e l'inseme di features come terzo asse.
 
 Parte integrante di una rete convoluzionale è il livello di \textit{pooling}, in cui le features piu importanti del livello precedente vengono ridotte in un tensore di dimensione inferiore, secondo il valor medio all'interno della \textit{feature map}. La decisione di utilizzare average pooling anziche max pooling è stata presa a causa dell'elevata instabilità intrinseca alle GAN, per le quali max pooling è un fattore contribuente. 
 
-Il layer aggi
+Il layer aggiuntivo di \textit{concatenazione} funge permete di formare un unico vettore mono-dimensionale in grado di fornire le caratteristiche principali dei domini analizzati.
 
-<batch normalization>
+Seconda fase della sottorete Encoder è la presenza di una Long Short-term Memory Network \textit{(abbr LSTM)} \cite{LSTM}. Si tratta di un modello di \textit{Recurrent Neral Network (abbr. RNN)} particolare, in grado di apprendere dipendenze a lungo termine all'interno di una sequenza temporale che nasce con l'intento di superare le principale problematiche delle RNN semplici, le quali non sono in grado di gestire dipendenze a lungo termine all'interno di una sequenza temporale. Le celle LSTM consistono di uno stato che può essere letto, scritto e resettato attraverso una serie di \textit{gates}. Siano dati $W$ e $U$ \textit{layer} di una cella LSTM corrispondenti a matrici di pesi per l'input $x$ ed emissione $h$, mentre $b$ vettore di bias. Lo stato $c$ di una cella LSTM ha connessioni periodiche che permettono ad ogni cella di mantenere stato attraverso gli step temporali:
+$$c_t = f \cdot c_{t-1} + i_t \cdot g_t$$
+dove $\cdot$ denota moltiplicazione tra elementi. Gli stati possono essere aggiornati in maniera additiva tramite
+$$g_t = tanh(W^gx_t + U^gh_{t-1}+b^g)$$
+attraverso i gate di inpu $i$, in grado di moltiplicare l'aggiornamento di stato di un numero che varia da 0 ad 1. Alla stessa maniera il \textit{forget gate} $f$ modula la connessione \textit{self-recurrent} tra ogni cella di un numero compreso tra 0 ed 1. In tal maniera è possibile ignorare l'input e mantenere lo stato, oppure sovrascrivere lo stato corrente o resettarlo a 0.
+L'output gate $o$ modula il contributo fornito dallo stato di ogni cella come
+$$h_t = o_t \cdot tanh(c_t),$$
+il quale è propagato agli input gate dei livelli successivi. In particolare i gate di input, forget e output sono definite da una funzione dell'input $x_t$  e dall'emissione del layer LSTM precedente $h_t$ all'istante $t$ come:
+\[i_t=\sigma\left(W^ix_t+U^ih_{t-1}+b^i\right)\]
+\[f_t=\sigma\left(W^fx_t+U^fh_{t-1}+b^f\right)\]
+\[o_t=\sigma\left(W^ox_t+U^oh_{t-1}+b^o\right).\]
 
-<leaky relu perchè>
-<dropout> 
+Il design delle celle LSTM con gate moltiplicativi permette ad una rete neurale di immagazzinare ed accedere allo stato attraverso lunghe sequenze, mitigando le problematiche presenti all'interno delle \textit{RNN} semplici. Nel contesto di questo progetto, lo spazio degli stati è inteso a catturare le combinazioni di tokens (n-grammi) che sono importanti per modellare nomi di dominio realistici. In figura \ref{fig:lstm} è indicata la struttura di una cella LSTM.
 
-
-Seconda fase della sottorete Encoder è la presenza di una Long Short-term Memory Network. 
-<cos'è una lstm>
-<perchè usarla>
-
-\begin{figure}[htbp]
+\begin{figure}[htb]
     \centering
-	\input{figures/encoder.tex}
-	\caption{Struttura dell'\textit{encoder}}
-\label{fig:encoder}
+	\includegraphics[width=\columnwidth]{figures/LSTM3-chain.png}
+	\caption{Struttura di una cella LSTM}
+\label{fig:lstm}
 \end{figure}
 
 \subsubsection{Decoder}

@@ -1,10 +1,12 @@
-%\usetikzlibrary{shapes,arrows,fit,calc,positioning}
-%\usetikzlibrary{backgrounds}
+\documentclass{standalone}
+\usepackage{tikz}
+
+\usetikzlibrary{shapes,arrows,fit,calc,positioning}
+\usetikzlibrary{backgrounds}
 \tikzstyle{box} = [draw, rectangle, fill=white, rounded corners, thick, node distance=5em, text width=7em, text centered, minimum height=2.5em]
 \tikzstyle{container} = [draw, rectangle, dashed, inner sep=1em, node distance=5em]
-
 \tikzstyle{line} = [draw, thick, -latex']
-
+\begin{document}
 \begin{tikzpicture}[auto]
 	\node [box] (conv) {Convolution Layer};
 %	\node [box, below of=conv] (batch) {Batch Normalization};
@@ -59,3 +61,4 @@
 	\path [line] (begin_enc) -| (conv);
 	\path [line] (begin_enc) -| (conv2);
 \end{tikzpicture}
+\end{document}
