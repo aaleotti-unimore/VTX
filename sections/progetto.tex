@@ -14,15 +14,65 @@ All'interno del classificatore \textit{Random Forest} \cite{randomforest}, ogni 
 
 \subsection{Dataset}
 \label{randomforestdataset}
-I \textit{dataset} di \textit{training} e \textit{testing} sono stati ricavati due fonti differenti: per quel che riguarda i domini reali si è fatto riferimento alla classifica dei domini più visitati al mondo fornita da \textit{Alexa Internet Inc.} \cite{amazon:alexa} , per un totale di 1 milione di siti realmente esistenti; mentre grazie al repository fornito da \cite{github:dgarepo} è stato possibile ottenere un \textit{dataset} esaustivo di esempi \textit{DGA} da diverse famiglie di \textit{malware}. In particolare le famiglie di malware utilizzate per il training sono state: \todo{famiglie malware}
+I \textit{dataset} di \textit{training} e \textit{testing} sono stati ricavati due fonti differenti: per quel che riguarda i domini reali si è fatto riferimento alla classifica dei domini più visitati al mondo fornita da \textit{Alexa Internet Inc.} \cite{amazon:alexa} , per un totale di 1 milione di siti realmente esistenti; mentre grazie al repository fornito da \cite{github:dgarepo} è stato possibile ottenere un \textit{dataset} esaustivo di esempi \textit{DGA} da diverse famiglie di \textit{malware} tra i quali ransomware come \textit{cryptolocker} e \textit{cryptowall}, trojans bancari come \textit{hesperbot}, e information stealers come \textit{ramnit}. Le tecniche DGA tradizionali variano in complessità da semplici approcci che estraggono caratteri casualmente a quelli che cercano di mimare la distribuzione di lettere o parole trovate nei domini reali. Il DGA di \textit{ramnit}, ad esempio, crea nomi di dominio usando una combinazione di moltiplicazioni, divisioni e resti a partire da un seme randomico. Agli antpodi, \textit{suppobox} crea domini concatenando due parole scelte in maniera pseudo-casuale da un piccolo dizionario Inglese.
+Di seguito vengono mostrati alcuni esempi <….>
+La maggior parte dei DGA opera a livello di singoli caratteri, mentre altre tipologie comuni come beebone hanno una struttura rigida, che produce domini come ns1.backdates13.biz e ns1.backdates0.biz.
+Il DGA symmi produce domini vagamente pronunciabili tra i quali “hakeshoubar.ddns.net” estraendo una vocale o una consonante casualmente per ogni indice pari e successivamente estraendo l’opposto all’indice successivo oltre che ad aggiungere un dominio di primo e secondo livello al termine della stringe come .ddns.net
+La distribuzione dei singoli caratteri (unigrammi) per 4 famiglie di DGA e Alexa sono mostrate di seguito. La distribuzione di cryptolocker e ramnit sono entrambe uniformi all’interno dello stesso range. Si tratta di una caratteristica attesa in quanto entrambi sono generati tramite una serie di moltiplicazioni, divisioni e resti basati su di un singolo seme. Suppobox, d’altro canto presenta caratteristiche interessanti in quanto genera unigrammi simili per distribuzione ad Alexa. 
 
-\todo{mostrare tabella esempio diversi DGA}
+\begin{table}[H]
+    \centering
+    \resizebox{0.4\textwidth}{!}{%
+    \begin{tabular}{ l|l }
+        corebot & ep16g6gjwfixyhs8gfy.ddns.net \\
+ 		& ev5texifc43nebil3pk.ddns.net \\
+ 		& gf7bm4163fmjkje.ddns.net \\
+		cryptolocker & agryjvdaabkyt.ru \\
+ 		& pwitjnqgjfaqm.org \\
+ 		& dhhubfepcdgfv.co.uk \\ 
+		dircrypt & hedhryendqlss.com \\
+ 		& lgnggnlufbtyjpnvct.com \\
+ 		& tzrbdmhoumoy.com \\
+		kraken v2 & fwulvdmdytm.com \\
+ 		& gybuisybe.cc \\
+ 		& gyinkvye.net \\
+		lockyv2 & btlwubflhfllshn.info \\
+ 		& cpgcjsysfwuwa.click \\
+ 		& jlbroeji.biz \\
+		pykspa & gqjgflhop.net \\
+ 		& gqumcwaa.org \\
+ 		& jpivjh.net \\
+		qakbot & fgfifkyfut.info \\
+ 		& flzuzsaekkipatbtet.biz \\
+ 		& owpbsjekk.com \\
+		ramdo & kugmywaaiymaegiq.org \\
+ 		& ocywskaagmmqscoc.org \\
+ 		& uomywsaaqggiwouo.org \\
+		ramnit & byqdmekgd.com \\
+ 		& dpmdbwwcmpk.com \\
+ 		& gkkcoufektvhiqr.com \\
+		simda & gatyfusyfi.com \\
+		& lyvyxoryco.com \\
+ 		& puvyxilomo.com \\
+    \end{tabular}
+    }
+\label{tab:suppobox}
+\caption{Esempi di domini generati algoritmicamente da Malware}
+\end{table}
+
 
 A partire da tale \textit{dataset} combinato si è proceduto alla creazione di un classificatore binario che fosse in grado di distinguere domini reali da domini generati algoritmicamente. 
-
 Il passo seguente  stato creare una serie di \textit{features} che fossero in grado di descrivere le caratteristiche linguistiche dei domini presi in esame.
 
-\todo{descrivere distribuzione caratteri Alexa vs dga}
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.8\columnwidth]{figures/chardistr.png}
+    \caption{Distribuzione dei singoli caratteri in \textit{cryptolocker, ramnit, dyre}, \textit{suppobox} (dictionary-based DGA) ed il primo milione di domini piu visitati secondo Alexa \cite{amazon:alexa}.
+\textit{fonte:} \cite{deepdga}}
+\label{fig:relu}
+\end{figure}
+
 
 Per raggiungere tale obiettivo si è fatto riferimento a ricerche già esistenti: \cite{180232} \cite{Yadav:2010:DAG:1879141.1879148} \cite{Yadav:2012:DAG:2428696.2428722} \cite{Schiavoni2014}. Di seguito viene illustrato l'insieme di tali \textit{features}:
 
@@ -31,13 +81,18 @@ Per raggiungere tale obiettivo si è fatto riferimento a ricerche già esistenti
 
 \begin{itemize}
 
-\item \textbf{Rapporto tra caratteri significativi}. Modella il rapporto dei caratteri della stringa $p$ che formano una parola significativa all'interno del dizionario Inglese. Un valore basso indica la presenza di algoritmi automatici. In dettaglio, si divide $p$ in $n$ sotto-parole significative $w_i$ di almeno $3$ caratteri: $|wi| \ge 3$ cercando di lasciare fuori meno caratteri possibili: $$R(d) = R(p) = \frac{max(\sum_{i=1}^n |wi|)}{\left | p \right |}$$ 
+\item \textbf{Rapporto tra caratteri significativi}. Modella il rapporto dei caratteri della stringa $p$ che formano una parola significativa all'interno del dizionario Inglese. Un valore basso indica la presenza di algoritmi automatici. In dettaglio, si divide $p$ in $n$ sotto-parole significative $w_i$ di almeno $3$ caratteri: $|wi| \ge 3$ cercando di lasciare fuori meno caratteri possibili: 
+
+\[R(d) = R(p) = \frac{max(\sum_{i=1}^n |wi|)}{\left | p \right |}\] 
+
 Se $p = \text{facebook}$, $R(p) = \frac{(|\text{face}| + |\text{book}|)}{8} = 1$ allora il dominio è composto completamente da parole significative, mentre $p = \text{pub03str}$, $R(p) = \frac{|\text{pub}|}{8} = 0.375$. 
 
     
 
-\item \textbf{Punteggio di normalità degli n-grammi}: Questa classe di \textit{features} modella la pronunciabilità di un nome di dominio rispetto la lingua Inglese. Più la combinazione di fonemi del dominio è presente  all'interno del Dizionario Inglese più tale dominio è pronunciabile. Domini con un basso numero di tali combinazioni sono probabilmente generati algoritmicamente. Il calcolo avviene estraendo lo n-gramma di $p$ di lunghezza $n \in \left \{1, 2, 3, 4, 5 \right \}$ e contando il numero di occorrenze di tale n-gramma all'interno del Dizionario Inglese. Tali \textit{features} sono quindi parametriche rispetto ad n: 
-$$S_n(d) = S_n(p) \:= \frac{\sum_{\text{n-gramma t in p}} count(t)}{\left | p \right | - n + 1}$$ 
+\item \textbf{Punteggio di normalità degli n-grammi}: Questa classe di \textit{features} modella la pronunciabilità di un nome di dominio rispetto la lingua Inglese. Più la combinazione di fonemi del dominio è presente  all'interno del Dizionario Inglese più tale dominio è pronunciabile. Domini con un basso numero di tali combinazioni sono probabilmente generati algoritmicamente. Il calcolo avviene estraendo lo n-gramma di $p$ di lunghezza $n \in \left \{1, 2, 3, 4, 5 \right \}$ e contando il numero di occorrenze di tale n-gramma all'interno del Dizionario Inglese. Tali \textit{features} sono quindi parametriche rispetto ad n:
+ 
+\[S_n(d) = S_n(p) \:= \frac{\sum_{\text{n-gramma t in p}} count(t)}{\left | p \right | - n + 1}\] 
+
 dove $count(t)$ sono le occorrenze dello n-gramma nel dizionario. Ad esempio $S_2(facebook) = fa_{109} + ac_{343} + ce_{438} + eb_{29} + bo_{118} + oo_{114} + ok_{45} = 170.8$
 
        
@@ -59,11 +114,31 @@ L'obiettivo di tale classificatore è quello di riuscire a separare in maniera e
 \todo{ampliare questa sezione e chiedere a Marchetti}
 \todo{indicare il capitolo coi risultati di Random Forest} 
 
-Durante la fase di sperimentazione il classificatore si è rivelato efficace rispetto la maggior parte delle famiglie di \textit{DGA}. Il caso particolare della famiglia \textit{suppobox} \cite{geffner2013end} ha messo in particolare difficoltà il classificatore in quanto tale algoritmo genera domini in maniera pseudo-casuale, concatenando due parole a partire da un \textit{subset} del dizionario inglese di 384 parole. Tale caratteristica fa si che le \textit{features} linguistiche estratte da questa famiglia di \textit{malware} siano molto simili a quelle presenti nei domini reali.
+Durante la fase di sperimentazione il classificatore si è rivelato efficace rispetto la maggior parte delle famiglie di \textit{DGA}. Il caso particolare della famiglia \textit{suppobox} \cite{geffner2013end} ha messo in particolare difficoltà il classificatore in quanto tale algoritmo genera domini in maniera pseudo-casuale, concatenando due parole a partire da un \textit{subset} del dizionario inglese di 384 parole. Tale caratteristica fa si che le \textit{features} linguistiche estratte da questa famiglia di \textit{malware} siano molto simili a quelle presenti nei domini reali. In tabella \ref{tab:suppobox} sono mostrati alcuni esempi di domini generati da Suppobox.
 
-\todo{mostrare esempio suppobox}
 
-\todo{???????????????????}
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{|l|}
+        \hline
+        Suppobox
+        \\
+        \hline
+        \hline
+       	increaseinside.net \\
+		wouldinstead.net \\
+		rememberinstead.net \\
+		wouldexplain.net \\
+		rememberexplain.net \\
+		wouldbright.net \\
+		rememberbright.net \\
+		wouldinside.net \\
+		rememberinside.net \\
+        \hline
+    \end{tabular}
+    \caption{Esempio di domini generati da Suppobox.}
+\label{tab:suppobox}
+\end{table}
 
 A partire da questo risultato si scelto di procedere con la progettazione di un classificatore neurale in grado di superare tale problematica.
 
@@ -80,24 +155,41 @@ A partire dal \textit{dataset} creato per il precedente caso, si è deciso di co
 
 Assieme ai dati codificati è stato generato un vettore di \textit{target} nel quale viene indicato da 0 o da 1 se il dominio in esame è di tipo reale o generato algoritmicamente. L'obiettivo quindi è di attuare un classificatore binario in grado di prevedere correttamente a quale categoria appartiene un dominio esaminato 
 
-\subsection{Architettura}
+\subsection{Architettura Classificatore Neurale}
 \label{classificatorenninterno}
 L'architettura scelta in prima fase è stata quella del \textit{Multilayer Perceptron} \textit{(abbr. MLP)}, una tipologia di rete neurale \textit{feedforward} tipicamente formata da almeno tre livelli di nodi. Ad esclusione del livello di \textit{input} i livelli del MLP utilizzano  funzioni di attivazione non lineari che permettono di eseguire distinzioni tra dati non linearmente separabili. Considerando una rete formata da $m$ neuroni,  se si considera $d$ come numero di input, si avrà il seguente output
-$$y_j=y\left( \sum_{i=0}^d w_{ji}x_i \right)$$
+
+\[y_j=y\left( \sum_{i=0}^d w_{ji}x_i \right)\]
+
 
 nel quale $x_i$ sono gli input e $w_{ji}$ sono i pesi di ogni input combinati con ogni output. 
 
-\todo{aggiungere ed estendere la teoria MLP nel capitolo precedente?}
+\todo{aggiungere ed estendere la teoria MLP}
 
-Nel caso in esame è stata utilizzata per i livelli interni la funzione di attivazione \textit{Rectifier Linear Unit} (ReLU) \cite{relu} definita dalla funzione 
-$$f(x) = x^+ = max(0,x)$$
-\todo{inserire grafo ReLU}
+Nel caso in esame è stata utilizzata per i livelli interni la funzione di attivazione \textit{Rectifier Linear Unit} (ReLU) \cite{relu} definita dalla funzione sottostante e mostrato in figura \ref{fig:relu}
+
+\[f(x) = x^+ = max(0,x)\]
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.5\columnwidth]{figures/relu.png}
+    \caption{\textit{fonte:} \cite{relufig}}
+\label{fig:relu}
+\end{figure}
+
 dove $x$ rappresenta l'\textit{input} del neurone. 
 I vantaggi di tale funzione sono una migliorata \textit{performance} rispetto ad altre funzioni similari come \textit{tanh} e \textit{sigmoid} per quel che riguarda la convergenza della discesa stocastica del gradiente. 
 
 Per quel che riguarda la funzione di attivazione del livello di \textit{output} si è scelta la funzione \textit{sigmoidea}, definita dalla formula 
-$$P(t) = \frac{1}{1+e^{-t}}$$
-\todo{inserire grafo sigmoid}
+
+\[P(t) = \frac{1}{1+e^{-t}}\]
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.5\columnwidth]{figures/sigmoid.png}
+    \caption{\textit{fonte:} \cite{fig:sigmoid}}
+\label{fig:sigmoid}
+\end{figure}
 
 La struttura finale del \textit{MLP} in esame è stata raggiunta dopo una serie di test sperimentali in cui si sono messi a confronto tre modelli differenti di per numero di neuroni all'interno degli \textit{hidden layer}: 
 \begin{itemize}
@@ -113,7 +205,7 @@ I tre modelli messi a confronto hanno mostrato risultati simili, tuttavia  il mo
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=.4\columnwidth]{figures/pieraz_baseline.png}
+    \includegraphics[width=.6\columnwidth]{figures/pieraz_baseline.png}
     \caption{Grafico del modello intermedio. Escluso il layer di input iniziale, si notino gli \textit{hidden layer} dense2 e dense3 di dimensioni rispettivamente 128 e 64 }
 \label{fig:pieraz}
 \end{figure}
@@ -166,7 +258,7 @@ Lo step finale consiste di un dense layer con distribuzione temporale che agisce
 
 In figura \ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoencoder. Di seguito vengono illustrati in dettaglio le principali componenti che compongono l'\textit{autoencoder}. 
 
-\begin{figure}[H]
+\begin{figure}[p]
     \centering
 	\input{figures/autoencoder.tex}
 	\caption{Struttura dell'\textit{autoencoder} in esame. L'input in ingresso dato dai domini viene codificato attraverso l'\textit{encoder} e dato in ingresso al \textit{decoder} che ne genera una approssimazione}
@@ -176,9 +268,9 @@ In figura \ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoen
 \subsubsection{Encoder}
 La composizione interna dell'\textit{encoder} è formata da una Rete Convoluzionale accoppiata ad una LSTM. A differenza del lavoro proposto in \cite{deepdga}, si è voluto mantenere la composizione dell'autoencoder il più semplice possibile, in quanto la trasformazione in \textit{GAN} ed il suo \textit{tuning} in fase di \textit{training} è notoriamente difficoltoso in presenza di molti parametri. In Figura \ref{fig:encoder} viene mostrata la struttura semplificata dell'encoder.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
-	\includestandalone[width=\columnwidth]{figures/encoder}
+	\input{figures/encoder.tex}
 	\caption{Struttura dell'\textit{encoder}}
 \label{fig:encoder}
 \end{figure}
@@ -190,25 +282,35 @@ Parte integrante di una rete convoluzionale è il livello di \textit{pooling}, i
 Il layer aggiuntivo di \textit{concatenazione} funge permete di formare un unico vettore mono-dimensionale in grado di fornire le caratteristiche principali dei domini analizzati.
 
 Seconda fase della sottorete Encoder è la presenza di una Long Short-term Memory Network \textit{(abbr LSTM)} \cite{LSTM}. Si tratta di un modello di \textit{Recurrent Neral Network (abbr. RNN)} particolare, in grado di apprendere dipendenze a lungo termine all'interno di una sequenza temporale che nasce con l'intento di superare le principale problematiche delle RNN semplici, le quali non sono in grado di gestire dipendenze a lungo termine all'interno di una sequenza temporale. Le celle LSTM consistono di uno stato che può essere letto, scritto e resettato attraverso una serie di \textit{gates}. Siano dati $W$ e $U$ \textit{layer} di una cella LSTM corrispondenti a matrici di pesi per l'input $x$ ed emissione $h$, mentre $b$ vettore di bias. Lo stato $c$ di una cella LSTM ha connessioni periodiche che permettono ad ogni cella di mantenere stato attraverso gli step temporali:
-$$c_t = f \cdot c_{t-1} + i_t \cdot g_t$$
+
+\[c_t = f \cdot c_{t-1} + i_t \cdot g_t\]
+
 dove $\cdot$ denota moltiplicazione tra elementi. Gli stati possono essere aggiornati in maniera additiva tramite
-$$g_t = tanh(W^gx_t + U^gh_{t-1}+b^g)$$
+
+\[g_t = tanh(W^gx_t + U^gh_{t-1}+b^g)\]
+
+
 attraverso i gate di inpu $i$, in grado di moltiplicare l'aggiornamento di stato di un numero che varia da 0 ad 1. Alla stessa maniera il \textit{forget gate} $f$ modula la connessione \textit{self-recurrent} tra ogni cella di un numero compreso tra 0 ed 1. In tal maniera è possibile ignorare l'input e mantenere lo stato, oppure sovrascrivere lo stato corrente o resettarlo a 0.
 L'output gate $o$ modula il contributo fornito dallo stato di ogni cella come
-$$h_t = o_t \cdot tanh(c_t),$$
+
+\[h_t = o_t \cdot tanh(c_t),\]
+
 il quale è propagato agli input gate dei livelli successivi. In particolare i gate di input, forget e output sono definite da una funzione dell'input $x_t$  e dall'emissione del layer LSTM precedente $h_t$ all'istante $t$ come:
+
 \[i_t=\sigma\left(W^ix_t+U^ih_{t-1}+b^i\right)\]
 \[f_t=\sigma\left(W^fx_t+U^fh_{t-1}+b^f\right)\]
 \[o_t=\sigma\left(W^ox_t+U^oh_{t-1}+b^o\right).\]
 
+
 Il design delle celle LSTM con gate moltiplicativi permette ad una rete neurale di immagazzinare ed accedere allo stato attraverso lunghe sequenze, mitigando le problematiche presenti all'interno delle \textit{RNN} semplici. Nel contesto di questo progetto, lo spazio degli stati è inteso a catturare le combinazioni di tokens (n-grammi) che sono importanti per modellare nomi di dominio realistici. In figura \ref{fig:lstm} è indicata la struttura di una cella LSTM.
 
-\begin{figure}[htb]
+\begin{figure}[Htb]
     \centering
 	\includegraphics[width=\columnwidth]{figures/LSTM3-chain.png}
-	\caption{Struttura di una cella LSTM}
+	\caption{Struttura di una cella LSTM. \textit{fonte:} \cite{lstmblog} }
 \label{fig:lstm}
 \end{figure}
+
 
 \subsubsection{Decoder}
 descrizione
