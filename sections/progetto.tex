@@ -304,24 +304,34 @@ il quale è propagato agli input gate dei livelli successivi. In particolare i g
 
 Il design delle celle LSTM con gate moltiplicativi permette ad una rete neurale di immagazzinare ed accedere allo stato attraverso lunghe sequenze, mitigando le problematiche presenti all'interno delle \textit{RNN} semplici. Nel contesto di questo progetto, lo spazio degli stati è inteso a catturare le combinazioni di tokens (n-grammi) che sono importanti per modellare nomi di dominio realistici. In figura \ref{fig:lstm} è indicata la struttura di una cella LSTM.
 
-\begin{figure}[Htb]
+\begin{figure}[htb]
     \centering
 	\includegraphics[width=\columnwidth]{figures/LSTM3-chain.png}
 	\caption{Struttura di una cella LSTM. \textit{fonte:} \cite{lstmblog} }
 \label{fig:lstm}
 \end{figure}
 
+L'output in uscita da questo encoder è in forma di un tensore monodimensionale, di dimensione fissata, contenente le caratteristiche principali che compongono un nome di dominio.
 
 \subsubsection{Decoder}
-descrizione
+La struttura del decoder è lascamente una copia speculare dell'encoder. L'obiettivo principale è riuscire a ricampionare un dominio partendo da un tensore a domensione inferiore rispetto alla codifica fornita in input all'encoder.
 
-repeat layer why
-LSTM
+La struttura di massima presenta come primo layer un \textit{repeat vector} che ripete il tensore di input per un numero di volte pari alla lunghezza massima di dominio, fissata in fase di codifica del dataset, formando così un tensore 3-dimensionale, dello stessa dimensione dei domini provenienti dal dataset. La sequenza così formata viene data in input ad un layer LSTM avente le identiche caratteristiche del layer LSTM presente all'interno dell'encoder. Successivamente la sequenza di emissioni in output dalla LSTM viene fornita ad due reti convoluzionali parallele identiche al quelle inserite all'interno dell'encoder. il risultato di tale operazione è un vettore di dimensione pari a dizionario di caratteri ammissibili per i domini, per ogni step della sequenza di caratteri che compone un dominio. 
 
-Convnet why
+Lo step finale del decoder è un livello \textit{dense} di tipo \textit{time-distributed} che agisce come \textit{regressore multinomiale}, in grado di eseguire classificazione in diverse classi (in questo caso una classe per ogni carattere possibile nel dizionario). Il regressore multinomiale utilizza un tipo di attivazione \textit{softmax}, definito dalla funzione:
 
-multinomial regrassion + table
+\[\sigma(\mathbf{z})_j = \frac{e^{z_j}}{\sum_{k=1}^K e^{z_k}}\qquad  \text{per}\; j=1,\ldots,K. \] 
 
+dove $k$ è la dimensione del vettore di input $\mathbf{z}$ mentre in uscita si ottiene un vettore $k$-dimensionale $\sigma(\mathbf{z})$ di valori compresi in un intervallo $\left(0,1\right)$. Grazie a tale attivazione sull'ultimo layer, l'output del decoder rappresenta una distribuzione multinomiale rispetto ai caratteri di ammissibili, per ogni step temporale che compone. 
+Tale distribuzione può essere campionata in modo da ottenere di nuovo un vettore numerico di interi contenente i caratteri codificati all'interno del vocabolario di caratteri ammissibili per i domini. 
+
+Per il campionamento è stato usata una funzione \textit{softmax} utilizzata nel campo dell'apprendimento per rinforzo \cite{reinflearning}, definita come: 
+
+\[P_t(a) = \frac{\exp(q_t(a)/\tau)}{\sum_{i=1}^n\exp(q_t(i)/\tau)} \text{,}\]
+
+Dove il valore di\textit{ "azione"} $q_{t}(a)$ corrisponde alla "ricompensa" ottenuta per l'azione $a$ e $\tau$  è definito come parametro di \textit{"temperatura"}. Per alte \textit{"temperature"} ( $\tau \to \infty$ ), tutte le azioni hanno la stessa probabilità e più bassa la temperatura, più la "ricompensa" influisce sulla probabilità. Per basse tempeature ($\tau \to 0^{+}$), la probabilità di \textit{azione} con la ricompensa più alta tende ad 1. 
+
+Tramite questa funzione è stato possibile metterea a punto in fase sperimentale il campionamento dei domini dalla lo rappresentazione in forma di tensore alla rappresentazione testuale.
 
 
 \section{Generative Adversarial Network}
