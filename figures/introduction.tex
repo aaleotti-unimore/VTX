@@ -11,7 +11,7 @@
 %\begin{document}
 \begin{tikzpicture}[auto, node distance=10em]
 	\node [input](input){};
-	\node [box, right of=input](clas){Classificatore};
+	\node [box, right of=input](clas){Classificatore Neurale};
 	\node [box, below of=clas](gan){Generative Adversarial Network};
 	\node [container, fit=(gan)](adv){};
 	\node at (adv.south) [below,node distance=0 and 0] {Adversarial Learning};	
@@ -20,7 +20,7 @@
 	
 	\path [line] (input) -- node[near start](dataset){Dataset} (clas);
 	\path [line] (dataset) |- (gan);
-	\path [line] (gan) -- node[right]{Rinforzo} (clas);
-	\path [line] (clas) -- (output)node[near end,name=out]{Decisione};
+	\path [line] (gan) -- node[right]{Adversarial Examples} (clas);
+	\path [line] (clas) -- (output)node[near end,name=out]{Previsione};
 \end{tikzpicture}
 %\end{document}

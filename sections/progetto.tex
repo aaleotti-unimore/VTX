@@ -1,18 +1,20 @@
 \chapter{Progetto}
 \label{progetto}
 
-In questo capitolo si propone il progetto realizzato per raggiungere gli obiettivi preposti: la realizzazione di un classificatore basato su \textit{Random Forest} per poi passare ad una versione più elaborata, utilizzando un \textit{Multilayer Perceptron}. Il passo successivo ha riguardato la creazione di una \textit{Generative Adversarial Network} a partire da un \textit{Autoencoder} in grado di rafforzare la performance del classificatore.
+In questo capitolo si propone il progetto realizzato per raggiungere gli obiettivi preposti: la realizzazione di un classificatore basato sull'algoritmo di machine learning \textit{Random Forest} in grado di distinguere domini generati algoritmicamente da domini reali. Si è successivamente progettato un classificatore più raffinato basato su rete neurale che superasse le precedenti mancanze. Il passo successivo ha riguardato la creazione di una \textit{Generative Adversarial Network} basata sul progetto di un \textit{Autoencoder} in grado di generare domini sintetici realistici col fine di rafforzare il classificatore neurale.
 
 \begin{figure}[htb]
     \centering
 	\input{figures/introduction.tex}
 \label{fig:intro}
+\caption{Diagramma di progetto}
 \end{figure}
 
+\todo{schema da autoencoder a GAN}
 
 \section{Classificatore Random Forest}
 \label{randomforest}
-La prima fase di questo studio è stata quella di implementare un classificatore in grado di separare efficacemente domini \textit{DGA} da domini non malevoli basandosi unicamente sulle caratteristiche linguistiche dei domini: infatti, ad un esame preliminare, i domini \textit{DGA} presentano caratteristiche ben differenti da semplici frasi o parole che solitamente compongono i domini reali.
+La prima fase di questo studio è stata quella di implementare un classificatore in grado di separare efficacemente domini \textit{DGA} da domini reali basandosi unicamente sulle caratteristiche linguistiche dei domini: infatti, ad un esame preliminare, i domini \textit{DGA} presentano caratteristiche ben differenti da semplici frasi o parole che solitamente compongono i domini reali.
 
 Si è scelto di utilizzare Random Forest in quanto ritenuto il più adatto al caso in esame. L'algoritmo è stato inoltre messo a confronto con \textit{Support Vector Machine} e \textit{Naive-Bayes}. \todo{indicare SVM e GNB solo nei risultati?}
 
@@ -74,7 +76,7 @@ Il passo seguente  stato creare una serie di \textit{features} che fossero in gr
 \begin{figure}[htb]
     \centering
     \includegraphics[width=0.8\columnwidth]{figures/chardistr.png}
-    \caption{Distribuzione dei singoli caratteri in \textit{cryptolocker, ramnit, dyre}, \textit{suppobox} (dictionary-based DGA) ed il primo milione di domini piu visitati secondo Alexa \cite{amazon:alexa}.
+    \caption{Distribuzione dei singoli caratteri in \textit{cryptolocker, ramnit, dyre}, \textit{suppobox} (dictionary-based DGA) ed il primo milione di domini più visitati secondo Alexa \cite{amazon:alexa}.
 \textit{fonte:} \cite{deepdga}}
 \label{fig:relu}
 \end{figure}
@@ -283,7 +285,7 @@ La composizione interna dell'\textit{encoder} è formata da una Rete Convoluzion
 Una Rete Convoluzionale è un modello di rete neurale usato generalmente per classificazione di immagini, in alternativa ai layer densamente connessi. Il vantaggio nell'uso delle reti convoluzionali è la capacità di quest'ultime di memorizzare pattern locali all'interno dello spazio di input mentre layer densamente connessi sono in grado di riconoscere solo pattern globali. Nel caso in esame si sono applicati due filtri convoluzionali in parallelo, con l'obiettivo di cogliere pattern locali all'interno dei domini, ovvero n-grammi significativi da poter replicare. Generalmente i filtri convoluzionali lavorano su di un tensore 3-dimensionale, chiamato \textit{feature map}, avente due assi spaziali ("altezza" e "larghezza") ed un asse di profondità; nel caso di riconoscimento di immagini tali assi corrispondono alle dimensioni dell'immagine di input ed al numero dei canali colore. Nel caso in esame si sono trattati di input tridimensionali ad altezza 1, larghezza equivalente alla dimensione massima dei domini nel dataset e canale di dimensione 1. L'operazione di convoluzione estrae frammenti dalla \textit{feature map} di input ed applica una trasformazione a tutti i frammenti, generando una \textit{output feature map} la quale è ancora in forma di tensore 3D, di dimensione ridotta, contenente sull'asse della profondità i valori dei \textit{filtri}. I filtri codificano determinati aspetti caratteristici dell'input, analizzando l'input in una "finestra" di dimensione fissata che scorre lungo la sequenza; ad ogni passo il filtro estrae il sotto-tensore 3-dimensionale per trasformarlo(tramite un prodotto tensore con una matrice di pesi (chiamato \textit{convolutional kernel}) in un vettore 1D di dimensione fissata. L'insieme di vettori vengono riassemblati in un tensore 3D con altezza e larghezza identiche alle precedenti e l'inseme di features come terzo asse.
 
 \subsection{Pooling}
-Parte integrante di una rete convoluzionale è il livello di \textit{pooling}, in cui le features piu importanti del livello precedente vengono ridotte in un tensore di dimensione inferiore, secondo il valor medio all'interno della \textit{feature map}. La decisione di utilizzare average pooling anziche max pooling è stata presa a causa dell'elevata instabilità intrinseca alle GAN, per le quali max pooling è un fattore contribuente. 
+Parte integrante di una rete convoluzionale è il livello di \textit{pooling}, in cui le features più importanti del livello precedente vengono ridotte in un tensore di dimensione inferiore, secondo il valor medio all'interno della \textit{feature map}. La decisione di utilizzare average pooling anziche max pooling è stata presa a causa dell'elevata instabilità intrinseca alle GAN, per le quali max pooling è un fattore contribuente. 
 
 \subsection{Concatenazione}
 Il layer aggiuntivo di \textit{concatenazione} funge permete di formare un unico vettore mono-dimensionale in grado di fornire le caratteristiche principali dei domini analizzati.
@@ -352,11 +354,20 @@ Tramite questa funzione è stato possibile mettere a a punto in fase sperimental
 
 \section{Generative Adversarial Network}
 \label{ganintro}
-Il seguente step di lavoro è stato trasformare l'autoencoder definito a partire dalla sezione \ref{autoencoder} in una \textit{Generative Adversarial Network (abbr. GAN)}. L'obiettivo è quello di riuscire ad ottenere un modello di rete neurale in grado di generare in maniera sufficientemente efficace dei domini sintetici che siano in grado di mettere in difficoltà un classificatore binario, messo a confronto con i domini realmente esistenti del dataset Alexa \cite{amazon:alexa}.
+La \textit{Generative Adversarial Network (abbr. GAN)} èun modello di rete neurale formata da due reti che competono l'una contro l'altra: un \textit{generatore} che cerca di creare dati sintetici basati sulla vera distribuzione, con l'aggiunta di rumore in input ed un \textit{discriminatore}, che riceve un campione e deve predire se appartiene al set reale o sintetico. Questo processo continua in forma di competizione tra le due reti, nella quale il discriminatore apprende in maniera sempre più accurata a distinguere i campioni ed il generatore apprende la costruzione di dati sintetici sempre più realistici. In figura \ref{fig:gan} si può vedere una struttura di massima di una GAN.
 
-Le \textit{GAN} sono state introdotte da \cite{gan} 
+Il seguente step di lavoro è stato trasformare l'autoencoder definito a partire dalla sezione \ref{autoencoder} in una GAN.
+\begin{figure}[!htb]
+    \centering
+	\includegraphics[width=0.9\columnwidth]{figures/gan.tex}
+	\caption{Struttura di una \textit{Generative Adversarial Network}}
+\label{fig:gan}
+\end{figure}
+
 
 \subsection{Architettura GAN}
 \label{ganarch}
+
+\todo{schema GAN preso da autoencoder}
 
 \todo{parlare della semplificazione della GAN rispetto al paper deepDGA}
