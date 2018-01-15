@@ -332,7 +332,7 @@ La struttura di massima presenta come primo layer un \textit{repeat vector} che 
 \begin{figure}[!htb]
     \centering
 	\input{figures/decoder.tex}
-	\caption{Struttura dell'\textit{decoder}}
+	\caption{Struttura del \textit{decoder}}
 \label{fig:decoder}
 \end{figure}
 
@@ -356,18 +356,46 @@ Tramite questa funzione è stato possibile mettere a a punto in fase sperimental
 \label{ganintro}
 La \textit{Generative Adversarial Network (abbr. GAN)} èun modello di rete neurale formata da due reti che competono l'una contro l'altra: un \textit{generatore} che cerca di creare dati sintetici basati sulla vera distribuzione, con l'aggiunta di rumore in input ed un \textit{discriminatore}, che riceve un campione e deve predire se appartiene al set reale o sintetico. Questo processo continua in forma di competizione tra le due reti, nella quale il discriminatore apprende in maniera sempre più accurata a distinguere i campioni ed il generatore apprende la costruzione di dati sintetici sempre più realistici. In figura \ref{fig:gan} si può vedere una struttura di massima di una GAN.
 
-Il seguente step di lavoro è stato trasformare l'autoencoder definito a partire dalla sezione \ref{autoencoder} in una GAN.
 \begin{figure}[!htb]
     \centering
-	\includegraphics[width=0.9\columnwidth]{figures/gan.tex}
+	\includegraphics[width=\columnwidth]{figures/gan.tex}
 	\caption{Struttura di una \textit{Generative Adversarial Network}}
 \label{fig:gan}
 \end{figure}
 
+La struttura dell'autoencoder descritto a partire dalla sezione \ref{autoencoder} permette di produrre adeguatamente nomi di dominio che assomigliano a domini reali, ma in realtà sono generati pseudo-casualmente campionando le distribuzioni multinomiali in output all'autoencoder. Tuttavia l'uso di un autoencoder richiede la presenza di un ampio dataset di domini come input. Attraverso poche modifiche è stato possibile trasformare l'autoencoder in una \textit{GAN} che accetta in input un seme randomico ed emette nomi di dominio che appaiono simili ai domini reali.
 
 \subsection{Architettura GAN}
 \label{ganarch}
+Come mostrato in figura \ref{fig:archgan}, la struttura della GAN in esame è composta fondamentalmente dalle componenti dell'autoencoder, estese in modo da trasformare l'encoder in un discriminatore che possa classificare domini sintetici da domini reali, ed il decoder in un generatore che a partire da uno spazio latente possa generare domini codificati.
 
-\todo{schema GAN preso da autoencoder}
+\begin{figure}[!htb]
+    \centering
+	\includegraphics[width=\columnwidth]{figures/ganarch.tex}
+	\caption{Struttura della GAN evoluta dell'autoencoder}
+\label{fig:archgan}
+\end{figure}
 
-\todo{parlare della semplificazione della GAN rispetto al paper deepDGA}
+Il generatore aggiunge in testa alla stuttura del decoder un layer denso che mappa un input randomico in una codifica di dominio, come mostrato in figura \ref{fig:generator}
+
+\begin{figure}[htb]
+    \centering
+	\includegraphics[width=0.7\columnwidth]{figures/generator.tex}
+	\caption{Struttura del generatore}
+\label{fig:generator}
+\end{figure}
+
+Il discriminatore implementa in uscita un layer denso che esegua regressione logistica sui domini codificati dalla sottorete encoder. \ref{fig:discriminator}
+
+
+\begin{figure}[htb]
+    \centering
+	\includegraphics[width=0.7\columnwidth]{figures/discriminator.tex}
+	\caption{Struttura del discriminatore}
+\label{fig:discriminator}
+\end{figure}
+
+
+Rispetto al lavoro presentato in \cite{deepdga}, si è deciso di implementare una architettura più semplificata. Come mostrato in \cite{1606.03498} le GAN sono tipicamente difficoltose da allenare, in quanto l'uso di funzioni di costo porta ad un difficile \textit{tuning} per ottenere un equilibrio di Nash tra le due parti in gioco.
+
+\todo{trattare input e output}

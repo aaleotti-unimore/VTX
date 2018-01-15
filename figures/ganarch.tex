@@ -10,19 +10,24 @@
 \tikzstyle{line} = [draw, thick, -latex']
 %\begin{document}
 
-\begin{tikzpicture}[auto, node distance=7em]
+\begin{tikzpicture}[auto, node distance=6em]
+	%encoder
     \node [box] (cnn) {Convolutional Filters};
     \node [input,above of=cnn](input){};
-    \node at (input.north) [above,node distance=0 and 0] {Dominio};
     \node [box, below of=cnn] (conc) {Concatenation Layer};
     \begin{scope}[on background layer]
    		 \node [box,above left=-17mm and -42mm of cnn ] (note1){ };
    	\end{scope}
     \node [box, below of=conc] (LSTM) {LSTM};
-	\coordinate[below of=LSTM,node distance=7em](end_enc);
+    \node [box, below of=LSTM, fill=gray!50](regr){Logistic Regression};
+    \node [output, below of=regr](pred){};
+    \node at (pred.south) [below, node distance=0](pred){Prediction};
     
-    \node [box, right of=LSTM, node distance=17em] (rep) {Repeat Layer};
-   	\coordinate[below of=rep, node distance=7em](begin_dec);    
+	% decoder
+	\node [box, right of=regr, node distance=20em, fill=gray!50](genrlayer){Generator Layer};
+	\node [input, below of=genrlayer](seed){};
+	\node at (seed.south) [below, node distance=0](inp){Pseudo-random Seed};
+	\node [box, above of=genrlayer] (rep) {Repeat Layer};
     \node [box, above of=rep] (LSTM2) {LSTM};
     \node [box, above of=LSTM2] (cnn2) {Convolutional Filters};
     \begin{scope}[on background layer]
@@ -30,40 +35,34 @@
    	\end{scope}
 	\node [box, above of=cnn2] (conc2) {Concatenation Layer};
 	\node [box, above of=conc2] (dense) {Multinomial Regression};
-	\coordinate[above of=dense, node distance=7em](end_dec);
-    \node at (end_dec.north) [above,node distance=0 and 0] {Dominio};
 
-    %\coordinate (middle) at ($(resources.east)!0.5!(sensors.east)$);
-    %\node [box, left of=middle, node distance=10em] (archive) {Archive};
-    %\node [box, left of=archive, node distance=10em] (reporting) {Reporting};
+	% containers 
     \node[container, fit=(cnn) (LSTM)] (encoder) {};
     \node[container, fit=(dense) (rep)] (decoder) {};
     \node at (encoder.north west) [above right,node distance=0 and 0] {Encoder};
   	\node at (decoder.north west) [above right,node distance=0 and 0] {Decoder};
-
-    %\node[container, fit=(archive) (reporting)] (his) {};
-    %\node at (his.north west) [above right,node distance=0 and 0] {HIS};
-	\path [line] (input) -- (cnn);
+	\node[container, fit=(encoder)(regr)](disc){};
+	\node[container, fit=(decoder)(genrlayer)](gencont){};
+	\node at (disc.north west) [above right,node distance=0 and 0] {Discriminator};
+	\node at (gencont.north west) [above right,node distance=0 and 0] {Generator};
+	
+	\node[input, above of=dense, node distance=10em](outgen){};
+		
+	
+   	%paths
     \path [line] (cnn) -- (conc);
     \path [line] (conc) -- (LSTM);
+    \path [line] (LSTM) -- (regr);
+	\path [line] (regr) -- (pred);    
     
+    \path [line] (seed) -- (genrlayer);
+    \path [line] (genrlayer) -- (rep);
     \path [line] (rep) -- (LSTM2);
 	\path [line] (LSTM2) -- (cnn2);
 	\path [line] (cnn2) -- (conc2);
 	\path [line] (conc2) -- (dense);
-	\path [line] (dense) -- (end_dec);
-    
-        
-    \draw (LSTM) -- (end_enc);
-    \path (end_enc) -- (begin_dec) node[midway] {Dominio Codificato};
-    \draw (end_enc) -- (begin_dec);
-    \draw [line] (begin_dec) -- (rep);
-
-    %\path [line] (archive) |- (planning);
-    %\path [line] (archive) |- (processing);
-    %\path [line] (processing) -| (reporting);
-
-    %\draw [line] (processing.east) -- ++(2,0) node(lowerright){} |- (planning.east);
-    %\draw [line] (lowerright |- or.east) -- (or.east -| resources.south east);
+	
+	\path [line] (dense) -- (outgen) -| node[above, near start]{Dominio Codificato} (cnn);
+	
 \end{tikzpicture}
 %\end{document}
