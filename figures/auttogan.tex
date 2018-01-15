@@ -1,0 +1,40 @@
+%\documentclass{standalone}
+%\usepackage{tikz}
+%
+%\usetikzlibrary{shapes,arrows,fit,calc,positioning,snakes}
+\tikzstyle{input} = [coordinate]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{box} = [draw, rectangle, fill=white, rounded corners, thick, text width=7em, text centered, minimum height=5em, node distance=3cm]
+\tikzstyle{romb} = [draw, diamond, fill=white, thick, text width=5em, text centered, minimum height=5em]
+\tikzstyle{container} = [draw, rectangle, dashed, inner sep=1em, node distance=5em]
+\tikzstyle{line} = [draw, thick, -latex']
+%\begin{document}
+\begin{tikzpicture}[auto, node distance=1.5cm]
+	\node [box](E){Encoder};
+	\node [box, right of=E](D){Decoder};
+	\node [input, below of=E](az){};
+	\node [input, above of=E](in){};
+	\node [output, above of=D](out){};
+	\node [container, fit=(E)(in)(out)(az)(D), label={[anchor=south]north:Autoencoder}](aut){};
+	
+	\draw [thick] (E) -- (az);
+	\path [line] (az) -| (D);
+	\draw [line] (in) -- (E);
+	\draw [line] (D) -- (out);
+	
+	\node [box, right of=D, node distance=5cm](E2){Encoder};
+	\node [box, right of=E2](D2){Decoder};
+	\node [input, below of=E2](az2){};
+	\node [input, above of=E2](in2){};
+	\node [output, above of=D2](out2){};
+	\node [container, fit=(E2)(in2)(out2)(az2)(D2), label={[anchor=south]north:GAN}](aut2){};
+	\node [input, below of=D2](az3){};	
+	
+	\path [line] (E2) -- (az2);
+	\draw [line] (in2) -- (E2);
+	\draw [thick] (D2) -- (out2);
+	\path [line] (az3) -- (D2);
+	\path [line] (out2) -| (E2);
+	\draw [snake=snake,very thick, -latex', segment length=4mm, line after snake=2mm] (aut) -> (aut2);
+\end{tikzpicture}
+%\end{document}
