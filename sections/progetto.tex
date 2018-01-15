@@ -266,12 +266,13 @@ In figura \ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoen
 
 \begin{figure}[!p]
     \centering
-	\input{figures/autoencoder.tex}
+	\includegraphics[width=\columnwidth]{figures/autoencoder.tex}
 	\caption{Struttura dell'\textit{autoencoder} in esame. L'input in ingresso dato dai domini viene codificato attraverso l'\textit{encoder} e dato in ingresso al \textit{decoder} che ne genera una approssimazione}
 \label{fig:autoencoder1}
 \end{figure}
 
 \section{Encoder}
+\label{encoder}
 La composizione interna dell'\textit{encoder} è formata da una Rete Convoluzionale accoppiata ad una LSTM. A differenza del lavoro proposto in \cite{deepdga}, si è voluto mantenere la composizione dell'autoencoder il più semplice possibile, in quanto la trasformazione in \textit{GAN} ed il suo \textit{tuning} in fase di \textit{training} è notoriamente difficoltoso in presenza di molti parametri. In Figura \ref{fig:encoder} viene mostrata la struttura semplificata dell'encoder.
 
 \begin{figure}[!htb]
@@ -282,7 +283,15 @@ La composizione interna dell'\textit{encoder} è formata da una Rete Convoluzion
 \end{figure}
 
 \subsection{Rete Convoluzionale}
-Una Rete Convoluzionale è un modello di rete neurale usato generalmente per classificazione di immagini, in alternativa ai layer densamente connessi. Il vantaggio nell'uso delle reti convoluzionali è la capacità di quest'ultime di memorizzare pattern locali all'interno dello spazio di input mentre layer densamente connessi sono in grado di riconoscere solo pattern globali. Nel caso in esame si sono applicati due filtri convoluzionali in parallelo, con l'obiettivo di cogliere pattern locali all'interno dei domini, ovvero n-grammi significativi da poter replicare. Generalmente i filtri convoluzionali lavorano su di un tensore 3-dimensionale, chiamato \textit{feature map}, avente due assi spaziali ("altezza" e "larghezza") ed un asse di profondità; nel caso di riconoscimento di immagini tali assi corrispondono alle dimensioni dell'immagine di input ed al numero dei canali colore. Nel caso in esame si sono trattati di input tridimensionali ad altezza 1, larghezza equivalente alla dimensione massima dei domini nel dataset e canale di dimensione 1. L'operazione di convoluzione estrae frammenti dalla \textit{feature map} di input ed applica una trasformazione a tutti i frammenti, generando una \textit{output feature map} la quale è ancora in forma di tensore 3D, di dimensione ridotta, contenente sull'asse della profondità i valori dei \textit{filtri}. I filtri codificano determinati aspetti caratteristici dell'input, analizzando l'input in una "finestra" di dimensione fissata che scorre lungo la sequenza; ad ogni passo il filtro estrae il sotto-tensore 3-dimensionale per trasformarlo(tramite un prodotto tensore con una matrice di pesi (chiamato \textit{convolutional kernel}) in un vettore 1D di dimensione fissata. L'insieme di vettori vengono riassemblati in un tensore 3D con altezza e larghezza identiche alle precedenti e l'inseme di features come terzo asse.
+Una Rete Convoluzionale è un modello di rete neurale usato generalmente per classificazione di immagini, in alternativa ai layer densamente connessi. Il vantaggio nell'uso delle reti convoluzionali è la capacità di quest'ultime di memorizzare pattern locali all'interno dello spazio di input mentre layer densamente connessi sono in grado di riconoscere solo pattern globali. Nel caso in esame si sono applicati due filtri convoluzionali in parallelo, con l'obiettivo di cogliere pattern locali all'interno dei domini, ovvero n-grammi significativi da poter replicare. Generalmente i filtri convoluzionali lavorano su di un tensore 3-dimensionale, chiamato \textit{feature map}, avente due assi spaziali ("altezza" e "larghezza") ed un asse di profondità; nel caso di riconoscimento di immagini tali assi corrispondono alle dimensioni dell'immagine di input ed al numero dei canali colore. Nel caso in esame si sono trattati di input tridimensionali ad altezza 1, larghezza equivalente alla dimensione massima dei domini nel dataset e canale di dimensione 1. L'operazione di convoluzione estrae frammenti dalla \textit{feature map} di input ed applica una trasformazione a tutti i frammenti, generando una \textit{output feature map} la quale è ancora in forma di tensore 3D, di dimensione ridotta, contenente sull'asse della profondità i valori dei \textit{filtri}. I filtri codificano determinati aspetti caratteristici dell'input, analizzando l'input in una "finestra" di dimensione fissata che scorre lungo la sequenza; ad ogni passo il filtro estrae il sotto-tensore 3-dimensionale per trasformarlo(tramite un prodotto tensore con una matrice di pesi (chiamato \textit{convolutional kernel}) in un vettore 1D di dimensione fissata. L'insieme di vettori vengono riassemblati in un tensore 3D con altezza e larghezza identiche alle precedenti e l'inseme di features come terzo asse. In figura \ref{fig:cnn} è possibile vedere un diagramma del funzionamento di una rete convoluzionale.
+
+\begin{figure}[!htb]
+    \centering
+	\includegraphics[width=\columnwidth]{figures/CNN.png}
+	\caption{Funzionamento di una Convolutional Neural Network,\textit{ fonte} \cite{fig:cnnfonte} }
+\label{fig:cnn}
+\end{figure}
+
 
 \subsection{Pooling}
 Parte integrante di una rete convoluzionale è il livello di \textit{pooling}, in cui le features più importanti del livello precedente vengono ridotte in un tensore di dimensione inferiore, secondo il valor medio all'interno della \textit{feature map}. La decisione di utilizzare average pooling anziche max pooling è stata presa a causa dell'elevata instabilità intrinseca alle GAN, per le quali max pooling è un fattore contribuente. 
@@ -325,6 +334,7 @@ Il design delle celle LSTM con gate moltiplicativi permette ad una rete neurale 
 L'output in uscita da questo encoder è in forma di un tensore monodimensionale, di dimensione fissata, contenente le caratteristiche principali che compongono un nome di dominio.
 
 \section{Decoder}
+\label{decoder}
 La struttura del decoder è lascamente una copia speculare dell'encoder. L'obiettivo principale è riuscire a ricampionare un dominio partendo da un tensore a domensione inferiore rispetto alla codifica fornita in input all'encoder.
 
 La struttura di massima presenta come primo layer un \textit{repeat vector} che ripete il tensore di input per un numero di volte pari alla lunghezza massima di dominio, fissata in fase di codifica del dataset, formando così un tensore 3-dimensionale, dello stessa dimensione dei domini provenienti dal dataset. La sequenza così formata viene data in input ad un layer LSTM avente le identiche caratteristiche del layer LSTM presente all'interno dell'encoder. Successivamente la sequenza di emissioni in output dalla LSTM viene fornita ad due reti convoluzionali parallele identiche al quelle inserite all'interno dell'encoder. il risultato di tale operazione è un vettore di dimensione pari a dizionario di caratteri ammissibili per i domini, per ogni step della sequenza di caratteri che compone un dominio. In Figura \ref{fig:decoder} viene mostrato lo schema di massima del \textit{decoder}.
@@ -354,7 +364,7 @@ Tramite questa funzione è stato possibile mettere a a punto in fase sperimental
 
 \section{Generative Adversarial Network}
 \label{ganintro}
-La \textit{Generative Adversarial Network (abbr. GAN)} èun modello di rete neurale formata da due reti che competono l'una contro l'altra: un \textit{generatore} che cerca di creare dati sintetici basati sulla vera distribuzione, con l'aggiunta di rumore in input ed un \textit{discriminatore}, che riceve un campione e deve predire se appartiene al set reale o sintetico. Questo processo continua in forma di competizione tra le due reti, nella quale il discriminatore apprende in maniera sempre più accurata a distinguere i campioni ed il generatore apprende la costruzione di dati sintetici sempre più realistici. In figura \ref{fig:gan} si può vedere una struttura di massima di una GAN.
+La \textit{Generative Adversarial Network (abbr. GAN)} èun modello di rete neurale formata da due reti che competono l'una contro l'altra: un \textit{generatore} che cerca di creare dati sintetici basati sulla vera distribuzione, con l'aggiunta di rumore in input ed un \textit{discriminatore}, che riceve un campione e deve predire se appartiene al set reale o sintetico. Questo processo continua in forma di competizione tra le due reti, nella quale il discriminatore apprende in maniera sempre più accurata a distinguere i campioni ed il generatore apprende la costruzione di dati sintetici sempre più realistici. Notevole è la struttura della GAN, la quale rende particolarmente difficoltosa la fase di \textit{training}: a differenza di reti neurali piu semplici, non è possibile fissare un minimo da ottimizzare. Normalmente si attua una di discesa del gradiente, la quale fornisce l'ottimo per la fase di training, mentre nel caso di GAN, ogni passo effettuato durante la discesa del gradiente causa un cambiamento nella conformazione superficie di discesa. La composizione della GAN fa si che sia necessario invece trovare un equilibrio tra le due forze in gioco, impersonate da discriminatore e generatore. In figura \ref{fig:gan} si può vedere una struttura di massima di una GAN.
 
 \begin{figure}[!htb]
     \centering
@@ -363,11 +373,14 @@ La \textit{Generative Adversarial Network (abbr. GAN)} èun modello di rete neur
 \label{fig:gan}
 \end{figure}
 
+
 La struttura dell'autoencoder descritto a partire dalla sezione \ref{autoencoder} permette di produrre adeguatamente nomi di dominio che assomigliano a domini reali, ma in realtà sono generati pseudo-casualmente campionando le distribuzioni multinomiali in output all'autoencoder. Tuttavia l'uso di un autoencoder richiede la presenza di un ampio dataset di domini come input. Attraverso poche modifiche è stato possibile trasformare l'autoencoder in una \textit{GAN} che accetta in input un seme randomico ed emette nomi di dominio che appaiono simili ai domini reali.
 
 \subsection{Architettura GAN}
 \label{ganarch}
 Come mostrato in figura \ref{fig:archgan}, la struttura della GAN in esame è composta fondamentalmente dalle componenti dell'autoencoder, estese in modo da trasformare l'encoder in un discriminatore che possa classificare domini sintetici da domini reali, ed il decoder in un generatore che a partire da uno spazio latente possa generare domini codificati.
+
+Rispetto al lavoro presentato in \cite{deepdga}, si è deciso di implementare una architettura più semplificata. Come mostrato in \cite{1606.03498} le GAN sono tipicamente difficoltose da allenare, in quanto l'uso di funzioni di costo porta ad un difficile \textit{tuning} per ottenere un equilibrio di Nash tra le due parti in gioco. La decisione finale è stata presa dopo una serie di test sperimentali, in cui si sono messe a confronto architetture similari comprendenti diverse conformazioni di layers atte ad rendere stabile la fase di training, tra le quali Batch Normalization, come mostrato in \cite{1502.03167},  l'utilizzo di Leaky Relu \cite{GANhacks} come layer di attivazione all'interno della sottorete Convoluzionale e Dropout come strumento per evitare il fenomeno di \textit{overfitting} \cite{dropout}. L'uso di Leaky ReLU come funzione di attivazione è giustificata dalla riduzione della sparsità  del gradiente, la quale generalmente causa instabilità.
 
 \begin{figure}[!htb]
     \centering
@@ -376,26 +389,32 @@ Come mostrato in figura \ref{fig:archgan}, la struttura della GAN in esame è co
 \label{fig:archgan}
 \end{figure}
 
-Il generatore aggiunge in testa alla stuttura del decoder un layer denso che mappa un input randomico in una codifica di dominio, come mostrato in figura \ref{fig:generator}
+\subsubsection{Batch Normalization}
+L'utilizzo di Batch Normalization è stato introdotto per contrastare la nota difficoltà nel training delle GAN. Generalmente il training delle reti neurali è reso difficoltoso dal fatto che la distribuzione dell'input di ogni layer cambia durante il training così come cambiano i parametri dei precedenti layer. Questo fenomeno rallenta il training, richiedendo \textit{learning rates} più bassi ed una attenta scelta degli iperparametri iniziali. Tale fenomeno viene definito \textit{covariate shift} da \cite{1502.03167}. Tramite l'uso di \textit{batch normalization} è possibile fare fronte a tali problematiche, le quali vengono amplificate grandemente dalla struttura avversaria delle due reti Generatore e Discriminatore che compongono la \textit{GAN}. 
 
-\begin{figure}[htb]
+\subsection{Generatore}
+\label{generator}
+Il generatore aggiunge in testa alla stuttura del decoder un layer denso che mappa un input randomico in una codifica di dominio, come mostrato in figura \ref{fig:generator}. All'interno della sottorete convoluzionale è presente l'aggiunta di Batch Normalization, Leaky Relu al posto di ReLU per l'attivazione dei livelli convoluzionali.
+
+Il Generator laye è formato da un generatore di rumore randomico di distribuzione gaussiana, la quale è stata provata come ottimale nel caso di GAN da \cite{gaussian}. Tale distribuzione, di dimensione fissata, mima un possibile dominio codificato da encoder come descritto in sezione \ref{encoder}. A partire da tale rumore è possibile per il decoder realizzare una codifica di dominio via via più realistica con l'avanzare delle epoche di training della GAN.
+
+\begin{figure}[!ht]
     \centering
-	\includegraphics[width=0.7\columnwidth]{figures/generator.tex}
+	\includegraphics[width=0.5\columnwidth]{figures/generator.tex}
 	\caption{Struttura del generatore}
 \label{fig:generator}
 \end{figure}
 
-Il discriminatore implementa in uscita un layer denso che esegua regressione logistica sui domini codificati dalla sottorete encoder. \ref{fig:discriminator}
+\subsection{Discriminatore}
+\label{discriminator}
+Il discriminatore implementa in uscita un layer denso che esegua regressione logistica sui domini codificati dalla sottorete encoder. ( Figura \ref{fig:discriminator} ). Tale regressione viene attuata tramite un layer denso che effettua classificazione tra domini reali, codificati durante la fase di encoding attuata in \ref{encoder}. La funzione di attivazione utilizzata all'interno del regressore logistico è la funzione sigmoide come descritto all'interno della sezione \ref{classificatorenninterno}. Con il passare delle epoche di training, il discriminatore è sempre più in grado di distinguere domini reali da domini sintetici, forniti dal generatore. Tramite un insieme di tecniche empiriche, è possibile evitare che il discriminatore prevalga sul generatore durante il training, mantenendo un equilibrio tra le due parti.
 
-
-\begin{figure}[htb]
+\begin{figure}[!ht]
     \centering
-	\includegraphics[width=0.7\columnwidth]{figures/discriminator.tex}
+	\includegraphics[width=0.5\columnwidth]{figures/discriminator.tex}
 	\caption{Struttura del discriminatore}
 \label{fig:discriminator}
 \end{figure}
 
 
-Rispetto al lavoro presentato in \cite{deepdga}, si è deciso di implementare una architettura più semplificata. Come mostrato in \cite{1606.03498} le GAN sono tipicamente difficoltose da allenare, in quanto l'uso di funzioni di costo porta ad un difficile \textit{tuning} per ottenere un equilibrio di Nash tra le due parti in gioco.
 
-\todo{trattare input e output}

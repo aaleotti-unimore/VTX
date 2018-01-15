@@ -1,7 +1,7 @@
 %\documentclass{standalone}
 %\usepackage{tikz}
-
-%\usetikzlibrary{shapes,arrows,fit,calc,positioning}
+%
+%\usetikzlibrary{shapes,arrows,fit,calc,positioning, patterns}
 %\usetikzlibrary{backgrounds}
 \tikzstyle{input} = [coordinate]
 \tikzstyle{output} = [coordinate]
@@ -12,37 +12,32 @@
 
 \begin{tikzpicture}[auto, node distance=6em]
 	%encoder
-    \node [box] (cnn) {Convolutional Filters};
+    \node [box, transparent] (cnn) {Convolutional Filters};
     \node [input,above of=cnn](input){};
-    \node [box, below of=cnn] (conc) {Concatenation Layer};
-    \begin{scope}[on background layer]
-   		 \node [box,above left=-17mm and -42mm of cnn ] (note1){ };
-   	\end{scope}
-    \node [box, below of=conc] (LSTM) {LSTM};
-    \node [box, below of=LSTM, fill=gray!50](regr){Logistic Regression};
+    \node [box,transparent, below of=cnn] (conc) {Concatenation Layer};
+    \node [box,transparent, below of=conc] (LSTM) {LSTM};
+    \node [box, below of=LSTM](regr){Logistic Regression};
     \node [output, below of=regr](pred){};
     \node at (pred.south) [below, node distance=0](pred){Prediction};
     
 	% decoder
-	\node [box, right of=regr, node distance=20em, fill=gray!50](genrlayer){Generator Layer};
+	\node [box, right of=regr, node distance=20em](genrlayer){Generator Layer};
 	\node [input, below of=genrlayer](seed){};
 	\node at (seed.south) [below, node distance=0](inp){Pseudo-random Seed};
-	\node [box, above of=genrlayer] (rep) {Repeat Layer};
-    \node [box, above of=rep] (LSTM2) {LSTM};
-    \node [box, above of=LSTM2] (cnn2) {Convolutional Filters};
-    \begin{scope}[on background layer]
-   		 \node [box,above left=-17mm and -42mm of cnn2 ] (note1){ };
-   	\end{scope}
-	\node [box, above of=cnn2] (conc2) {Concatenation Layer};
-	\node [box, above of=conc2] (dense) {Multinomial Regression};
+	\node [box, transparent, above of=genrlayer] (rep) {Repeat Layer};
+	\node [box, transparent, above of=rep] (conc2) {Concatenation Layer};
+	\node [box,transparent, above of=conc2] (dense) {Multinomial Regression};
 
 	% containers 
-    \node[container, fit=(cnn) (LSTM)] (encoder) {};
-    \node[container, fit=(dense) (rep)] (decoder) {};
+    \node[container,pattern=north west lines, pattern color=gray, fit=(cnn) (LSTM)] (encoder) {};
+    \node[container, pattern=north west lines, pattern color=gray,fit=(dense) (rep)] (decoder) {};
     \node at (encoder.north west) [above right,node distance=0 and 0] {Encoder};
   	\node at (decoder.north west) [above right,node distance=0 and 0] {Decoder};
+  	
+  	
 	\node[container, fit=(encoder)(regr)](disc){};
 	\node[container, fit=(decoder)(genrlayer)](gencont){};
+	
 	\node at (disc.north west) [above right,node distance=0 and 0] {Discriminator};
 	\node at (gencont.north west) [above right,node distance=0 and 0] {Generator};
 	
@@ -50,17 +45,12 @@
 		
 	
    	%paths
-    \path [line] (cnn) -- (conc);
-    \path [line] (conc) -- (LSTM);
+   
     \path [line] (LSTM) -- (regr);
 	\path [line] (regr) -- (pred);    
     
     \path [line] (seed) -- (genrlayer);
     \path [line] (genrlayer) -- (rep);
-    \path [line] (rep) -- (LSTM2);
-	\path [line] (LSTM2) -- (cnn2);
-	\path [line] (cnn2) -- (conc2);
-	\path [line] (conc2) -- (dense);
 	
 	\path [line] (dense) -- (outgen) -| node[above, near start]{Dominio Codificato} (cnn);
 	

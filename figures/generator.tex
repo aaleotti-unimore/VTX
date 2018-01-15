@@ -9,9 +9,19 @@
 %\begin{document}
 \begin{tikzpicture}[auto]
 	\node [box] (conv) {Convolution Layer};
-	\node [box, below of=conv](pooling){Average Pooling};
+	\node [box, below of=conv] (batch) {Batch Normalization};
+	\node [box, below of=batch](leaky) {Leaky ReLU activation};
+	\node [box, below of=leaky](dropout) {Dropout};
+	\node [box, below of=dropout](pooling){Average Pooling};
+
 	\node [box, right of=conv, node distance=12em] (conv2) {Convolution Layer};
-	\node [box, below of=conv2](pooling2){Average Pooling};
+	\node [box, below of=conv2] (batch2) {Batch Normalization};
+	\node [box, below of=batch2](leaky2) {Leaky ReLU activation};
+	\node [box, below of=leaky2](dropout2) {Dropout};
+	\node [box, below of=dropout2](pooling2){Average Pooling};
+	
+	
+	
 	
 	\node [draw=none, above of=conv](invis4){};
 	\node [draw=none, above of=conv2](invis5){};
@@ -42,16 +52,16 @@
 	%%%%
 
 	%%% frecce
-	\path [line] (conv) -- (pooling);
-%	\path [line] (batch) -- (leaky);
-%	\path [line] (leaky) -- (dropout);
-%	\path [line] (dropout) -- (pooling);
+	\path [line] (conv) -- (batch);
+	\path [line] (batch) -- (leaky);
+	\path [line] (leaky) -- (dropout);
+	\path [line] (dropout) -- (pooling);
 	\path [line] (pooling) |- (conc);
 
-	\path [line] (conv2) -- (pooling2);
-%	\path [line] (batch2) -- (leaky2);
-%	\path [line] (leaky2) -- (dropout2);
-%	\path [line] (dropout2) -- (pooling2);
+	\path [line] (conv2) -- (batch2);
+	\path [line] (batch2) -- (leaky2);
+	\path [line] (leaky2) -- (dropout2);
+	\path [line] (dropout2) -- (pooling2);
 	\path [line] (pooling2) |- (conc);
 	
 	\path [line] (conc) -- (regr);
