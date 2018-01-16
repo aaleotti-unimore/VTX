@@ -1,10 +1,22 @@
 \chapter{Implementazione}
 \label{implementazione}
-
+In questa sezione è descritta l'implementazione del progetto definito nel capitolo precedente. I principali strumenti utilizzati sono Python come linguaggio di programmazione e le librerie Scikit-learn \cite{sklearn} per attuare machine learning e Keras \cite{keras} per realizzare reti neurali.
+Di seguito sono elencati i dettagli implementativi delle singole entità, ed i parametri usati durante la fase sperimentale.
 
 \section{Classificatore Random Forest}
 \label{imp:randomforest}
+Il classificatore Random Forest è stato implementato tramite l'uso della libreria python Scikit-learn \cite{sklearn}. 
 
+\subsection{Dataset}
+Il dataset utilizzato per le fasi di training e testing del classificatore è stato definito nella sezione \ref{pro:randomforestdataset}
+
+\subsection{Parametri}
+In particolare i parametri del classificatore utilizzato che sono stati modificati dal loro valore di default sono:
+\begin{itemize}
+\item \textbf{\texttt{n\_estimators}} = 100. Numero di stimatori da utilizzare nel processo.
+\item \textbf{\texttt{min\_samples\_leaf}} = 50. Numero minimo di campioni per un nodo foglia.
+\item \textbf{\texttt{oob\_score}} = True. Implica l'uso di campioni \textit{out-of-bag} per ottenere una stima facilitata dell'errore. Con questa tecnica una parte del campione di stima viene esclusa per essere utilizzata come insieme di verifica.
+\end{itemize}
 \section{Classificatore Neurale}
 \label{imp:classneurale}
 
