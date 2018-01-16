@@ -4,12 +4,12 @@
 %\usetikzlibrary{shapes,arrows,fit,calc,positioning,snakes}
 \tikzstyle{input} = [coordinate]
 \tikzstyle{output} = [coordinate]
-\tikzstyle{box} = [draw, rectangle, fill=white, rounded corners, thick, text width=7em, text centered, minimum height=5em, node distance=3cm]
+\tikzstyle{box} = [draw, rectangle, fill=white, rounded corners, thick, text width=7em, text centered, minimum height=5em, node distance=10em]
 \tikzstyle{romb} = [draw, diamond, fill=white, thick, text width=5em, text centered, minimum height=5em]
 \tikzstyle{container} = [draw, rectangle, dashed, inner sep=1em, node distance=5em]
 \tikzstyle{line} = [draw, thick, -latex']
 %\begin{document}
-\begin{tikzpicture}[auto, node distance=1.5cm]
+\begin{tikzpicture}[auto, node distance=5em]
 	\node [box](E){Encoder};
 	\node [box, right of=E](D){Decoder};
 	\node [input, below of=E](az){};
