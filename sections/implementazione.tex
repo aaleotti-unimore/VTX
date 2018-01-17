@@ -6,6 +6,14 @@ Di seguito sono elencati i dettagli implementativi delle singole entità, ed i p
 \section{Classificatore Random Forest}
 \label{imp:randomforest}
 Il classificatore Random Forest è stato implementato tramite l'uso della libreria python Scikit-learn \cite{sklearn}. 
+Al fine di avere un ambiente di testing facilmente fruibile, è stata creata una classe $MyClassifier$ in grado di gestire la serie di esperimenti effettuata sul classificatore, al fine di testare i differenti parametri di funzionamento e la composizione delle features del dataset. in figura \ref{fig:uml_randomforest} è mostra
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.7\columnwidth]{figures/uml_randomforest.png}
+	\caption{Diagramma UML della classe MyClassifier 			\label{fig:uml_randomforest}}
+\end{figure}
+
 
 \subsection{Dataset}
 Il dataset utilizzato per le fasi di training e testing del classificatore è stato definito nella sezione \ref{pro:randomforestdataset}. A livello operativo il dataset è stato generato a partire dai soli nomi di dominio in formato stringa, per i quali sono stati estratti le singole features. Segue una descrizione dettagliata delle features utilizzate per generare il dataset.
@@ -100,6 +108,7 @@ La fase di training è stata eseguita tramite la tecnica di convalida incrociata
 
 il restante subset di test, mai applicato nella fase di training, è stato utilizzato per valutare il modello del classificatore.
 
+
 \section{Classificatore Neurale}
 \label{imp:classneurale}
 
@@ -110,3 +119,4 @@ il restante subset di test, mai applicato nella fase di training, è stato utili
 \label{imp:gan}
 
 \todo{parlare del pretraining}
+\todo{parlare di funzioni di loss, di ottimizzatori}

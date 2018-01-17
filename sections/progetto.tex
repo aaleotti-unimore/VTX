@@ -1,20 +1,20 @@
 \chapter{Progetto}
 \label{progetto}
 
+\todo{parlare di funzioni di loss, di ottimizzatori}
+
 In questo capitolo si propone il progetto realizzato per raggiungere gli obiettivi preposti: la realizzazione di un classificatore basato sull'algoritmo di machine learning \textit{Random Forest} in grado di distinguere domini generati algoritmicamente da domini reali. Si è successivamente progettato un classificatore più raffinato basato su rete neurale in grado di superare le mancanze de precedente classificatore. A partire da tale sistema, si è passati alla progettazione di un sistema di \textit{adversarial learning} in grado di rafforzare il classificatore neurale: una \textit{Generative Adversarial Network} (abbr. \textit{GAN}) in grado di creare domini sintetici realistici da fornire successivamente al classificatore in fase di training (Figura \ref{fig:intro}). Tale GAN è stata progettata a partire da un Autoencoder, il cui compito è mimare la distribuzione di un dataset fornito in input (Figura \ref{fig:auttogan}).
 
 \begin{figure}[htb]
     \centering
 	\includegraphics[]{figures/introduction.tex}
-\label{fig:intro}
-\caption{Diagramma generale di progetto}
+\caption{Diagramma generale di progetto. \label{fig:intro}}
 \end{figure}
 
 \begin{figure}[htb]
     \centering
 	\includegraphics[width=\columnwidth]{figures/auttogan.tex}
-\label{fig:auttogan}
-\caption{Schema generale della progettazione da Autoencoder a Gan}
+\caption{Schema generale della progettazione da Autoencoder a Gan. \label{fig:auttogan}}
 \end{figure}
 
 \section{Classificatore Random Forest}
@@ -69,8 +69,8 @@ La distribuzione dei singoli caratteri (unigrammi) per 4 famiglie di DGA e Alexa
  		& puvyxilomo.com \\
     \end{tabular}
     }
-\label{tab:dga}
-\caption{Esempi di domini generati algoritmicamente da Malware}
+
+\caption{Esempi di domini generati algoritmicamente da Malware. \label{tab:dga}}
 \end{table}
 
 
@@ -82,8 +82,7 @@ Il passo seguente  stato creare una serie di \textit{features} che fossero in gr
     \centering
     \includegraphics[width=0.8\columnwidth]{figures/chardistr.png}
     \caption{Distribuzione dei singoli caratteri in \textit{cryptolocker, ramnit, dyre}, \textit{suppobox} (dictionary-based DGA) ed il primo milione di domini più visitati secondo Alexa \cite{amazon:alexa}.
-\textit{fonte:} \cite{deepdga}}
-\label{fig:relu}
+\textit{fonte:} \cite{deepdga}. \label{fig:relu}}
 \end{figure}
 
 
@@ -145,8 +144,7 @@ L'obiettivo di tale classificatore è quello di riuscire a separare in maniera e
 		rememberinside.net \\
         \hline
     \end{tabular}
-    \caption{Esempio di domini generati da Suppobox.}
-\label{tab:suppobox}
+    \caption{Esempio di domini generati da Suppobox. \label{tab:suppobox}}
 \end{table}
 
 A partire da questo risultato si scelto di procedere con la progettazione di un classificatore neurale in grado di superare tale problematica.
@@ -180,8 +178,7 @@ Nel caso in esame è stata utilizzata per i livelli interni la funzione di attiv
 \begin{figure}[htb]
     \centering
     \includegraphics[width=0.5\columnwidth]{figures/relu.png}
-    \caption{\textit{fonte:} \cite{relufig}}
-\label{fig:relu}
+    \caption{\textit{fonte:} \cite{relufig}.\label{fig:relu}}
 \end{figure}
 
 dove $x$ rappresenta l'\textit{input} del neurone. 
@@ -194,8 +191,7 @@ Per quel che riguarda la funzione di attivazione del livello di \textit{output} 
 \begin{figure}[htb]
     \centering
     \includegraphics[width=0.5\columnwidth]{figures/sigmoid.png}
-    \caption{\textit{fonte:} \cite{fig:sigmoid}}
-\label{fig:sigmoid}
+    \caption{\textit{fonte:} \cite{fig:sigmoid}\label{fig:sigmoid}}
 \end{figure}
 
 La struttura finale del \textit{MLP} in esame è stata raggiunta dopo una serie di test sperimentali in cui si sono messi a confronto tre modelli differenti di per numero di neuroni all'interno degli \textit{hidden layer}: 
@@ -213,8 +209,8 @@ I tre modelli messi a confronto hanno mostrato risultati simili, tuttavia  il mo
 \begin{figure}[!htb]
     \centering
     \includegraphics[width=.6\columnwidth]{figures/pieraz_baseline.png}
-    \caption{Grafico del modello intermedio. Escluso il layer di input iniziale, si notino gli \textit{hidden layer} dense2 e dense3 di dimensioni rispettivamente 128 e 64 }
-\label{fig:pieraz}
+    \caption{Grafico del modello intermedio. Escluso il layer di input iniziale, si notino gli \textit{hidden layer} dense2 e dense3 di dimensioni rispettivamente 128 e 64.
+\label{fig:pieraz}}
 \end{figure}
 
 \subsection{Output}
@@ -239,8 +235,8 @@ Il punto di partenza per il lavoro di progettazione di una \textit{GAN} è stato
 \begin{figure}[htb]
     \centering
 	\input{figures/autoencoder_general.tex}
-	\caption{Struttura generica di un autoencoder, il quale mappa l'input $x$ in un output $r$ attraverso una rappresentazione codificata $h$}
-\label{fig:autoencodergen}
+	\caption{Struttura generica di un autoencoder, il quale mappa l'input $x$ in un output $r$ attraverso una rappresentazione codificata $h$.
+\label{fig:autoencodergen}}
 \end{figure}
 
 Tuttavia il reale obiettivo di un \textit{autoencoder }non è quello di imparare perfettamente a riprodurre l'input fornito (in quanto sarebbe un'operazione priva di utilità), bensì vengono introdotti vincoli che ne limitano la capacità di riproduzione ad una sola approssimazione dei dati di ingresso. Grazie a tali vincoli il modello è obbligato a dare priorità agli aspetti fondamentali dell'input, imparandone le proprietà principali. L'obiettivo di tale implementazione nel contesto di questo elaborato è poter cogliere le caratteristiche fondamentali che compongono i domini reali, per poterli riprodurre al meglio all'interno della \textit{GAN} e generare domini simili a quelli reali a partire da rumore casuale.
@@ -266,8 +262,8 @@ In figura \ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoen
 \begin{figure}[!p]
     \centering
 	\includegraphics[width=\columnwidth]{figures/autoencoder.tex}
-	\caption{Struttura dell'\textit{autoencoder} in esame. L'input in ingresso dato dai domini viene codificato attraverso l'\textit{encoder} e dato in ingresso al \textit{decoder} che ne genera una approssimazione}
-\label{fig:autoencoder1}
+	\caption{Struttura dell'\textit{autoencoder} in esame. L'input in ingresso dato dai domini viene codificato attraverso l'\textit{encoder} e dato in ingresso al \textit{decoder} che ne genera una approssimazione.
+\label{fig:autoencoder1}}
 \end{figure}
 
 \section{Encoder}
@@ -277,8 +273,8 @@ La composizione interna dell'\textit{encoder} è formata da una Rete Convoluzion
 \begin{figure}[!htb]
     \centering
 	\input{figures/encoder.tex}
-	\caption{Struttura dell'\textit{encoder}}
-\label{fig:encoder}
+	\caption{Struttura dell'\textit{encoder}.
+\label{fig:encoder}}
 \end{figure}
 
 \subsection{Rete Convoluzionale}
@@ -287,8 +283,8 @@ Una Rete Convoluzionale è un modello di rete neurale usato generalmente per cla
 \begin{figure}[!htb]
     \centering
 	\includegraphics[width=\columnwidth]{figures/CNN.png}
-	\caption{Funzionamento di una Convolutional Neural Network,\textit{ fonte} \cite{fig:cnnfonte} }
-\label{fig:cnn}
+	\caption{Funzionamento di una Convolutional Neural Network,\textit{ fonte} \cite{fig:cnnfonte}.
+\label{fig:cnn}}
 \end{figure}
 
 
@@ -325,8 +321,8 @@ Il design delle celle LSTM con gate moltiplicativi permette ad una rete neurale 
 \begin{figure}[htb]
     \centering
 	\includegraphics[width=\columnwidth]{figures/LSTM3-chain.png}
-	\caption{Struttura di una cella LSTM. \textit{fonte:} \cite{lstmblog} }
-\label{fig:lstm}
+	\caption{Struttura di una cella LSTM. \textit{fonte:} \cite{lstmblog}.
+\label{fig:lstm}}
 \end{figure}
 
 \subsection{Output Encoder}
@@ -341,8 +337,8 @@ La struttura di massima presenta come primo layer un \textit{repeat vector} che 
 \begin{figure}[!htb]
     \centering
 	\input{figures/decoder.tex}
-	\caption{Struttura del \textit{decoder}}
-\label{fig:decoder}
+	\caption{Struttura del \textit{decoder}.
+\label{fig:decoder}}
 \end{figure}
 
 \subsection{Regressione Multinomiale}
@@ -363,13 +359,13 @@ Tramite questa funzione è stato possibile mettere a a punto in fase sperimental
 
 \section{Generative Adversarial Network}
 \label{ganintro}
-La \textit{Generative Adversarial Network (abbr. GAN)} èun modello di rete neurale formata da due reti che competono l'una contro l'altra: un \textit{generatore} che cerca di creare dati sintetici basati sulla vera distribuzione, con l'aggiunta di rumore in input ed un \textit{discriminatore}, che riceve un campione e deve predire se appartiene al set reale o sintetico. Questo processo continua in forma di competizione tra le due reti, nella quale il discriminatore apprende in maniera sempre più accurata a distinguere i campioni ed il generatore apprende la costruzione di dati sintetici sempre più realistici. Notevole è la struttura della GAN, la quale rende particolarmente difficoltosa la fase di \textit{training}: a differenza di reti neurali piu semplici, non è possibile fissare un minimo da ottimizzare. Normalmente si attua una di discesa del gradiente, la quale fornisce l'ottimo per la fase di training, mentre nel caso di GAN, ogni passo effettuato durante la discesa del gradiente causa un cambiamento nella conformazione superficie di discesa. La composizione della GAN fa si che sia necessario invece trovare un equilibrio tra le due forze in gioco, impersonate da discriminatore e generatore. In figura \ref{fig:gan} si può vedere una struttura di massima di una GAN.
+La \textit{Generative Adversarial Network (abbr. GAN)} èun modello di rete neurale formata da due reti che competono l'una contro l'altra: un \textit{generatore} che cerca di creare dati sintetici basati sulla vera distribuzione, con l'aggiunta di rumore in input ed un \textit{discriminatore}, che riceve un campione e deve predire se appartiene al set reale o sintetico. Questo processo continua in forma di competizione tra le due reti, nella quale il discriminatore apprende in maniera sempre più accurata a distinguere i campioni ed il generatore apprende la costruzione di dati sintetici sempre più realistici. Notevole è la struttura della GAN, la quale rende particolarmente difficoltosa la fase di \textit{training}: a differenza di reti neurali più semplici, non è possibile fissare un minimo da ottimizzare. Normalmente si attua una di discesa del gradiente, la quale fornisce l'ottimo per la fase di training, mentre nel caso di GAN, ogni passo effettuato durante la discesa del gradiente causa un cambiamento nella conformazione superficie di discesa. La composizione della GAN fa si che sia necessario invece trovare un equilibrio tra le due forze in gioco, impersonate da discriminatore e generatore. In figura \ref{fig:gan} si può vedere una struttura di massima di una GAN.
 
 \begin{figure}[!htb]
     \centering
 	\includegraphics[width=\columnwidth]{figures/gan.tex}
-	\caption{Struttura di una \textit{Generative Adversarial Network}}
-\label{fig:gan}
+	\caption{Struttura di una \textit{Generative Adversarial Network}.
+\label{fig:gan}}
 \end{figure}
 
 
@@ -384,8 +380,8 @@ Rispetto al lavoro presentato in \cite{deepdga}, si è deciso di implementare un
 \begin{figure}[!htb]
     \centering
 	\includegraphics[width=\columnwidth]{figures/ganarch.tex}
-	\caption{Struttura della GAN evoluta dell'autoencoder}
-\label{fig:archgan}
+	\caption{Struttura della GAN evoluta dell'autoencoder.
+\label{fig:archgan}}
 \end{figure}
 
 \subsubsection{Batch Normalization}
@@ -397,23 +393,30 @@ Il generatore aggiunge in testa alla stuttura del decoder un layer denso che map
 
 Il Generator laye è formato da un generatore di rumore randomico di distribuzione gaussiana, la quale è stata provata come ottimale nel caso di GAN da \cite{gaussian}. Tale distribuzione, di dimensione fissata, mima un possibile dominio codificato da encoder come descritto in sezione \ref{encoder}. A partire da tale rumore è possibile per il decoder realizzare una codifica di dominio via via più realistica con l'avanzare delle epoche di training della GAN.
 
-\begin{figure}[p]
+\begin{figure}[htbp]
     \centering
 	\includegraphics[width=0.5\columnwidth]{figures/generator.tex}
-	\caption{Struttura del generatore}
-\label{fig:generator}
+	\caption{Struttura del generatore.
+\label{fig:generator}}
 \end{figure}
 
 \subsection{Discriminatore}
 \label{discriminator}
-Il discriminatore implementa in uscita un layer denso che esegua regressione logistica sui domini codificati dalla sottorete encoder. ( Figura \ref{fig:discriminator} ). Tale regressione viene attuata tramite un layer denso che effettua classificazione tra domini reali, codificati durante la fase di encoding attuata in \ref{encoder}. La funzione di attivazione utilizzata all'interno del regressore logistico è la funzione sigmoide come descritto all'interno della sezione \ref{classificatorenninterno}. Con il passare delle epoche di training, il discriminatore è sempre più in grado di distinguere domini reali da domini sintetici, forniti dal generatore. Tramite un insieme di tecniche sperimentali, è possibile evitare che il discriminatore prevalga sul generatore durante il training, mantenendo un equilibrio tra le due parti.
+Il discriminatore implementa in uscita un layer denso che esegua regressione logistica sui domini codificati dalla sottorete encoder. ( Figura \ref{fig:discriminator} ). Tale regressione viene attuata tramite un layer denso che effettua classificazione tra domini reali, codificati durante la fase di encoding attuata in \ref{encoder}. La funzione di attivazione utilizzata all'interno del regressore logistico è la funzione sigmoide come descritto all'interno della sezione \ref{classificatorenninterno}. Con il passare delle epoche di training, il discriminatore è sempre più in grado di distinguere domini reali da domini sintetici, forniti dal generatore. Tramite un insieme di tecniche sperimentali, è possibile evitare che il discriminatore prevalga sul generatore durante il training, mantenendo un equilibrio tra le due parti. 
 
-\begin{figure}[p]
+\begin{figure}[htbp]
     \centering
 	\includegraphics[width=0.5\columnwidth]{figures/discriminator.tex}
-	\caption{Struttura del discriminatore}
-\label{fig:discriminator}
+	\caption{Struttura del discriminatore.
+\label{fig:discriminator}}
 \end{figure}
 
+\subsection{Funzionamento}
+Durante la fase di training della GAN, il discriminatore ed il generatore vengono allenati in maniera concorrente. Per ogni step di training si estrae un subset fissato di domini dal dataset di domini reali e si genera un tensore di rumore generato randomicamente di lunghezza equivalente. Tale tensore viene dato in ingresso al generatore che restituisce una serie di domini sintetici codificati.
 
+Successivamente il discriminatore viene allenato a distinguere i due subset estratti precedentemente, grazie ad un vettore di \textit{target} creato ad hoc, che identifica domini reali dai sintetici.
+
+In ultima fase, i pesi del discriminatore vengono congelati e l'intero impianto della GAN viene allenato fornendo un nuovo tensore di rumore randomico ed un vettore di target ingannevoli, i quali identificano tutti i domini generati sinteticamente come reali. L'output di tale procedura è la funzione di loss del discriminatore, il quale non aggiorna la sua matrice di pesi durante questa fase. Tale funzione di loss indica quindi quanto "reali" sono stati i domini creati dal generatore.
+
+Tramite questo espediente è possibile far si che la fase di training consista in fasi in cui il discriminatore impara a distinguere con più precisione domini reali da domini sintetici ed il generatore impari a fornire domini sintetici via via più realistici. Questa fase procede in maniera indefinita, fin tanto che l'equilibrio tra le due parti rimane tale.
 
