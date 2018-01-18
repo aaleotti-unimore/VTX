@@ -1,6 +1,6 @@
 \chapter{Implementazione}
 \label{implementazione}
-In questa sezione è descritta l'implementazione del progetto definito nel capitolo precedente. I principali strumenti utilizzati sono Python come linguaggio di programmazione e le librerie Scikit-learn \cite{sklearn} per attuare machine learning e Keras \cite{keras} per realizzare reti neurali.
+In questa sezione è descritta l'implementazione del progetto definito nel capitolo precedente. I principali strumenti utilizzati sono Python come linguaggio di programmazione e le librerie Scikit-learn \cite{sklearn} per attuare machine learning e Keras \cite{keras} per realizzare reti neurali. La libreria per reti neurali su cui opera Keras è Tensorflow \cite{tensorflow}.
 Di seguito sono elencati i dettagli implementativi delle singole entità, ed i parametri usati durante la fase sperimentale.
 
 \section{Classificatore Random Forest}
@@ -19,7 +19,7 @@ Al fine di avere un ambiente di testing facilmente fruibile, è stata creata una
 Il dataset utilizzato per le fasi di training e testing del classificatore è stato definito nella sezione \ref{pro:randomforestdataset}. A livello operativo il dataset è stato generato a partire dai soli nomi di dominio in formato stringa, per i quali sono stati estratti le singole features. Segue una descrizione dettagliata delle features utilizzate per generare il dataset.
 
 \begin{itemize}
-\item \textbf{MCRExtractor} si occupa di fornire il rapporto tra caratteri significativi. E' caratterizzato dal parametro che identifica la minima sottostringa da analizzare, composta da 3 caratteri. L'algoritmo cicla per ogni dimensione di n-gramma $\geq 3$ , estrae le tuple di dimensione $i$ dalla stringa e per ogni tupla $s$ presente in una $word$ del dizionario inglese, viene aggiunta la sua lunghezza alla somma dei caratteri significativi della stringa. 
+\item \textbf{MCRExtractor} si occupa di fornire il rapporto tra caratteri significativi. \`E caratterizzato dal parametro che identifica la minima sottostringa da analizzare, composta da 3 caratteri. L'algoritmo cicla per ogni dimensione di n-gramma $\geq 3$ , estrae le tuple di dimensione $i$ dalla stringa e per ogni tupla $s$ presente in una $word$ del dizionario inglese, viene aggiunta la sua lunghezza alla somma dei caratteri significativi della stringa. 
 Il risultato è il rapporto tra la somma della lunghezza dei caratteri significativi e la lunghezza totale della stringa.
  
 \begin{lstlisting}[language=Python]
@@ -41,7 +41,7 @@ for i in range(min_subtr, len(str(domain_name))):
 return maxl / int(len(str(domain_name)))
 \end{lstlisting}
 
-\item \textbf{NormalityScoreExtractor} estrae il punteggio di normalità degli n-grammi. A differenza del lavoro propsoto in \cite{Schiavoni2014}, si è scelto di estrarre il \textit{normality score} per gli n-grammi di lunghezza 1,2,3,4,5 caratteri, in quanto in fase sperimentale hanno dimostrato di fornire un apporto significativo alla precisione del classificatore. E' definito dal seguente algoritmo, dove il valore $self.n$ identifica la lunghezza dell'n-gramma da valutare. L'algoritmo separa in n-grammi di dimensione $n$ la stringa e per ogni tupla di caratteri $s$, somma il numero di occorrenze di tale tupla all'interno del vocabolario inglese, ritornando il rapporto tra il valore complessivo delle occorenze delle tuple nel vocabolario inglese e la lunghezza della stringa meno $n+1$.
+\item \textbf{NormalityScoreExtractor} estrae il punteggio di normalità degli n-grammi. A differenza del lavoro propsoto in \cite{Schiavoni2014}, si è scelto di estrarre il \textit{normality score} per gli n-grammi di lunghezza 1,2,3,4,5 caratteri, in quanto in fase sperimentale hanno dimostrato di fornire un apporto significativo alla precisione del classificatore. \`E definito dal seguente algoritmo, dove il valore $self.n$ identifica la lunghezza dell'n-gramma da valutare. L'algoritmo separa in n-grammi di dimensione $n$ la stringa e per ogni tupla di caratteri $s$, somma il numero di occorrenze di tale tupla all'interno del vocabolario inglese, ritornando il rapporto tra il valore complessivo delle occorenze delle tuple nel vocabolario inglese e la lunghezza della stringa meno $n+1$.
 
 \begin{lstlisting}[language=Python]
 if len(str(domain_name)) < self.n:
@@ -113,14 +113,155 @@ In particolare i parametri del classificatore utilizzato che sono stati modifica
 \label{imp:classneurale}
 L'implementazione del classificatore neurale è stata eseguita in ambiente Python, con l'utilizzo della libreria Keras \cite{keras} per le reti neurali.
 Per motivi di semplicità si è scelto di copiare l'ambiente di testing definito per il classificatore Random Forest mostrato in figura  \ref{fig:uml_randomforest}. Tale classe permette di gestire i diversi esperimenti, utilizzati per decidere quale composizione del \textit{Multi Layer Perceptron}  (abbr. MLP) in base ai risultati sperimentali. 
+Il punto saliente del classificatore è formato dalla sua baseline, la quale contiene i livelli che effettivamente compongono la rete neurale.
 
 \subsection{Baseline}
-Come definito all'interno della sezione \ref{classificatorenninterno}, la composizione del MLP è stata decisa dopo un confronto tra tre modelli differenti nella conformazione
+Come definito all'interno della sezione \ref{classificatorenninterno}, la composizione del MLP è stata decisa dopo un confronto tra tre modelli differenti nella conformazione: 
+
+\begin{itemize}
+\item un primo modello ridotto contenente un input a dimensione 15 (fissata inizialmente come dimensione dei domini codificati), un livello intermedio di dimensione dimezzata rispetto all'input ed un livello finale con un singolo neurone per ottenere classificazione binaria (listato \ref{lst:small} ). 
+
+
+\lstinputlisting[language={}, caption={Baseline Ridotta},label={lst:small}]{code/small_baseline.log}
+
+
+\item un secondo modello ampliato contenente input equivalente al precedente, due livelli interni di dimensione 128 ed una uscita con singolo neurone. (listato \ref{lst:large} ).
+
+
+\lstinputlisting[language={}, caption={Baseline ampliata},label={lst:large}]{code/large_baseline.log}
+
+
+\item un modello intermedio, contenente ingresso equivalente al precedente, due livelli interni da 128 e 64 e uscita con singolo neurone. (listato \ref{lst:pieraz}).
+
+
+\lstinputlisting[language={}, caption={Baseline intermedia.},label={lst:pieraz}]{code/pieraz_baseline.log}
+
+\end{itemize}
+
+Tutti i modelli contengono al loro interno oltre che i dense layer, dei layer aggiuntivi per ottimizzare la fase di training, in particolare i layer Dropout e Batch Normalization per contrastare il fenomeno dell'\textit{overfitting}. Dopo una fase sperimentale si è deciso di optare per il modello intermedio, in quanto ha espresso i risultati migliori a fronte di un ridotto consumo di risorse.
 
 \subsection{Dataset}
+Come definito all'interno della sezione \ref{classificatorenninput} il dataset utilizzato per il classificatore neurale è differente dal caso precedente in quanto i domini vengono codificati in forma di vettori numerici, mappati rispetto ad un dizionario di caratteri ammissibili per i domini di rete (tabella \ref{tab:dict}).
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}[t]{ll}
+    \toprule
+    Key & Value \\
+    \midrule
+1 & a \\
+2 & b \\
+3 & c \\
+4 & d \\
+5 & e \\
+6 & f \\
+7 & g \\
+8 & h \\
+9 & i \\
+10 & j \\
+\bottomrule        
+
+\end{tabular}
+\begin{tabular}[t]{ll}
+    \toprule
+    Key & Value \\
+    \midrule
+11 & k \\
+12 & l \\
+13 & m \\
+14 & n \\
+15 & o \\
+16 & p \\
+17 & q \\
+18 & r \\
+19 & s \\
+20 & t \\
+\bottomrule        
+\end{tabular}
+\begin{tabular}[t]{ll}
+    \toprule
+    Key & Value \\
+    \midrule
+21 & u \\
+22 & v \\
+23 & w \\
+24 & x \\
+25 & y \\
+26 & z \\
+27 & 0 \\
+28 & 1 \\
+29 & 2 \\
+30 & 3 \\
+\bottomrule        
+\end{tabular}
+\begin{tabular}[t]{ll}
+    \toprule
+    Key & Value \\
+    \midrule
+31 & 4 \\
+32 & 5 \\
+33 & 6 \\
+34 & 7 \\
+35 & 8 \\
+36 & 9 \\
+37 & - \\
+38 & . \\
+\bottomrule        
+    \end{tabular}
+    \caption{Dizionaro di caratteri mappati. \label{tab:dict}}
+\end{table}
+
+Tale mapping permette al MLP di estrarre features a partire dai caratteri che compongono i domini.
+
+\subsection{Ottimizzatore}
+I modelli testati in questa sezione sono stati compilati utilizzando l'ottimizzatore \textit{Adaptive Moment Estimation (abbr. adam)} \cite{adam}. Tale ottimizzatore fornisce generalmente le prestazioni migliori nel caso di classificazione binaria e pertanto si è optati per tale soluzione.
+
+\subsection{Fase di Training}
+Durante la fase di training si sono testati gli iperparametri principali che pilotano la performance del classificatore: in particolare i valori della dimensione del tensore di ingresso  \lstinline!batch_size! ed il numero di epoche \lstinline!epochs! sul quale eseguire la fase di training.
+
+Dopo una fase sperimentale i valori che hanno mostrato i risultati migliori in fase di valutazione sono stati: 
+\begin{itemize}
+\item \textbf{batch\_size} = 35 
+\item \textbf{epochs} = 60
+\end{itemize}
 
 \section{Autoencoder}
 \label{imp:autoencoder}
+L'implementazione dell'autoencoder descritto in sezione \ref{autoencoder} è stata eseguita in ambiente Python con l'ausilio della libreria Keras per reti neurali. 
+
+\subsection{Dataset}
+Il dataset utilizzato per il training dell'autoencoder è stato definito nella sezione \ref{datasetautoencoder}. Tale dataset risulta essere un'ulteriore elaborazione della mappatura utilizzata all'interno del classificatore neurale precedentemente descritto: i domini codificati in vettori numerici sono stati ulteriormente codificati con la tecnica one-hot, in modo da ottenere, per ogni dominio, un tensore di valori binari contenente un vettore per ogni \textit{step temporale} che compone il dominio. tale vettore, contenente la lettera i-esima del dizionario è formato da zeri tranne l'elemento alla posizione i-esima, impostato ad 1.
+
+Questa ulteriore codifica ha permesso successivamente di poter trasformare l'autoencoder in una GAN, inviando l'output del decoder come input dell'encoder, senza effettuare operazioni di campionamento, fonte di rottura del gradiente del modello.
+
+
+\subsection{Encoder}
+La struttura dell'Encoder, definita all'interno della sezione \ref{encoder} è stata implementata con l'ausilio delle API funzionali fornite da Keras. In questo modo è stato possibile implementare un modello più complesso del precedente classificatore, in grado di eseguire l'operazione convoluzionale con due diverse conformazioni in contemporanea rispetto allo stesso tensore di ingresso. Di seguito sono mostrati gli iperparametri che definiscono il modello Encoder. 
+
+\lstinputlisting[caption={Iperarametri Encoder.},label={lst:par_enc},lastline=9]{code/encoder.py}
+
+\`E possibile notare quali parametri definiscono le due reti convoluzionali:
+\begin{itemize}
+\item Convnet formata da 20 filtri, kernel di dimensione 2 e passo 1.
+\item Convnet formata da 10 filtri, kernel di dimensione 3 e passo 1.
+\end{itemize}
+
+La bontà di tali valori è stata confermata da \cite{deepdga} e per tanto utilizzati in maniera identica.
+I valori \lstinline!timesteps!, \lstinline!word_index!, \lstinline!latent_vector! definiscono le dimensioni dei tensori di ingresso ed uscita, così come definiti dalle dimensioni del dataset. La dimensione di \lstinline!latent_vector! è arbitraria: in questo caso si è optato per  ridurre ulteriormente la dimensione del tensore di uscita dalle due reti convoluzionali per estrarre le features piu caratterizzanti dalla fase di encoding.
+
+I valori \lstinline!dropout_value! e \lstinline!leaky_relu_alpha! sono il risultato di una lunga fase di \textit{tuning} degli iperparametri, particolarmente critici per il mantenimento dell'equilibrio della successiva GAN.
+
+Per completezza di seguito è elencato il codice essenziale che compone l'encoder.
+
+\lstinputlisting[caption={Struttura livelli Encoder.},label={lst:str_enc},firstline=9]{code/encoder.py}
+
+\subsection{Decoder}
+
+\lstinputlisting[caption={Iperarametri Decoder.},label={lst:par_enc},lastline=10]{code/decoder.py}
+
+\lstinputlisting[caption={Struttura livelli Decoder.},label={lst:str_enc},firstline=10]{code/decoder.py}
+
+
 
 \section{Generative Adversarial Network}
 \label{imp:gan}
