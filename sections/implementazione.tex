@@ -232,7 +232,7 @@ L'implementazione dell'autoencoder descritto in sezione \ref{autoencoder} è sta
 \subsection{Dataset}
 Il dataset utilizzato per il training dell'autoencoder è stato definito nella sezione \ref{datasetautoencoder}. Tale dataset risulta essere un'ulteriore elaborazione della mappatura utilizzata all'interno del classificatore neurale precedentemente descritto: i domini codificati in vettori numerici sono stati ulteriormente codificati con la tecnica one-hot, in modo da ottenere, per ogni dominio, un tensore di valori binari contenente un vettore per ogni \textit{step temporale} che compone il dominio. tale vettore, contenente la lettera i-esima del dizionario è formato da zeri tranne l'elemento alla posizione i-esima, impostato ad 1.
 
-Questa ulteriore codifica ha permesso successivamente di poter trasformare l'autoencoder in una GAN, inviando l'output del decoder come input dell'encoder, senza effettuare operazioni di campionamento, fonte di rottura del gradiente del modello.
+Questa ulteriore codifica ha permesso successivamente di poter trasformare l'autoencoder in una GAN, inviando l'output del decoder come input dell'encoder senza effettuare operazioni di campionamento, fonte di rottura del gradiente del modello.
 
 
 \subsection{Encoder}
@@ -256,12 +256,25 @@ Per completezza di seguito è elencato il codice essenziale che compone l'encode
 \lstinputlisting[caption={Struttura livelli Encoder.},label={lst:str_enc},firstline=9]{code/encoder.py}
 
 \subsection{Decoder}
+La composizione del decoder è pressochè identica a quella mostrata dall'encoder e ricalca il progetto mostrato in sezione \ref{decoder}. Di seguito sono elencati gli iperparametri che compongono il modello decoder. Si può notare come siano identici a quelli mostrati dall'encoder a differenza del \lstinline!dropout_value!, il quale gioca un ruolo maggiore nel pilotare l'equilibrio tra i due modelli.
 
 \lstinputlisting[caption={Iperarametri Decoder.},label={lst:par_enc},lastline=10]{code/decoder.py}
 
+Per completezza si riporta l'implementazione del decoder:
+
 \lstinputlisting[caption={Struttura livelli Decoder.},label={lst:str_enc},firstline=10]{code/decoder.py}
 
+\subsection{Training}
+Durante la fase di training si è realizzato il modello generale che compone l'autoencoder, sottoforma di modello sequenziale Keras \lstinline!keras.models.Sequential!. Tale modello è composto da due livelli: Encoder e Decoder
+Il modello è compilato con l'uso dell'ottimizzatore \textit{adam} e \textit{Categorical Cross Entropy} come funzione di \textit{loss}. Tale scelta è dovuta alla natura dell'autoencoder, al quale viene dato come target per il training lo stesso dataset da input al fine di mimare il piu correttamente possibile l'input iniziale passando per una codifica a minore dimensione.
 
+\lstinputlisting[language={},basicstyle=\ttfamily\footnotesize,caption={Composizione di massima dell'autoencoder},label={lst:aenc}]{code/autoencoder.log}
+
+I valori di \lstinline!batch_size! ed \lstinline!epochs! sono stati definiti tali dopo una breve fase sperimentale:
+\begin{itemize}
+\item \textbf{batch\_size} = 128 
+\item \textbf{epochs} = 200
+\end{itemize}
 
 \section{Generative Adversarial Network}
 \label{imp:gan}
