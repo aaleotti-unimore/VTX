@@ -234,6 +234,8 @@ Il dataset utilizzato per il training dell'autoencoder è stato definito nella s
 
 Questa ulteriore codifica ha permesso successivamente di poter trasformare l'autoencoder in una GAN, inviando l'output del decoder come input dell'encoder senza effettuare operazioni di campionamento, fonte di rottura del gradiente del modello.
 
+La differenza principale con il dataset usato precedentemente per il classificatore neurale è la totale mancanza di domini DGA e l'uso esclusivo di domini forniti dal database di Alexa \cite{amazon:alexa}. Il fine infatti è ottenere un sistema che possa riprodurre al meglio i domini reali.
+
 
 \subsection{Encoder}
 La struttura dell'Encoder, definita all'interno della sezione \ref{encoder} è stata implementata con l'ausilio delle API funzionali fornite da Keras. In questo modo è stato possibile implementare un modello più complesso del precedente classificatore, in grado di eseguire l'operazione convoluzionale con due diverse conformazioni in contemporanea rispetto allo stesso tensore di ingresso. Di seguito sono mostrati gli iperparametri che definiscono il modello Encoder. 
@@ -247,7 +249,7 @@ La struttura dell'Encoder, definita all'interno della sezione \ref{encoder} è s
 \end{itemize}
 
 La bontà di tali valori è stata confermata da \cite{deepdga} e per tanto utilizzati in maniera identica.
-I valori \lstinline!timesteps!, \lstinline!word_index!, \lstinline!latent_vector! definiscono le dimensioni dei tensori di ingresso ed uscita, così come definiti dalle dimensioni del dataset. La dimensione di \lstinline!latent_vector! è arbitraria: in questo caso si è optato per  ridurre ulteriormente la dimensione del tensore di uscita dalle due reti convoluzionali per estrarre le features piu caratterizzanti dalla fase di encoding.
+I valori \lstinline!timesteps!, \lstinline!word_index!, \lstinline!latent_vector! definiscono le dimensioni dei tensori di ingresso ed uscita, così come definiti dalle dimensioni del dataset. La dimensione di \lstinline!latent_vector! è arbitraria: in questo caso si è optato per  ridurre ulteriormente la dimensione del tensore di uscita dalle due reti convoluzionali per estrarre le features più caratterizzanti dalla fase di encoding.
 
 I valori \lstinline!dropout_value! e \lstinline!leaky_relu_alpha! sono il risultato di una lunga fase di \textit{tuning} degli iperparametri, particolarmente critici per il mantenimento dell'equilibrio della successiva GAN.
 
@@ -266,7 +268,7 @@ Per completezza si riporta l'implementazione del decoder:
 
 \subsection{Training}
 Durante la fase di training si è realizzato il modello generale che compone l'autoencoder, sottoforma di modello sequenziale Keras \lstinline!keras.models.Sequential!. Tale modello è composto da due livelli: Encoder e Decoder
-Il modello è compilato con l'uso dell'ottimizzatore \textit{adam} e \textit{Categorical Cross Entropy} come funzione di \textit{loss}. Tale scelta è dovuta alla natura dell'autoencoder, al quale viene dato come target per il training lo stesso dataset da input al fine di mimare il piu correttamente possibile l'input iniziale passando per una codifica a minore dimensione.
+Il modello è compilato con l'uso dell'ottimizzatore \textit{adam} e \textit{Categorical Cross Entropy} come funzione di \textit{loss}. Tale scelta è dovuta alla natura dell'autoencoder, al quale viene dato come target per il training lo stesso dataset da input al fine di mimare il più correttamente possibile l'input iniziale passando per una codifica a minore dimensione.
 
 \lstinputlisting[language={},basicstyle=\ttfamily\footnotesize,caption={Composizione di massima dell'autoencoder},label={lst:aenc}]{code/autoencoder.log}
 
@@ -276,8 +278,65 @@ I valori di \lstinline!batch_size! ed \lstinline!epochs! sono stati definiti tal
 \item \textbf{epochs} = 200
 \end{itemize}
 
+Durante la fase di training l'indicatore principale di performance è il valore di \textit{loss}, il quale al suo decrescere indica una migliore capacità di riproduzione dei domini.
+
 \section{Generative Adversarial Network}
 \label{imp:gan}
+L'implementazione della Generative Adversarial Network (sezione \ref{ganintro}, è stata evoluta a partire da quella eseguita per l'autoencoder. 
 
-\todo{parlare del pretraining}
-\todo{parlare di funzioni di loss, di ottimizzatori}
+\subsection{Dataset}
+La composizione del dataset di domini è identica a quella fornita per l'autoencoder. Durante la fase di training si alternano mini-batch provenienti da tale dataset e mini-batch create sinteticamente dal generatore a partire da un vettore randomico di valori compresi tra $[-1.0,1.0]$.
+
+\subsection{Discriminatore}
+Il modello del discriminatore è derivato dal modello definito dall'encoder: in coda all'encoder si è aggiunto un layer denso in grado di operare classificazione binaria, definito da: 
+
+\begin{lstlisting}
+Dense(1, activation='sigmoid', kernel_initializer='normal')
+\end{lstlisting}
+
+Questo layer aggiuntivo trasforma la funzione dell'encoder in un classificatore in grado di discriminare tra domini reali e domini generati sinteticamente.
+
+\subsection{Generatore}
+La struttura del generatore è identica alla struttura definita per il decoder. La differenza principale sta nel tipo di input dato in ingresso: Nel caso decoder l'input proviene dall'uscita dell'encoder, mentre nel caso generatore l'input è fornito in forma di vettore randomico creato con l'ausilio della libreria \textit{numpy} \cite{numpy} \lstinline!np.random.normal! con valori compresi tra $[-1.0,1.0]$.
+
+\subsection{Training}
+La fase di training comporta più fasi, che coinvolgono separatamente i sottosistemi della GAN.
+
+In prima fase, come indicato da \cite{deepdga} si è scelto di eseguire un pre-training tramite l'autoencoder. Si è eseguita una fase di training efficace su tale sistema, copiando successivamente i pesi aggiornati all'interno della GAN, al fine di fornire una base di partenza stabile per entrambi i sottosistemi Encoder/Discriminatore e Decoder/Generatore.
+
+Successivamente a tale pre-training il dataset viene caricato in memoria, i modelli di Discriminatore e Generatore sono compilati con i seguenti valori: 
+\begin{itemize}
+	\item \textbf{Discriminatore}: utilizza l'ottimizzatore RMSprop \cite{rmsprop} con tali valori: 
+		\begin{itemize}
+			\item learning rate $= 0.01$ 
+			\item clipvalue $= 1.0$
+			\item decay $= 10^{-8}$
+		\end{itemize}
+	\item \textbf{Generatore}: utilizza l'ottimizzatore Adam con tali valori:
+	\begin{itemize}
+		\item learning rate $= 0.0001$
+		\item beta\_1 $= 0.9$
+		\item beta\_2 $= 0.999$
+		\item $\epsilon = 10^{-8}$
+		\item decay $= 10^{-8}$
+		\item clipvalue  $= 1.0$
+	\end{itemize}
+\end{itemize}
+
+Tali valori sono il frutto di una fase sperimentale molto lunga, durante la quale si è cercato di calibrare attentamente i valori di learning rate di entrambi gli ottimizzatori al fine di ottenere un equilibrio tra i due sottosistemi della GAN: ha infatti dimostrato una forte propensione a degenerare verso un sistema o l'altro, fornendo valori di loss estremi. Si è cercata infatti una impostazione tale che mantenesse valori di loss più o meno stabili durante la durata della fase di training.
+
+Entrambi i sottosistemi sono stati compilati con l'uso di \textit{binary crossentropy} come funzione di loss, in quanto l'output di entrambi è rappresentato dal layer denso, in uscita dal discriminatore.
+
+Nella fase successiva il dataset è stato suddiviso secondo la dimensione impostata dal valore di \lstinline!batch_size!, in modo da poter garantire una passata completa a tutto il dataset per ogni epoca di training.
+Per ogni epoca e per ogni minibatch del dataset si è proceduto con il seguente metodo: 
+\begin{itemize}
+	\item Si genera un vettore di valori randomici, di dimensione identica all'input accettato dal Generatore. 
+	\item A partire da tale vettore si sono generati domini sintetici.
+	\item In maniera alternata, per ogni ciclo di mini-batch, si è fornito come training al discriminatore un mini-batch formato unicamente da domini reali provenienti dal dataset oppure un mini-batch di domini sintetici prodotti dal generatore. Entrambi gli input sono accompagnati da un vettore di target che indica al discriminatore la natura di tali domini (reali o sintetici).
+	\item Si congelano i pesi del discriminatore. Tale procedura permette al generatore di procedere alla sua fase di training, utilizzando il discriminatore come mezzo per ottenere un indice di qualità dei domini generati sinteticamente.
+	\item Si genera un nuovo vettore randomico.
+	\item Si procede al training del generatore, utilizzando l'intera GAN come modello. In ingresso si forniscono il vettore randomico ed un vettore di target ingannevole, il quale indica che i valori in uscita forniti sono reali. Questo metodo fa si che il generatore si spinga via via verso la creazione di domini via via più simili a quelli reali. L'output del generatore viene dato in ingresso al livello successivo, composto dal discriminatore che in questo caso non può aggiornare i propri pesi ma solo fornire una predizione sulla natura dei dati di ingresso. 
+	\item Si riattiva l'aggiornamento dei pesi per il discriminatore, per il prossimo ciclo di training.
+\end{itemize}
+
+Tale procedura è ripetuta per tutti i mini-batch e per il numero di epoche di training impostato. 
