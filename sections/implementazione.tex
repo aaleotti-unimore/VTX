@@ -122,19 +122,19 @@ Come definito all'interno della sezione \ref{classificatorenninterno}, la compos
 \item un primo modello ridotto contenente un input a dimensione 15 (fissata inizialmente come dimensione dei domini codificati), un livello intermedio di dimensione dimezzata rispetto all'input ed un livello finale con un singolo neurone per ottenere classificazione binaria (listato \ref{lst:small} ). 
 
 
-\lstinputlisting[language={}, caption={Baseline Ridotta},label={lst:small}]{code/small_baseline.log}
+\lstinputlisting[language={}, caption={Baseline Ridotta},label={lst:small}]{code/small_baseline.txt}
 
 
 \item un secondo modello ampliato contenente input equivalente al precedente, due livelli interni di dimensione 128 ed una uscita con singolo neurone. (listato \ref{lst:large} ).
 
 
-\lstinputlisting[language={}, caption={Baseline ampliata},label={lst:large}]{code/large_baseline.log}
+\lstinputlisting[language={}, caption={Baseline ampliata},label={lst:large}]{code/large_baseline.txt}
 
 
 \item un modello intermedio, contenente ingresso equivalente al precedente, due livelli interni da 128 e 64 e uscita con singolo neurone. (listato \ref{lst:pieraz}).
 
 
-\lstinputlisting[language={}, caption={Baseline intermedia.},label={lst:pieraz}]{code/pieraz_baseline.log}
+\lstinputlisting[language={}, caption={Baseline intermedia.},label={lst:pieraz}]{code/pieraz_baseline.txt}
 
 \end{itemize}
 
@@ -270,7 +270,7 @@ Per completezza si riporta l'implementazione del decoder:
 Durante la fase di training si è realizzato il modello generale che compone l'autoencoder, sottoforma di modello sequenziale Keras \lstinline!keras.models.Sequential!. Tale modello è composto da due livelli: Encoder e Decoder
 Il modello è compilato con l'uso dell'ottimizzatore \textit{adam} e \textit{Categorical Cross Entropy} come funzione di \textit{loss}. Tale scelta è dovuta alla natura dell'autoencoder, al quale viene dato come target per il training lo stesso dataset da input al fine di mimare il più correttamente possibile l'input iniziale passando per una codifica a minore dimensione.
 
-\lstinputlisting[language={},basicstyle=\ttfamily\footnotesize,caption={Composizione di massima dell'autoencoder},label={lst:aenc}]{code/autoencoder.log}
+\lstinputlisting[language={},basicstyle=\ttfamily\footnotesize,caption={Composizione di massima dell'autoencoder},label={lst:aenc}]{code/autoencoder.txt}
 
 I valori di \lstinline!batch_size! ed \lstinline!epochs! sono stati definiti tali dopo una breve fase sperimentale:
 \begin{itemize}
