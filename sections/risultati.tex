@@ -1,8 +1,8 @@
-
 \chapter{Risultati}
-\label{risultati}
+In questo capitolo si presentano i risultati della fase sperimentale effettuata su tutti i sistemi mostrati precedentemente: classificatore \textit{random forest}, classificatore neurale, autoencoder e GAN. Le metriche di valutazione utilizzate sono enunciate all'interno della sezione \ref{metriche}.
 
 \section{Metriche di valutazione}
+\label{metriche}
 Le metriche di valutazione utilizzate per testare la qualità dei modelli sono state:
 \begin{itemize}
 \item \textbf{Precision}: il rapporto $\frac{t_p}{t_p+f_p}$ dove $t_p$ è il numero di veri positivi e $f_p$ il numero di falsi positivi. Intuitivamente è l'abilità del classificatore di non marcare come positivo un campione negativo.
@@ -16,6 +16,7 @@ $X_{1}$ è il punteggio per un'istanza positiva e $X_{0}$ è il punteggio per un
 \end{itemize}
 
 \section{Classificatore Random Forest}
+\label{res:crf}
 Il classificatore Random Forest è stato testato in diverse configurazioni. La configurazione che è stata presentata nella sezione \ref{imp:randomforest} ha mostrato i migliori risultati in ogni test.
 
 Il classificatore è stato testato dapprima testato con le seguenti famiglie di malware, contro un subset di dimensione simile di domini provenienti dalla classifica Alexa.
@@ -42,7 +43,7 @@ ramdo \\
 
 Il dataset così riunito è stato separato in due parti disuguali: il 90\% è stato utilizzato come dataset di training mentre il restante 10\% come testing in maniera da evitare il fenomeno di overfitting. I risultati della predizione sul dataset di testing sono mostrati di seguito in figura \ref{fig:repdga} e figura \ref{fig:rocdga}. A fianco dell'etichette \textit{legit} e \textit{DGA} è indicato il numero di campioni utilizzati per le due categorie. Come si può notare la performance del classificatore
 
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\columnwidth]{figures/rndf_tra_nosup_nosup/class_rep.png}
     \caption{Report di classificazione su un subset di domini reali (legit) e malevoli (DGA).\label{fig:repdga}}
@@ -54,7 +55,7 @@ Il dataset così riunito è stato separato in due parti disuguali: il 90\% è st
 
 Lo stesso classificatore è stato testato inserendo \textit{suppobox} all'interno delle famiglie DGA. Si è scelto tale malware come campione esterno in quanto presentava la maggiore differenza rispetto alle famiglie mostrate in tabella \ref{tab:malware}. Non è stato fatto un ulteriore training con suppobox. I risultati si possono vedere in figura \ref{fig:repsup} e \ref{fig:rocsup}. Come si può notare la performance ne è pesantemente influenzata, introducendo una grande percentuale di falsi nelle predizioni effettuate dal classificatore.
 
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\columnwidth]{figures/rndf_tra_nosup_sup/class_rep.png}
     \caption{Report di classificazione su un subset di domini reali (legit) e malware, comprendenti suppobox (DGA).\label{fig:repsup}}
@@ -66,7 +67,7 @@ Lo stesso classificatore è stato testato inserendo \textit{suppobox} all'intern
 
 Come ultimo test è stato eseguito il training aggiungendo al precedente dataset di training una parte di domini generati da suppobox (Figura \ref{fig:repall} e \ref{fig:rocall}). Come si può notare la performance è migliorata sensibilmente, non raggiungendo comunque i risultati eccellenti del primo test.
 
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\columnwidth]{figures/rndf_tra_sup_sup/class_rep.png}
     \caption{Report di classificazione su un subset di domini reali (legit) e malware, comprendenti suppobox (DGA).\label{fig:repall}}
@@ -77,7 +78,29 @@ Come ultimo test è stato eseguito il training aggiungendo al precedente dataset
 \end{figure}
 
 \section{Classificatore Neurale}
+Il classificatore neurale, nato per superare le mancanze del classificatore random forest, è stato testato nelle stesse condizioni utilizzate precedentemente: in particolare è stato utilizzato lo stesso dataset mostrato in sezione \ref{res:crf} e diviso con allo stesso modo in $\frac{9}{10}$ per la fase di training e $\frac{1}{10}$ per la fase di testing.
+
+Particolarmente difficoltoso si è dimostrato il tuning dei parametri numero epoche e dimensione dei mini-batch per ottenere valori ottimali. Dopo una serie di test sperimentali che hanno messo a confronto diversi valori vagamente simili, si è proceduto con:
+\begin{itemize}
+\item \textbf{numero epoche} $= 60$
+\item \textbf{dimensione minibatch} $= 35$ 
+\end{itemize}
+
+I test effettuati sul dataset, comprendenti suppobox, hanno mostrato i risultati mostrati in figura \ref{fig:cnrepall} e \ref{fig:cnrocall}. Come si può vedere dai grafici il comportamento del classificatore è pressoché identico a quello mostrato dal classificatore random forest (figure \ref{fig:repall} e \ref{fig:rocall} )
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/clas_nn/class_rep.png}
+    \caption{Classificatore Neurale: Report di classificazione su un subset di domini reali (legit) e malware, comprendenti suppobox (DGA).\label{fig:cnrepall}}
+
+    \centering
+    \includegraphics[width=\columnwidth]{figures/clas_nn/roc_plot.png}
+    \caption{Classificatore Neurale: Area sottesa dalla curva ROC per il test con domini reali e malware (comprendenti suppobox).\label{fig:cnrocall}}
+\end{figure}
+
+A partire da questo classificatore neurale stabile è stato possibile implementare un sistema di adversarial learning tramite la GAN derivante da un autoencoder. 
 
 \section{Autoencoder}
+
 
 \section{Generative Adversarial Network}
