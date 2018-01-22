@@ -230,6 +230,7 @@ Dopo una fase sperimentale i valori che hanno mostrato i risultati migliori in f
 L'implementazione dell'autoencoder descritto in sezione \ref{autoencoder} è stata eseguita in ambiente Python con l'ausilio della libreria Keras per reti neurali. 
 
 \subsection{Dataset}
+\label{imp:autoencoder:dataset}
 Il dataset utilizzato per il training dell'autoencoder è stato definito nella sezione \ref{datasetautoencoder}. Tale dataset risulta essere un'ulteriore elaborazione della mappatura utilizzata all'interno del classificatore neurale precedentemente descritto: i domini codificati in vettori numerici sono stati ulteriormente codificati con la tecnica one-hot, in modo da ottenere, per ogni dominio, un tensore di valori binari contenente un vettore per ogni \textit{step temporale} che compone il dominio. tale vettore, contenente la lettera i-esima del dizionario è formato da zeri tranne l'elemento alla posizione i-esima, impostato ad 1.
 
 Questa ulteriore codifica ha permesso successivamente di poter trasformare l'autoencoder in una GAN, inviando l'output del decoder come input dell'encoder senza effettuare operazioni di campionamento, fonte di rottura del gradiente del modello.
