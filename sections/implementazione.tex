@@ -3,6 +3,7 @@
 In questa sezione è descritta l'implementazione del progetto definito nel capitolo precedente. I principali strumenti utilizzati sono Python come linguaggio di programmazione e le librerie Scikit-learn \cite{sklearn} per attuare machine learning e Keras \cite{keras} per realizzare reti neurali. La libreria per reti neurali su cui opera Keras è Tensorflow \cite{tensorflow}.
 Di seguito sono elencati i dettagli implementativi delle singole entità, ed i parametri usati durante la fase sperimentale.
 
+\newpage
 \section{Classificatore Random Forest}
 \label{imp:randomforest}
 Il classificatore Random Forest è stato implementato tramite l'uso della libreria python Scikit-learn \cite{sklearn}. 
@@ -109,6 +110,7 @@ In particolare i parametri del classificatore utilizzato che sono stati modifica
 \item \textbf{\texttt{oob\_score}} = True. Implica l'uso di campioni \textit{out-of-bag} per ottenere una stima facilitata dell'errore. Con questa tecnica una parte del campione di stima viene esclusa per essere utilizzata come insieme di verifica.
 \end{itemize}
 
+\newpage
 \section{Classificatore Neurale}
 \label{imp:classneurale}
 L'implementazione del classificatore neurale è stata eseguita in ambiente Python, con l'utilizzo della libreria Keras \cite{keras} per le reti neurali.
@@ -225,6 +227,7 @@ Dopo una fase sperimentale i valori che hanno mostrato i risultati migliori in f
 \item \textbf{epochs} = 60
 \end{itemize}
 
+\newpage
 \section{Autoencoder}
 \label{imp:autoencoder}
 L'implementazione dell'autoencoder descritto in sezione \ref{autoencoder} è stata eseguita in ambiente Python con l'ausilio della libreria Keras per reti neurali. 
@@ -283,6 +286,7 @@ I valori di \lstinline!batch_size! ed \lstinline!epochs! sono stati definiti tal
 
 Durante la fase di training l'indicatore principale di performance è il valore di \textit{loss}, il quale al suo decrescere indica una migliore capacità di riproduzione dei domini.
 
+\newpage
 \section{Generative Adversarial Network}
 \label{imp:gan}
 L'implementazione della Generative Adversarial Network (sezione \ref{ganintro}, è stata evoluta a partire da quella eseguita per l'autoencoder. 

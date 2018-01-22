@@ -1,6 +1,7 @@
 \chapter{Risultati}
 In questo capitolo si presentano i risultati della fase sperimentale effettuata su tutti i sistemi mostrati precedentemente: classificatore \textit{random forest}, classificatore neurale, autoencoder e GAN. Le metriche di valutazione utilizzate sono enunciate all'interno della sezione \ref{metriche}. In sezione \ref{res:crf} vengono mostrati i risultati sperimentali ottenuti dal classificatore random forest, punto di partenza di questo studio. In sezione \ref{ris:cnn} vengono mostrati i risulati sperimentali ottenuti dal classificatore neurale, evoluzione del classificatore random forest, e le problematiche incontrate durante tale fase. In sezione \ref{ris:autoenc} viene mostrata la fase sperimentale che ha coinvolto l'autoencoder, per durante la quale si sono ottenuti i pesi utilizzati successivamente come punto di partenza per la fase di training della Generative Adversarial Network. All'interno dell'ultima sezione ( \ref{ris:gan} ) sono mostrati i risultati ottenuti dal training della GAN e la lunga fase di tuning richiesta da quest'ultima.
-\newpage
+
+\pagebreak
 \section{Metriche di valutazione}
 \label{metriche}
 Le metriche di valutazione utilizzate per testare la qualità dei modelli sono state:
@@ -22,7 +23,7 @@ Il classificatore Random Forest è stato testato in diverse configurazioni. La c
 
 Il classificatore è stato testato dapprima testato con le seguenti famiglie di malware, contro un subset di dimensione simile di domini provenienti dalla classifica Alexa.
 
-\begin{table}[!htbp]
+\begin{table}[!bp]
     \centering
     \begin{tabular}[t]{l}
     \toprule
@@ -33,6 +34,10 @@ cryptolocker \\
 zeus \\
 pushdo \\
 rovnix \\
+\bottomrule
+\end{tabular}
+ \begin{tabular}[t]{l}
+    \toprule
 tinba \\
 conficker \\
 matsnu \\
@@ -44,7 +49,7 @@ ramdo \\
 
 Il dataset così riunito è stato separato in due parti disuguali: il 90\% è stato utilizzato come dataset di training mentre il restante 10\% come testing in maniera da evitare il fenomeno di overfitting. I risultati della predizione sul dataset di testing sono mostrati in figura \ref{fig:repdga} e figura \ref{fig:rocdga}. A fianco dell'etichette \textit{legit} e \textit{DGA} è indicato il numero di campioni utilizzati per le due categorie. Come si può notare la performance del classificatore è molto positiva. Si ipotizza che tale risultato sia dovuto alla forte differenza linguistica tra domini reali e domini DGA, pertanto il classificatore soffre di un errore praticamente nullo. 
 
-\begin{figure}[!htbp]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=.85\columnwidth]{figures/rndf_tra_nosup_nosup/class_rep.png}
     \caption{Classificatore Random Forest: Report di classificazione su un subset di domini reali (legit) e malevoli (DGA).\label{fig:repdga}}
@@ -56,7 +61,7 @@ Il dataset così riunito è stato separato in due parti disuguali: il 90\% è st
 
 In fase preliminare si è effettuato un confronto con altri due algoritmi di classificazione: SVC (C-Support Vector) e Gaussian Naive-Bayes. La loro performance non è stata altrettanto eccellente e pertanto si è deciso di accantonarli e proseguire con l'utilizzo di Random Forest. I report di classificazione sono mostrati in figura \ref{fig:repsvc} e \ref{fig:repgnb}.
 
-\begin{figure}[!htbp]
+\begin{figure}[htbp]
   	\centering
     \includegraphics[width=.85\columnwidth]{figures/report_SVC.png}
     \caption{Report di classificazione per l'algoritmo SVC.\label{fig:repsvc}}
@@ -68,7 +73,7 @@ In fase preliminare si è effettuato un confronto con altri due algoritmi di cla
 
 Il classificatore random forest è stato testato inserendo \textit{suppobox} tra le famiglie DGA già presenti. Si è scelto tale malware come campione esterno in quanto presenta la maggiore differenza rispetto alle famiglie mostrate in tabella \ref{tab:malware}. I risultati si possono vedere in figura \ref{fig:repsup} e \ref{fig:rocsup} e come si può notare la performance ne è fortemente influenzata, introducendo una grande percentuale di falsi nelle predizioni effettuate dal classificatore.
 
-\begin{figure}[!htbp]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=.85\columnwidth]{figures/rndf_tra_nosup_sup/class_rep.png}
     \caption{Classificatore Random Forest: Report di classificazione su un subset di domini reali (legit) e malware, comprendenti suppobox (DGA).\label{fig:repsup}}
@@ -78,9 +83,10 @@ Il classificatore random forest è stato testato inserendo \textit{suppobox} tra
     \caption{Classificatore Random Forest: Area sottesa dalla curva ROC per il test con  suppobox.\label{fig:rocsup}}
 \end{figure}
 
+\newpage
 Come ultimo test è stato eseguito il training aggiungendo al precedente dataset di training una parte di domini generati da suppobox (Figura \ref{fig:repall} e \ref{fig:rocall}). Come si può notare la performance è migliorata sensibilmente, non raggiungendo comunque i risultati eccellenti del primo test.
 
-\begin{figure}[!htbp]
+\begin{figure}[!hb]
     \centering
     \includegraphics[width=.85\columnwidth]{figures/rndf_tra_sup_sup/class_rep.png}
     \caption{Classificatore Random Forest: Report di classificazione su un subset di domini reali (legit) e malware, comprendenti suppobox (DGA).\label{fig:repall}}
@@ -89,6 +95,7 @@ Come ultimo test è stato eseguito il training aggiungendo al precedente dataset
     \includegraphics[width=.85\columnwidth]{figures/rndf_tra_sup_sup/roc_plot.png}
     \caption{Classificatore Random Forest: Area sottesa dalla curva ROC per il test con domini reali e malware (comprendenti suppobox).\label{fig:rocall}}
 \end{figure}
+
 \newpage
 \section{Classificatore Neurale}
 \label{ris:cnn}
@@ -96,7 +103,7 @@ Il classificatore neurale, nato per superare le mancanze del classificatore rand
 
 In prima fase si sono messe a confronto le tre architetture presentate in sezione \ref{classificatorenninterno}. Tali architetture hanno dimostrato tre andamenti simili; tuttavia a fronte dei risultati mostrati e della minore richiesta di risorse, il modello intermedio è risultato vincente rispetto agli altri testati. ( Figura \ref{fig:cfrmlp} )
 
-\begin{figure}[!htbp] 
+\begin{figure}[!bp] 
 \centering
 	\begin{minipage}[t]{\linewidth}
 		\includegraphics[width=\linewidth]{figures/MLP1.png}
@@ -109,7 +116,7 @@ In prima fase si sono messe a confronto le tre architetture presentate in sezion
 
 Motivo di confronto è stata l'introduzione o meno di Batch Normalization \cite{1502.03167}. Come si può vedere dai grafici mostrati in figura \ref{fig:batchnorm} vi è una differenza di prestazione dovuta alla normalizzazione dei mini-batch, pertanto si è scelto di mantenere tale funzione all'interno dei livelli nonostante l'aumento di costi prestazionali.
 
-\begin{figure}[!htbp] 
+\begin{figure}[!bp] 
 	\begin{minipage}[t]{\linewidth}
 		\includegraphics[width=\linewidth]{figures/MLP_batchnorm1.png}
 	\end{minipage}\hfill
@@ -129,7 +136,7 @@ Tali valori hanno dimostrato di fornire la migliore performance durante la fase 
 
 I test effettuati sul dataset hanno mostrato i risultati mostrati in figura \ref{fig:cnrepall} e \ref{fig:cnrocall}. Come si può vedere dai grafici il comportamento del classificatore è pressoché identico a quello mostrato dal classificatore random forest (figure \ref{fig:repall} e \ref{fig:rocall} )
 
-\begin{figure}[!htbp]
+\begin{figure}[!bp]
     \centering
     \includegraphics[width=.85\columnwidth]{figures/clas_nn/class_rep.png}
     \caption{Classificatore Neurale: Report di classificazione su un subset di domini reali (legit) e malware, comprendenti suppobox (DGA).\label{fig:cnrepall}}
@@ -146,9 +153,9 @@ A partire da questo classificatore neurale stabile è stato possibile implementa
 \label{ris:autoenc}
 L'autoencoder come presentato in sezione \ref{autoencoder} è stato testato con il dataset mostrato in sezione \ref{imp:autoencoder:dataset}. In fase sperimentale si è proceduto alla quantificazione della configurazione ottimale dell'autoencoder. In particolare si sono messi a confronto i valori di dropout presenti all'interno di encoder e decoder ed i valori di learning rate dei rispettivi compilatori. I valori finali di tali compilatori sono indicati all'interno della sezione \ref{imp:autoe:enc} e \ref{imp:autoe:dec}
 
-Di seguito è possibile notare i risultati della fase di training, per il quale si è trattenuto $\frac{1}{3}$ del training set come subset di validazione. Come è possibile notare l'ultima iterazione (colore verde) ha mostrato i risultati migliori e pertanto è stata utilizzata come base di partenza per il training della successiva GAN. (Figure \ref{fig:aut1}, \ref{fig:aut2} ).
+Di seguito è possibile notare i risultati della fase di training, per il quale si è trattenuto $\frac{1}{3}$ del training set come subset di validazione. Come è possibile notare l'ultima iterazione (colore verde) ha mostrato i risultati migliori e pertanto è stata utilizzata come base di partenza per il training della successiva GAN. (Figure \ref{fig:aut1} e \ref{fig:aut2} ).
 
-\begin{figure}[!htbp]
+\begin{figure}[htbp]
     \centering
     \begin{minipage}[t]{\linewidth}
     	\includegraphics[width=\linewidth]{figures/autoenc.png}
@@ -159,7 +166,7 @@ Di seguito è possibile notare i risultati della fase di training, per il quale 
     \caption{Grafici di Accuracy e Loss per la fase di training dell'autoencoder. La prima fase è rappresentata dalla curva arancione, la seconda dalla curva fuchsia mentre la terza fase è rappresentata dalla curva di colore verde. Si può notare come la terza iterazione raggiunga buoni valori di accuracy e loss; pertanto stato scelto come configurazione vincente per la GAN \label{fig:aut1}}
 \end{figure}
 
-\begin{figure}[!htbp]
+\begin{figure}[htbp]
     \centering
     \begin{minipage}[t]{\linewidth}
     	\includegraphics[width=\linewidth]{figures/autoenc3.png}
@@ -171,10 +178,131 @@ Di seguito è possibile notare i risultati della fase di training, per il quale 
 \caption{Grafici di Accuracy e Loss rispetto al subset di validazione per la fase di training dell'autoencoder. Si può notare come i valori raggiunti siano molto simili a quelli ottenuti sul dataset di training, indice di qualità del modello rispetto a valori mai visti. \label{fig:aut2} }
 \end{figure}
 
-\todo{mostrare e commentare i nomi di dominio generati dall'autoencoder}
+\begin{table}[htbp]
+\centering
+	\begin{tabular}{l}
+	\toprule
+	ehyt5tcncn3o5nw \\
+	reknclkobg \\
+	kne3xersl6npyr5 \\
+	moeaamutlrhsn \\
+	5t7-iitnvtrm5en \\
+	r-zeotn0t-wuf \\
+	bgargtas \\
+	vviadammpielw \\
+	7-aolelcfiextl \\
+	morehekb \\
+	\bottomrule
+	\end{tabular}
+	\begin{tabular}{l}
+	\toprule
+	d9ongedeo  \\
+	meoomer \\
+	zggy1lbxgi1psir \\
+	ypsanilwrox \\
+	bt5ennsl1zjchp0 \\
+	runvpfcfrmaser \\
+	anhgnxracokimoa \\
+	atngsam \\
+	de-poaz9yiiu \\
+	nhntadt \\
+	\bottomrule
+	\end{tabular}
+	\begin{tabular}{l}
+	\toprule
+	2kbth \\
+	snd-drcepn \\
+	sievd0 \\
+	ono5ponlanafhic \\
+	mmd0-5-ile \\
+	su1aojp52 \\
+	eraveok \\
+	lfeubune \\
+	ilnegban0 \\
+	uim-rca0ohxmsbi \\
+	\bottomrule
+	\end{tabular}
+	\begin{tabular}{l}
+	\toprule
+	oldohizlioczzu \\
+	dodttiune \\
+	ahoinin3 \\
+	etiso9oo \\
+	qi8gtuyte-ssg-n \\
+	mlsrp8gf \\
+	ktb1r2vb \\
+	ptsdrqtanflog \\
+	mcng5tsotnless \\
+	rrhtsrceu \\
+	\bottomrule
+	\end{tabular}
+
+\caption{Esempio di domini generati dall'autoencoder. \label{tab:autoenc}}
+\end{table}
 
 \newpage
 \section{Generative Adversarial Network}
 \label{ris:gan}
 La Generative Adversarial Network descritta in sezione \ref{ganintro} e implementata come in sezione \ref{imp:gan} ha richiesto una lunga fase sperimentale nella quale è stato necessario trovare la giusta combinazione di iperparametri per i quali i due sottosistemi generatore e discriminatore potessero rimanere in equilibrio durante la durata necessaria per completare la fase di training. 
 
+\begin{table}[htbp]
+\centering
+	\begin{tabular}{l}
+	\toprule
+edarareve \\
+skonasesosarere \\
+skaran-unar \\
+chicochophavock \\
+dichoros \\
+isherevores \\
+nillersosersrsp \\
+rldicde \\
+escrarararuro \\
+aemjtup \\
+	\bottomrule
+	\end{tabular}
+	\begin{tabular}{l}
+	\toprule
+	ssrarsone \\
+asccacca \\
+monasheamc \\
+itsusosose \\
+stlega \\
+ivortewrp \\
+sdesedlsss \\
+nggeneneres \\
+madesadk \\
+cesasasrrrrrrs \\
+	\bottomrule
+	\end{tabular}
+	\begin{tabular}{l}
+	\toprule
+	horicicocr \\
+sthonacorl \\
+raocjcacarcrarl \\
+vichitos \\
+ogagagasuss \\
+plerundinwoshn \\
+odocococcocke \\
+tuccronpcs \\
+mivorthitdhud \\
+mtuvocaro \\
+	\bottomrule
+	\end{tabular}
+	\begin{tabular}{l}
+	\toprule
+avensdends \\
+mwonwonerene \\
+inihkkellgcrock \\
+madoxto \\
+ljarlers \\
+maahofononoris \\
+msusongere \\
+scsacccca \\
+rrngajiagjonggk \\
+ituutasisa \\
+	\bottomrule
+	\end{tabular}
+
+\caption{Esempio di domini generati dall'autoencoder. \label{tab:autoenc}}
+\end{table}
