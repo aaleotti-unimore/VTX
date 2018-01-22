@@ -239,6 +239,7 @@ La differenza principale con il dataset usato precedentemente per il classificat
 
 
 \subsection{Encoder}
+\label{imp:autoe:enc}
 La struttura dell'Encoder, definita all'interno della sezione \ref{encoder} è stata implementata con l'ausilio delle API funzionali fornite da Keras. In questo modo è stato possibile implementare un modello più complesso del precedente classificatore, in grado di eseguire l'operazione convoluzionale con due diverse conformazioni in contemporanea rispetto allo stesso tensore di ingresso. Di seguito sono mostrati gli iperparametri che definiscono il modello Encoder. 
 
 \lstinputlisting[caption={Iperarametri Encoder.},label={lst:par_enc},lastline=9]{code/encoder.py}
@@ -259,6 +260,7 @@ Per completezza di seguito è elencato il codice essenziale che compone l'encode
 \lstinputlisting[caption={Struttura livelli Encoder.},label={lst:str_enc},firstline=9]{code/encoder.py}
 
 \subsection{Decoder}
+\label{imp:autoe:dec}
 La composizione del decoder è pressochè identica a quella mostrata dall'encoder e ricalca il progetto mostrato in sezione \ref{decoder}. Di seguito sono elencati gli iperparametri che compongono il modello decoder. Si può notare come siano identici a quelli mostrati dall'encoder a differenza del \lstinline!dropout_value!, il quale gioca un ruolo maggiore nel pilotare l'equilibrio tra i due modelli.
 
 \lstinputlisting[caption={Iperarametri Decoder.},label={lst:par_enc},lastline=10]{code/decoder.py}

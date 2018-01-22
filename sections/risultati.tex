@@ -1,6 +1,6 @@
 \chapter{Risultati}
-In questo capitolo si presentano i risultati della fase sperimentale effettuata su tutti i sistemi mostrati precedentemente: classificatore \textit{random forest}, classificatore neurale, autoencoder e GAN. Le metriche di valutazione utilizzate sono enunciate all'interno della sezione \ref{metriche}.
-
+In questo capitolo si presentano i risultati della fase sperimentale effettuata su tutti i sistemi mostrati precedentemente: classificatore \textit{random forest}, classificatore neurale, autoencoder e GAN. Le metriche di valutazione utilizzate sono enunciate all'interno della sezione \ref{metriche}. In sezione \ref{res:crf} vengono mostrati i risultati sperimentali ottenuti dal classificatore random forest, punto di partenza di questo studio. In sezione \ref{ris:cnn} vengono mostrati i risulati sperimentali ottenuti dal classificatore neurale, evoluzione del classificatore random forest, e le problematiche incontrate durante tale fase. In sezione \ref{ris:autoenc} viene mostrata la fase sperimentale che ha coinvolto l'autoencoder, per durante la quale si sono ottenuti i pesi utilizzati successivamente come punto di partenza per la fase di training della Generative Adversarial Network. All'interno dell'ultima sezione ( \ref{ris:gan} ) sono mostrati i risultati ottenuti dal training della GAN e la lunga fase di tuning richiesta da quest'ultima.
+\newpage
 \section{Metriche di valutazione}
 \label{metriche}
 Le metriche di valutazione utilizzate per testare la qualità dei modelli sono state:
@@ -15,6 +15,7 @@ dove
 $X_{1}$ è il punteggio per un'istanza positiva e $X_{0}$ è il punteggio per un'istanza negativa, mentre $f_{0}$ e $f_{1}$ sono densità di probabilità che un campione sia negativo ($1$) o positivo ($0$)
 \end{itemize}
 
+\newpage
 \section{Classificatore Random Forest}
 \label{res:crf}
 Il classificatore Random Forest è stato testato in diverse configurazioni. La configurazione che è stata presentata nella sezione \ref{imp:randomforest} ha mostrato i migliori risultati in ogni test.
@@ -41,7 +42,7 @@ ramdo \\
 \caption{\label{tab:malware}}
 \end{table}
 
-Il dataset così riunito è stato separato in due parti disuguali: il 90\% è stato utilizzato come dataset di training mentre il restante 10\% come testing in maniera da evitare il fenomeno di overfitting. I risultati della predizione sul dataset di testing sono mostrati di seguito in figura \ref{fig:repdga} e figura \ref{fig:rocdga}. A fianco dell'etichette \textit{legit} e \textit{DGA} è indicato il numero di campioni utilizzati per le due categorie. Come si può notare la performance del classificatore è molto positiva. Si ipotizza che tale risultato sia dovuto alla forte differenza linguistica tra domini reali e domini DGA. 
+Il dataset così riunito è stato separato in due parti disuguali: il 90\% è stato utilizzato come dataset di training mentre il restante 10\% come testing in maniera da evitare il fenomeno di overfitting. I risultati della predizione sul dataset di testing sono mostrati in figura \ref{fig:repdga} e figura \ref{fig:rocdga}. A fianco dell'etichette \textit{legit} e \textit{DGA} è indicato il numero di campioni utilizzati per le due categorie. Come si può notare la performance del classificatore è molto positiva. Si ipotizza che tale risultato sia dovuto alla forte differenza linguistica tra domini reali e domini DGA, pertanto il classificatore soffre di un errore praticamente nullo. 
 
 \begin{figure}[!htbp]
     \centering
@@ -53,19 +54,19 @@ Il dataset così riunito è stato separato in due parti disuguali: il 90\% è st
     \caption{Classificatore Random Forest: Area sottesa dalla curva ROC per il test con domini di tabella \ref{tab:malware}.\label{fig:rocdga}}
 \end{figure}
 
-In fase preliminare si è effettuato un confronto con altri due algoritmi di classificazione: SVC (C-Support Vector) e Gaussian Naive Bayes. La loro performance non è stata altrettanto eccellente e pertanto si è deciso di accantonarli e proseguire con l'utilizzo di Random Forest. I report di classificazione sono mostrati in figura \ref{fig:repsvc} e \ref{fig:repgnb}.
+In fase preliminare si è effettuato un confronto con altri due algoritmi di classificazione: SVC (C-Support Vector) e Gaussian Naive-Bayes. La loro performance non è stata altrettanto eccellente e pertanto si è deciso di accantonarli e proseguire con l'utilizzo di Random Forest. I report di classificazione sono mostrati in figura \ref{fig:repsvc} e \ref{fig:repgnb}.
 
 \begin{figure}[!htbp]
   	\centering
     \includegraphics[width=.85\columnwidth]{figures/report_SVC.png}
-    \caption{Report di classificazione di SVC.\label{fig:repsvc}}
+    \caption{Report di classificazione per l'algoritmo SVC.\label{fig:repsvc}}
 
 	\centering
     \includegraphics[width=.85\columnwidth]{figures/report_GaussianNB.png}
-    \caption{Report di classificazione di Gaussian Naive Bayes.\label{fig:repgnb}}
+    \caption{Report di classificazione per l'algoritmo Gaussian Naive-Bayes.\label{fig:repgnb}}
 \end{figure}
 
-Lo stesso classificatore è stato testato inserendo \textit{suppobox} all'interno delle famiglie DGA. Si è scelto tale malware come campione esterno in quanto presentava la maggiore differenza rispetto alle famiglie mostrate in tabella \ref{tab:malware}. Non è stato fatto un ulteriore training con suppobox. I risultati si possono vedere in figura \ref{fig:repsup} e \ref{fig:rocsup}. Come si può notare la performance ne è fortemente influenzata, introducendo una grande percentuale di falsi nelle predizioni effettuate dal classificatore.
+Il classificatore random forest è stato testato inserendo \textit{suppobox} tra le famiglie DGA già presenti. Si è scelto tale malware come campione esterno in quanto presenta la maggiore differenza rispetto alle famiglie mostrate in tabella \ref{tab:malware}. I risultati si possono vedere in figura \ref{fig:repsup} e \ref{fig:rocsup} e come si può notare la performance ne è fortemente influenzata, introducendo una grande percentuale di falsi nelle predizioni effettuate dal classificatore.
 
 \begin{figure}[!htbp]
     \centering
@@ -88,11 +89,37 @@ Come ultimo test è stato eseguito il training aggiungendo al precedente dataset
     \includegraphics[width=.85\columnwidth]{figures/rndf_tra_sup_sup/roc_plot.png}
     \caption{Classificatore Random Forest: Area sottesa dalla curva ROC per il test con domini reali e malware (comprendenti suppobox).\label{fig:rocall}}
 \end{figure}
-
+\newpage
 \section{Classificatore Neurale}
+\label{ris:cnn}
 Il classificatore neurale, nato per superare le mancanze del classificatore random forest, è stato testato nelle stesse condizioni utilizzate precedentemente: in particolare è stato utilizzato lo stesso dataset mostrato in sezione \ref{res:crf} e diviso ancora una volta in $\frac{9}{10}$ per la fase di training e $\frac{1}{10}$ per la fase di testing.
 
-Particolarmente difficoltoso si è dimostrato il tuning dei parametri numero epoche e dimensione dei mini-batch per ottenere valori ottimali. Dopo una serie di test sperimentali che hanno messo a confronto diversi valori, si sono rilevati i valori
+In prima fase si sono messe a confronto le tre architetture presentate in sezione \ref{classificatorenninterno}. Tali architetture hanno dimostrato tre andamenti simili; tuttavia a fronte dei risultati mostrati e della minore richiesta di risorse, il modello intermedio è risultato vincente rispetto agli altri testati. ( Figura \ref{fig:cfrmlp} )
+
+\begin{figure}[!htbp] 
+\centering
+	\begin{minipage}[t]{\linewidth}
+		\includegraphics[width=\linewidth]{figures/MLP1.png}
+	\end{minipage}\hfill
+	\begin{minipage}[b]{\linewidth}
+		\includegraphics[width=\linewidth]{figures/MLP2.png}
+	\end{minipage}
+	\caption{Classificatore Neurale: Grafici di Accuracy e Loss di confronto fra i tre modelli. La curva di colore grigio rappresenta il modello ingrandito, la curva di colore arancione rappresenta il modello ridotto mentre la curva di colore rosso rappresenta il modello intermedio; vincente tra i tre. \label{fig:cfrmlp}}
+\end{figure}
+
+Motivo di confronto è stata l'introduzione o meno di Batch Normalization \cite{1502.03167}. Come si può vedere dai grafici mostrati in figura \ref{fig:batchnorm} vi è una differenza di prestazione dovuta alla normalizzazione dei mini-batch, pertanto si è scelto di mantenere tale funzione all'interno dei livelli nonostante l'aumento di costi prestazionali.
+
+\begin{figure}[!htbp] 
+	\begin{minipage}[t]{\linewidth}
+		\includegraphics[width=\linewidth]{figures/MLP_batchnorm1.png}
+	\end{minipage}\hfill
+	\begin{minipage}[b]{\linewidth}
+		\includegraphics[width=\linewidth]{figures/MLP_batchnorm2.png}
+	\end{minipage}
+	\caption{Classificatore Neurale: Grafici di Accuracy e Loss per il modello intermedio. La curva rossa identifica il modello senza l'ausilio di Batch Normalization mentre la curva fuchsia rappresenta lo stesso modello con l'inserimento di Batch Normalization per ogni livello densamente connesso che compone il Multilayer Perceptron. \label{fig:batchnorm}}
+\end{figure}
+
+Particolarmente difficoltoso si è dimostrato il tuning degli  iperparametri di numero epoche e dimensione mini-batch per ottenere valori ottimali. Dopo una serie di test sperimentali che hanno messo a confronto diversi valori, si sono rilevati i valori
 \begin{itemize}
 \item \textbf{numero epoche} $= 60$
 \item \textbf{dimensione minibatch} $= 35$ 
@@ -100,7 +127,7 @@ Particolarmente difficoltoso si è dimostrato il tuning dei parametri numero epo
 
 Tali valori hanno dimostrato di fornire la migliore performance durante la fase di training.
 
-I test effettuati sul dataset, comprendenti suppobox, hanno mostrato i risultati mostrati in figura \ref{fig:cnrepall} e \ref{fig:cnrocall}. Come si può vedere dai grafici il comportamento del classificatore è pressoché identico a quello mostrato dal classificatore random forest (figure \ref{fig:repall} e \ref{fig:rocall} )
+I test effettuati sul dataset hanno mostrato i risultati mostrati in figura \ref{fig:cnrepall} e \ref{fig:cnrocall}. Come si può vedere dai grafici il comportamento del classificatore è pressoché identico a quello mostrato dal classificatore random forest (figure \ref{fig:repall} e \ref{fig:rocall} )
 
 \begin{figure}[!htbp]
     \centering
@@ -114,36 +141,40 @@ I test effettuati sul dataset, comprendenti suppobox, hanno mostrato i risultati
 
 A partire da questo classificatore neurale stabile è stato possibile implementare un sistema di adversarial learning tramite la GAN derivante da un autoencoder. 
 
+\newpage
 \section{Autoencoder}
-L'autoencoder come presentato in sezione \ref{autoencoder} è stato testato con il dataset mostrato in sezione \ref{imp:autoencoder:dataset}. In fase sperimentale si è proceduto alla quantificazione della configurazione ottimale dell'autoencoder. In particolare si sono messi a confronto i valori di dropout presenti all'interno di encoder e decoder ed i valori di learning rate.
+\label{ris:autoenc}
+L'autoencoder come presentato in sezione \ref{autoencoder} è stato testato con il dataset mostrato in sezione \ref{imp:autoencoder:dataset}. In fase sperimentale si è proceduto alla quantificazione della configurazione ottimale dell'autoencoder. In particolare si sono messi a confronto i valori di dropout presenti all'interno di encoder e decoder ed i valori di learning rate dei rispettivi compilatori. I valori finali di tali compilatori sono indicati all'interno della sezione \ref{imp:autoe:enc} e \ref{imp:autoe:dec}
 
-Di seguito è possibile vedere i risultati della fase di training, per cui si è tenuto $\frac{1}{3}$ del training set come validazione. Come è possibile notare l'ultima iterazione (colore verde) è stata quella che ha mostrato i risultati migliori ed utilizzata come base di partenza per il training della GAN. (Figure \ref{fig:aut1}, \ref{fig:aut2}, \ref{fig:aut3}, \ref{fig:aut4} ).
+Di seguito è possibile notare i risultati della fase di training, per il quale si è trattenuto $\frac{1}{3}$ del training set come subset di validazione. Come è possibile notare l'ultima iterazione (colore verde) ha mostrato i risultati migliori e pertanto è stata utilizzata come base di partenza per il training della successiva GAN. (Figure \ref{fig:aut1}, \ref{fig:aut2} ).
 
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=\columnwidth]{figures/autoenc.png}
-    \caption{Grafico di Accuracy per le Fase di training dell'autoencoder. La prima fase è rappresentata dalla curva arancione, la seconda dalla curva fuchsia mentre la terza fase è rappresentata dalla curva di colore verde. Si può notare come la precisione senti valori molto alti sul dataset di training per il terzo modello. \label{fig:aut1}}
-    \centering
-    \includegraphics[width=\columnwidth]{figures/autoenc2.png}
-    \caption{Grafico di Loss per la fase di training dell'autoencoder. La prima fase è rappresentata dalla curva arancione, la seconda dalla curva fuchsia mentre la terza fase è rappresentata dalla curva di colore verde. Si può notare come la terza iterazione raggiunge valori accettabilidi loss per il dataset di training.\label{fig:aut2}}
-    
+    \begin{minipage}[t]{\linewidth}
+    	\includegraphics[width=\linewidth]{figures/autoenc.png}
+    \end{minipage}\hfill
+    \begin{minipage}[b]{\linewidth}
+    	\includegraphics[width=\linewidth]{figures/autoenc2.png}
+    \end{minipage}
+    \caption{Grafici di Accuracy e Loss per la fase di training dell'autoencoder. La prima fase è rappresentata dalla curva arancione, la seconda dalla curva fuchsia mentre la terza fase è rappresentata dalla curva di colore verde. Si può notare come la terza iterazione raggiunga buoni valori di accuracy e loss; pertanto stato scelto come configurazione vincente per la GAN \label{fig:aut1}}
 \end{figure}
+
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=\columnwidth]{figures/autoenc3.png}
-    \caption{Grafico di accuracy sul dataset di validation per la fase di training dell'autoencoder. Si può notare come i valori raggiunti siano molto simili a quelli ottenuti sul dataset di training.\label{fig:aut3}}   
-    \centering
-    \includegraphics[width=\columnwidth]{figures/autoenc4.png}
-    \caption{Grafico di loss sul dataset di validation per la fase di training dell'autoencoder. Si può notare come i valori raggiunti siano molto simili a quelli ottenuti sul dataset di training.\label{fig:aut4}}
+    \begin{minipage}[t]{\linewidth}
+    	\includegraphics[width=\linewidth]{figures/autoenc3.png}
+    \end{minipage}\hfill
+    \begin{minipage}[b]{\linewidth}
+    	\includegraphics[width=\linewidth]{figures/autoenc4.png}
+    \end{minipage}
     
+\caption{Grafici di Accuracy e Loss rispetto al subset di validazione per la fase di training dell'autoencoder. Si può notare come i valori raggiunti siano molto simili a quelli ottenuti sul dataset di training, indice di qualità del modello rispetto a valori mai visti. \label{fig:aut2} }
 \end{figure}
+
+\todo{mostrare e commentare i nomi di dominio generati dall'autoencoder}
+
+\newpage
 \section{Generative Adversarial Network}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ac lorem sed turpis molestie lacinia in a est. Etiam elementum, dolor volutpat varius tristique, est ipsum ornare arcu, hendrerit sagittis mi arcu in turpis. Integer in erat laoreet, facilisis nibh nec, facilisis mauris. Fusce id elit turpis. Donec vestibulum ipsum ac eros gravida pharetra. Integer massa dolor, aliquam a mauris in, mollis molestie mauris. Phasellus varius commodo arcu, in faucibus lorem cursus id. Ut mollis tincidunt ipsum eget viverra. Nullam eget laoreet erat, a venenatis purus. Nunc ut nulla iaculis, faucibus dolor sit amet, tristique purus. Proin feugiat eros sit amet tortor fringilla, quis dapibus libero iaculis. Donec vulputate rhoncus imperdiet. Curabitur ac risus ultricies, feugiat ipsum ut, bibendum lorem. Duis nec convallis tortor. Etiam felis leo, congue vitae odio non, pharetra tristique nisi.
+\label{ris:gan}
+La Generative Adversarial Network descritta in sezione \ref{ganintro} e implementata come in sezione \ref{imp:gan} ha richiesto una lunga fase sperimentale nella quale è stato necessario trovare la giusta combinazione di iperparametri per i quali i due sottosistemi generatore e discriminatore potessero rimanere in equilibrio durante la durata necessaria per completare la fase di training. 
 
-Curabitur eu sapien non tortor tristique feugiat id non justo. Vestibulum in efficitur orci. Nam auctor hendrerit neque sed facilisis. Praesent luctus lorem at mi mattis, vel dapibus turpis fermentum. Quisque eu neque ligula. Suspendisse tincidunt eget quam eget fringilla. Suspendisse et tortor sit amet tortor pulvinar semper. Suspendisse gravida ligula tortor. Donec consequat et sapien at eleifend.
-
-Morbi auctor nunc ultricies risus rutrum, vel tincidunt enim scelerisque. Pellentesque vel leo vitae ligula pellentesque ullamcorper eu in purus. Quisque lorem libero, fringilla at porttitor vel, fringilla vitae urna. Aliquam erat volutpat. Aliquam sit amet tincidunt lacus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Vestibulum iaculis facilisis consectetur. Pellentesque sagittis lorem ut varius finibus. Phasellus ornare efficitur ante non pretium.
-
-Etiam dapibus eleifend turpis, vel dictum nibh rutrum eget. Pellentesque nisi ante, lobortis a ex quis, tristique consequat ex. Nam at sodales mauris, eu ultricies diam. Morbi lobortis urna vel aliquet pulvinar. Proin eu congue nibh. Cras ac metus nec mi volutpat pretium. Duis quis scelerisque enim.
-
-Donec quis egestas nulla. Nullam maximus nulla at nisi laoreet euismod ut id nisi. Nullam fringilla lacus et dui volutpat, ac euismod dui fermentum. Sed tincidunt, neque ornare sollicitudin semper, augue arcu vulputate lectus, sed iaculis lectus lacus in elit. Quisque eleifend mauris id dapibus luctus. Praesent rutrum hendrerit nisi, in placerat purus congue finibus. Nunc pharetra nisl tellus. Fusce nisl leo, vestibulum eu aliquet et, pretium sit amet lorem. Fusce finibus, sapien quis congue blandit, quam diam interdum dui, eu efficitur metus nibh id augue. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin aliquet pretium libero eget dignissim. Suspendisse volutpat nunc velit, at fermentum neque blandit ut.
