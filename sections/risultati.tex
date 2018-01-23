@@ -29,20 +29,16 @@ Il classificatore è stato testato dapprima testato con le seguenti famiglie di 
     \toprule
     Malware Families \\
     \midrule
-legit \\
-cryptolocker \\
-zeus \\
-pushdo \\
-rovnix \\
-\bottomrule
-\end{tabular}
- \begin{tabular}[t]{l}
-    \toprule
-tinba \\
-conficker \\
-matsnu \\
-ramdo \\
-\bottomrule
+	legit \\
+	cryptolocker \\
+	zeus \\
+	pushdo \\
+	rovnix \\
+	tinba \\
+	conficker \\
+	matsnu \\
+	ramdo \\
+	\bottomrule
 \end{tabular}
 \caption{\label{tab:malware}}
 \end{table}
@@ -153,32 +149,13 @@ A partire da questo classificatore neurale stabile è stato possibile implementa
 \label{ris:autoenc}
 L'autoencoder come presentato in sezione \ref{autoencoder} è stato testato con il dataset mostrato in sezione \ref{imp:autoencoder:dataset}. In fase sperimentale si è proceduto alla quantificazione della configurazione ottimale dell'autoencoder. In particolare si sono messi a confronto i valori di dropout presenti all'interno di encoder e decoder ed i valori di learning rate dei rispettivi compilatori. I valori finali di tali compilatori sono indicati all'interno della sezione \ref{imp:autoe:enc} e \ref{imp:autoe:dec}
 
-Di seguito è possibile notare i risultati della fase di training, per il quale si è trattenuto $\frac{1}{3}$ del training set come subset di validazione. Come è possibile notare l'ultima iterazione (colore verde) ha mostrato i risultati migliori e pertanto è stata utilizzata come base di partenza per il training della successiva GAN. (Figure \ref{fig:aut1} e \ref{fig:aut2} ).
+In figura \ref{fig:aut1} e \ref{fig:aut2} è possibile notare i risultati della fase di training, per il quale si è trattenuto $\frac{1}{3}$ del training set come subset di validazione. Come è possibile notare l'ultima iterazione (colore verde) ha mostrato i risultati migliori e pertanto è stata utilizzata come base di partenza per il training della successiva GAN. 
 
-\begin{figure}[htbp]
-    \centering
-    \begin{minipage}[t]{\linewidth}
-    	\includegraphics[width=\linewidth]{figures/autoenc.png}
-    \end{minipage}\hfill
-    \begin{minipage}[b]{\linewidth}
-    	\includegraphics[width=\linewidth]{figures/autoenc2.png}
-    \end{minipage}
-    \caption{Grafici di Accuracy e Loss per la fase di training dell'autoencoder. La prima fase è rappresentata dalla curva arancione, la seconda dalla curva fuchsia mentre la terza fase è rappresentata dalla curva di colore verde. Si può notare come la terza iterazione raggiunga buoni valori di accuracy e loss; pertanto stato scelto come configurazione vincente per la GAN \label{fig:aut1}}
-\end{figure}
+L'utilizzo dei pesi dell'autoencoder come punto di partenza per il training della GAN ha contribuito fortemente a ridurre la instabilità di tale sistema, permettendo ai due sottosistemi generatore e discriminatore di partire da predizioni più precise rispetto all'utilizzo di pesi inizializzati in maniera randomica come generalmente attuato.
 
-\begin{figure}[htbp]
-    \centering
-    \begin{minipage}[t]{\linewidth}
-    	\includegraphics[width=\linewidth]{figures/autoenc3.png}
-    \end{minipage}\hfill
-    \begin{minipage}[b]{\linewidth}
-    	\includegraphics[width=\linewidth]{figures/autoenc4.png}
-    \end{minipage}
-    
-\caption{Grafici di Accuracy e Loss rispetto al subset di validazione per la fase di training dell'autoencoder. Si può notare come i valori raggiunti siano molto simili a quelli ottenuti sul dataset di training, indice di qualità del modello rispetto a valori mai visti. \label{fig:aut2} }
-\end{figure}
+In tabella \ref{tab:autoenc} è possibile vedere un esempio di quali domini l'autoencoder produce dato un subset del dataset Alexa in input. Si può notare come siano vagamente simili ai domini reali per quanto riguarda la distribuzione dei caratteri e la lunghezza media dei domini, tuttavia non presenta ulteriori caratteristiche tali da influenzare negativamente i classificatori neurali.
 
-\begin{table}[htbp]
+\begin{table}[!hbp]
 \centering
 	\begin{tabular}{l}
 	\toprule
@@ -240,12 +217,35 @@ Di seguito è possibile notare i risultati della fase di training, per il quale 
 \caption{Esempio di domini generati dall'autoencoder. \label{tab:autoenc}}
 \end{table}
 
+\begin{figure}[p]
+    \centering
+    \begin{minipage}[t]{0.7\linewidth}
+    	\includegraphics[width=\linewidth]{figures/autoenc.png}
+    \end{minipage}\hfill
+    \begin{minipage}[b]{0.7\linewidth}
+    	\includegraphics[width=\linewidth]{figures/autoenc2.png}
+    \end{minipage}
+    \caption{Grafici di Accuracy e Loss per la fase di training dell'autoencoder. La prima fase è rappresentata dalla curva arancione, la seconda dalla curva fuchsia mentre la terza fase è rappresentata dalla curva di colore verde. Si può notare come la terza iterazione raggiunga buoni valori di accuracy e loss; pertanto stato scelto come configurazione vincente per la GAN \label{fig:aut1}}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \begin{minipage}[t]{0.7\linewidth}
+    	\includegraphics[width=\linewidth]{figures/autoenc3.png}
+    \end{minipage}\hfill
+    \begin{minipage}[b]{0.7\linewidth}
+    	\includegraphics[width=\linewidth]{figures/autoenc4.png}
+    \end{minipage}
+    
+\caption{Grafici di Accuracy e Loss rispetto al subset di validazione per la fase di training dell'autoencoder. Si può notare come i valori raggiunti siano molto simili a quelli ottenuti sul dataset di training, indice di qualità del modello rispetto a valori mai visti. \label{fig:aut2} }
+\end{figure}
+
 \newpage
 \section{Generative Adversarial Network}
 \label{ris:gan}
 La Generative Adversarial Network descritta in sezione \ref{ganintro} e implementata come in sezione \ref{imp:gan} ha richiesto una lunga fase sperimentale nella quale è stato necessario trovare la giusta combinazione di iperparametri per i quali i due sottosistemi generatore e discriminatore potessero rimanere in equilibrio durante la durata necessaria per completare la fase di training. 
 
-\begin{table}[htbp]
+\begin{table}[!bp]
 \centering
 	\begin{tabular}{l}
 	\toprule
@@ -304,5 +304,27 @@ ituutasisa \\
 	\bottomrule
 	\end{tabular}
 
-\caption{Esempio di domini generati dall'autoencoder. \label{tab:autoenc}}
+\caption{Esempio di domini generati dalla GAN. \label{tab:autoenc}}
 \end{table}
+
+\begin{figure}[!bp]
+    \centering
+    \begin{minipage}[t]{0.45\columnwidth}
+		\includegraphics[width=\linewidth]{figures/all_legit_char_distr.png}
+	\end{minipage}
+	\begin{minipage}[b]{0.45\columnwidth}
+		\includegraphics[width=\linewidth]{figures/chars_histogram.png}
+	\end{minipage}
+\caption{Confronto della distribuzione dei caratteri reali (grafico a sinistra) e generati algoritmicamente dalla GAN (grafico a destra) \label{fig:chardistr}}
+\end{figure}
+
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/gan/class_rep.png}
+    \caption{Classificatore Neurale testato su GAN: Report di classificazione su un subset di domini reali (legit) e generati da GAN (DGA).\label{fig:repgan}}
+
+    \centering
+    \includegraphics[width=\columnwidth]{figures/gan/roc_plot.png}
+    \caption{Classificatore Random Forest: Area sottesa dalla curva ROC per il test con domini reali e generati da GAN.\label{fig:rocgan}}
+\end{figure}
