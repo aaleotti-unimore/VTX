@@ -107,7 +107,7 @@ In prima fase si sono messe a confronto le tre architetture presentate in sezion
 	\begin{minipage}[b]{\linewidth}
 		\includegraphics[width=\linewidth]{figures/MLP2.png}
 	\end{minipage}
-	\caption{Classificatore Neurale: Grafici di Accuracy e Loss di confronto fra i tre modelli. La curva di colore grigio rappresenta il modello ingrandito, la curva di colore arancione rappresenta il modello ridotto mentre la curva di colore rosso rappresenta il modello intermedio; vincente tra i tre. \label{fig:cfrmlp}}
+	\caption{Classificatore Neurale: Grafici di Accuracy e Loss  in funzione del tempo. confronto fra i tre modelli. La curva di colore grigio rappresenta il modello ingrandito, la curva di colore arancione rappresenta il modello ridotto mentre la curva di colore rosso rappresenta il modello intermedio; vincente tra i tre. \label{fig:cfrmlp}}
 \end{figure}
 
 Motivo di confronto è stata l'introduzione o meno di Batch Normalization \cite{1502.03167}. Come si può vedere dai grafici mostrati in figura \ref{fig:batchnorm} vi è una differenza di prestazione dovuta alla normalizzazione dei mini-batch, pertanto si è scelto di mantenere tale funzione all'interno dei livelli nonostante l'aumento di costi prestazionali.
@@ -119,7 +119,7 @@ Motivo di confronto è stata l'introduzione o meno di Batch Normalization \cite{
 	\begin{minipage}[b]{\linewidth}
 		\includegraphics[width=\linewidth]{figures/MLP_batchnorm2.png}
 	\end{minipage}
-	\caption{Classificatore Neurale: Grafici di Accuracy e Loss per il modello intermedio. La curva rossa identifica il modello senza l'ausilio di Batch Normalization mentre la curva fuchsia rappresenta lo stesso modello con l'inserimento di Batch Normalization per ogni livello densamente connesso che compone il Multilayer Perceptron. \label{fig:batchnorm}}
+	\caption{Classificatore Neurale: Grafici di Accuracy e Loss in funzione del tempo per il modello intermedio. La curva rossa identifica il modello senza l'ausilio di Batch Normalization mentre la curva fuchsia rappresenta lo stesso modello con l'inserimento di Batch Normalization per ogni livello densamente connesso che compone il Multilayer Perceptron. \label{fig:batchnorm}}
 \end{figure}
 
 Particolarmente difficoltoso si è dimostrato il tuning degli  iperparametri di numero epoche e dimensione mini-batch per ottenere valori ottimali. Dopo una serie di test sperimentali che hanno messo a confronto diversi valori, si sono rilevati i valori
@@ -225,7 +225,7 @@ In tabella \ref{tab:autoenc} è possibile vedere un esempio di quali domini l'au
     \begin{minipage}[b]{0.7\linewidth}
     	\includegraphics[width=\linewidth]{figures/autoenc2.png}
     \end{minipage}
-    \caption{Grafici di Accuracy e Loss per la fase di training dell'autoencoder. La prima fase è rappresentata dalla curva arancione, la seconda dalla curva fuchsia mentre la terza fase è rappresentata dalla curva di colore verde. Si può notare come la terza iterazione raggiunga buoni valori di accuracy e loss; pertanto stato scelto come configurazione vincente per la GAN \label{fig:aut1}}
+    \caption{Grafici di Accuracy e Loss in funzione del tempo per la fase di training dell'autoencoder. La prima fase è rappresentata dalla curva arancione, la seconda dalla curva fuchsia mentre la terza fase è rappresentata dalla curva di colore verde. Si può notare come la terza iterazione raggiunga buoni valori di accuracy e loss; pertanto stato scelto come configurazione vincente per la GAN \label{fig:aut1}}
 \end{figure}
 
 \begin{figure}[p]
@@ -237,13 +237,39 @@ In tabella \ref{tab:autoenc} è possibile vedere un esempio di quali domini l'au
     	\includegraphics[width=\linewidth]{figures/autoenc4.png}
     \end{minipage}
     
-\caption{Grafici di Accuracy e Loss rispetto al subset di validazione per la fase di training dell'autoencoder. Si può notare come i valori raggiunti siano molto simili a quelli ottenuti sul dataset di training, indice di qualità del modello rispetto a valori mai visti. \label{fig:aut2} }
+\caption{Grafici di Accuracy e Loss in funzione del tempo rispetto al subset di validazione per la fase di training dell'autoencoder. Si può notare come i valori raggiunti siano molto simili a quelli ottenuti sul dataset di training, indice di qualità del modello rispetto a valori mai visti. \label{fig:aut2} }
 \end{figure}
 
 \newpage
 \section{Generative Adversarial Network}
 \label{ris:gan}
 La Generative Adversarial Network descritta in sezione \ref{ganintro} e implementata come in sezione \ref{imp:gan} ha richiesto una lunga fase sperimentale nella quale è stato necessario trovare la giusta combinazione di iperparametri per i quali i due sottosistemi generatore e discriminatore potessero rimanere in equilibrio durante la durata necessaria per completare la fase di training. 
+
+In particolare si sono incontrati due \textit{failure modes}:
+\begin{itemize}
+\item Caso in cui il discriminatore prevale sul generatore, come mostrato in figura \ref{fig:ganfailure1}, si ottiene una curva di \textit{loss} rasente lo zero, causando al generatore un incremento costante della propria curva di loss. Il significato di tale comportamento è l'impossibilità del generatore di generare domini sintetici sufficientemente realistici da poter mettere in crisi la predizione del discriminatore.
+\item Caso in cui il generatore degeneri, producendo "spazzatura", rendendo eccessivamente semplice la predizione del discriminatore. La degenerazione infatti avviene in forma di domini generati tutti uguali, contenente una singola lettera ripetuta per tutta la lunghezza di caratteri. Tale comportamento è dovuto alla mancata capacità del generatore di mimare realisticamente i domini realistici. Un esempio di tale comportamento è mostrato in figura \ref{fig:ganfailure2}
+\end{itemize}
+
+\begin{figure}[!bp]
+    \centering
+    \includegraphics[width=0.6\columnwidth]{figures/gan/ganfailure1.png}
+    \caption{Caso di degenerazione 1. Grafico del valore di loss in funzione del tempo. Il discriminatore (curva di colore grigio) prevale sul generatore (curva arancione), il quale non riesce a migliorare il proprio valore di loss.\label{fig:ganfailure1}}
+
+    \centering
+    \includegraphics[width=.6\columnwidth]{figures/gan/ganfailure2.png}
+    \caption{Caso di degenerazione 2. Grafico del valore di loss in funzione del tempo. Il generatore (curva di colore azzurro) non produce domini realistici, degenerando a dati inutilizzabili. Il discriminatore (curva di colore rosso) di conseguenza migliora la propria loss a causa della differenza sempre maggiore tra domini realistici e domini sintetici. \label{fig:ganfailure2}}
+\end{figure}
+
+E' stato possibile ottenere la stabilità della GAN, grazie a numerose tecniche empiriche ottenute da \cite{1606.03498} ed all'utilizzo del pre-training fornendo come inizializzazione i pesi ottenuti dalla fase di training dall'autoencoder. In figura \ref{fig:ganok} si può vedere l'andamento dei valori di loss di generatore e discriminatore nel caso di equilibrio tra le due reti neurali.
+
+\begin{figure}[!bp]
+\centering
+\includegraphics[width=\columnwidth]{figures/gan/ganok.png}
+\caption{Grafico di loss in funzione del tempo per discriminatore (curva di colore rosso) e generatore (curva di colore azzurro). L'andamento rimane equilibrato fino al punto in cui il generatore non riesce a generare nuovi domini in grado di mettere in crisi il discriminatore. \label{fig:ganok}}
+\end{figure}
+
+Grazie a tale training è stato possibile infine generare un dataset di domini sintetici provenienti dalla GAN, che mimassero in maniera più precisa i domini realistici. Come si può notare in tabella \ref{tab:gan} 
 
 \begin{table}[!bp]
 \centering
@@ -304,7 +330,7 @@ ituutasisa \\
 	\bottomrule
 	\end{tabular}
 
-\caption{Esempio di domini generati dalla GAN. \label{tab:autoenc}}
+\caption{Esempio di domini generati dalla GAN. \label{tab:gan}}
 \end{table}
 
 \begin{figure}[!bp]
