@@ -253,11 +253,11 @@ In particolare si sono incontrati due \textit{failure modes}:
 
 \begin{figure}[!bp]
     \centering
-    \includegraphics[width=0.6\columnwidth]{figures/gan/ganfailure1.png}
+    \includegraphics[width=\columnwidth]{figures/gan/ganfailure1.png}
     \caption{Caso di degenerazione 1. Grafico del valore di loss in funzione del tempo. Il discriminatore (curva di colore grigio) prevale sul generatore (curva arancione), il quale non riesce a migliorare il proprio valore di loss.\label{fig:ganfailure1}}
 
     \centering
-    \includegraphics[width=.6\columnwidth]{figures/gan/ganfailure2.png}
+    \includegraphics[width=\columnwidth]{figures/gan/ganfailure2.png}
     \caption{Caso di degenerazione 2. Grafico del valore di loss in funzione del tempo. Il generatore (curva di colore azzurro) non produce domini realistici, degenerando a dati inutilizzabili. Il discriminatore (curva di colore rosso) di conseguenza migliora la propria loss a causa della differenza sempre maggiore tra domini realistici e domini sintetici. \label{fig:ganfailure2}}
 \end{figure}
 
@@ -269,7 +269,7 @@ E' stato possibile ottenere la stabilità della GAN, grazie a numerose tecniche 
 \caption{Grafico di loss in funzione del tempo per discriminatore (curva di colore rosso) e generatore (curva di colore azzurro). L'andamento rimane equilibrato fino al punto in cui il generatore non riesce a generare nuovi domini in grado di mettere in crisi il discriminatore. \label{fig:ganok}}
 \end{figure}
 
-Grazie a tale training è stato possibile infine generare un dataset di domini sintetici provenienti dalla GAN, che mimassero in maniera più precisa i domini realistici. Come si può notare in tabella \ref{tab:gan} 
+Grazie a tale training è stato possibile infine generare un dataset di domini sintetici provenienti dalla GAN, che mimassero in maniera più precisa i domini realistici. Come si può notare in tabella \ref{tab:gan} non si tratta di una rappresentazione di parole realmente esistenti, tuttavia si può notare come siano presenti n-grammi realmente esistenti oltre che ad una lunghezza di sequenza simile a domini reali.
 
 \begin{table}[!bp]
 \centering
@@ -333,6 +333,11 @@ ituutasisa \\
 \caption{Esempio di domini generati dalla GAN. \label{tab:gan}}
 \end{table}
 
+Come si può notare dal confronto mostrato in figura \ref{fig:chardistr} la distribuzione dei caratteri generata dalla GAN è molto simile a quella presente all'interno del dataset Alexa, dimostrando la natura dei domini sintetici rispetto a quelli reali.
+Il classificatore neurale presentato nelle sezioni precedenti è stato messo alla prova utilizzando un subset circa 10000 domini generati dalla GAN, etichettati come DGA, ed un subset di 10000 domini reali provenienti dal dataset Alexa. Come si può vedere da figura \ref{fig:repgan} il classificatore si trova in grave difficoltà nel distinguere i domini sintetici, raggiungendo un bassissimo valore di recall, l'abilità di riconoscere i campioni positivi forniti. Lo score medio del classificatore ne risulta molto basso  rispetto a quello precedentemente mostrato in figura \ref{fig:cnrepall}. In figura \ref{fig:rocgan} è mostrata la curva ROC del classificatore neurale testato nelle medesime condizioni: la ridottissima area sottesa  ( $ AUC = 0.39$ ) dimostra come il classificatore non sia in grado di distinguere in maniera efficiente i domini reali da quelli generati dalla GAN. 
+
+Tali risultati a confronto con quelli mostrati in sezione \ref{res:crf} e \ref{ris:cnn} dimostrano come i domini sintetici generati dalla GAN siano in grado di influenzare negativamente la performance di un classificatore DGA che in precedenza ha dimostrato buoni risultati.
+
 \begin{figure}[!bp]
     \centering
     \begin{minipage}[t]{0.45\columnwidth}
@@ -343,7 +348,6 @@ ituutasisa \\
 	\end{minipage}
 \caption{Confronto della distribuzione dei caratteri reali (grafico a sinistra) e generati algoritmicamente dalla GAN (grafico a destra) \label{fig:chardistr}}
 \end{figure}
-
 
 \begin{figure}[p]
     \centering
