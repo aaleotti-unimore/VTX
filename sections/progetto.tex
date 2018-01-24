@@ -1,4 +1,4 @@
-\chapter{Progetto}
+\chapter{Progetto Classificatore}
 \label{progetto}
 
 \todo{parlare di funzioni di loss, di ottimizzatori}
@@ -17,11 +17,11 @@ In questo capitolo si propone il progetto realizzato per raggiungere gli obietti
 
 \newpage
 
-\section{Classificatore Random Forest}
+\section{Classificatore Supervisionato}
 \label{randomforest}
 La prima fase di questo studio è stata quella di implementare un classificatore in grado di separare efficacemente domini \textit{DGA} da domini reali basandosi unicamente sulle caratteristiche linguistiche dei domini: infatti, ad un esame preliminare, i domini \textit{DGA} presentano caratteristiche ben differenti da semplici frasi o parole che solitamente compongono i domini reali.
 
-Si è scelto di utilizzare Random Forest in quanto ritenuto il più adatto al caso in esame. L'algoritmo è stato inoltre messo a confronto con \textit{Support Vector Machine} e \textit{Naive-Bayes}.
+\todo{Si è scelto di utilizzare Random Forest in quanto ritenuto il più adatto al caso in esame. L'algoritmo è stato inoltre messo a confronto con \textit{Support Vector Machine} e \textit{Naive-Bayes}.}
 
 All'interno del classificatore \textit{Random Forest} \cite{randomforest}, ogni albero dell'insieme è costruito a partire da un campione estratto con sostituzione dal \textit{training set}. In aggiunta, al momento della divisione del nodo durante la costruzione di un albero, la divisione scelta non è più la migliore soluzione tra tutte le \textit{features}. Al suo posto, la divisone che viene scelta è la migliore divisione all'interno di un \textit{subset} casuale tra tutte le \textit{features}. Come risultato di questa casualità, il \textit{bias} della foresta di solito aumenta leggermente (rispetto al \textit{bias} di un singolo albero non casuale) ma, a causa della media, la sua varianza diminuisce, di solito compensando l'aumento di \textit{bias}, quindi dando un modello generale migliore.
 
@@ -80,7 +80,7 @@ Il passo seguente  stato creare una serie di \textit{features} che fossero in gr
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=0.8\columnwidth]{figures/chardistr.png}
+    \includegraphics[width=\columnwidth]{figures/chardistr.png}
     \caption{Distribuzione dei singoli caratteri in \textit{cryptolocker, ramnit, dyre}, \textit{suppobox} (dictionary-based DGA) ed il primo milione di domini più visitati secondo Alexa \cite{amazon:alexa}.
 \textit{fonte:} \cite{deepdga}. \label{fig:relu}}
 \end{figure}
@@ -177,7 +177,7 @@ Nel caso in esame è stata utilizzata per i livelli interni la funzione di attiv
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=0.5\columnwidth]{figures/relu.png}
+    \includegraphics[width=0.7\columnwidth]{figures/relu.png}
     \caption{\textit{fonte:} \cite{relufig}.\label{fig:relu}}
 \end{figure}
 
@@ -190,7 +190,7 @@ Per quel che riguarda la funzione di attivazione del livello di \textit{output} 
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=0.5\columnwidth]{figures/sigmoid.png}
+    \includegraphics[width=0.7\columnwidth]{figures/sigmoid.png}
     \caption{\textit{fonte:} \cite{fig:sigmoid}\label{fig:sigmoid}}
 \end{figure}
 
@@ -200,17 +200,16 @@ La struttura finale del \textit{MLP} in esame è stata raggiunta dopo una serie 
 
 \item un modello allargato composto da un layer di input con un numero di neuroni pari alla dimensione delle stringhe codificate, due layer intermedi di dimensioni moltiplicate di diversi ordini rispetto al layer iniziale ed un layer finale di dimensione 1.
 
-\item un modello intermedio composto da un layer di input con un numero di neuroni pari alla dimensione delle stringhe codificate, un layer intermedio di dimensione 128, un layer di dimensione minore a 64 ed un layer finale di dimensione 1. (Figura \ref{fig:pieraz})
+\item un modello intermedio composto da un layer di input con un numero di neuroni pari alla dimensione delle stringhe codificate, due layer intermedi di dimensioni comprese tra i valori ottenuti dal modello ridotto ed il modello allargato ed un layer finale di dimensione 1. 
 
 \end{itemize}
 
-I tre modelli messi a confronto hanno mostrato risultati simili, tuttavia  il modello intermedio si è dimostrato più performante, con un costo computazionale irrisorio rispetto al modello allargato, pertanto è stato scelto come riferimento per gli studi successivi.
+I tre modelli sono stati messi a confronto in fase sperimentale, dovendo procedere ad una fase di tuning dei parametri che compongono il modello intermedio in quanto non è possibile in maniera automatica determinare quali siano i parametri ottimali per il MLP utilizzato nel caso in esame.
 
-\begin{figure}[!htb]
-    \centering
-    \includegraphics[width=.6\columnwidth]{figures/pieraz_baseline.png}
-    \caption{Grafico del modello intermedio. Escluso il layer di input iniziale, si notino gli \textit{hidden layer} dense2 e dense3 di dimensioni rispettivamente 128 e 64.
-\label{fig:pieraz}}
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\columnwidth]{figures/mlp-network.png}
+	\caption{Schema generico di un Multilayer Perceptron \label{mlp}}
 \end{figure}
 
 \subsection{Output}
@@ -218,16 +217,18 @@ I tre modelli messi a confronto hanno mostrato risultati simili, tuttavia  il mo
 L'intento della rete neurale proposta è quello di classificare autonomamente domini reali da domini generati algoritmicamente, con l'obiettivo di superare le fragilità del classificatore precedente (\ref{randomforest}) ed avere una linea di confronto affidabile per lo \textit{step} di lavoro successivo: l'introduzione di un sistema di \textit{adversarial learning} che possa rafforzare tale classificatore. 
 
 \newpage
-\section{Realizzazione Adversarial Learning}
+\chapter{Progetto Adversarial Learning}
 \label{adv}
-Ricerche precedenti hanno dimostrato che molti modelli di machine learning, incluse le reti neurali, sono vulnerabili agli \textit{adversarial examples} \cite{1312.6199},  \cite{1412.6572}. In particolare la ricerca proposta in \cite{1412.6572} introduce il metodo del \textit{fast gradient sign} per scoprire \textit{adversarial examples} perturbando un campione noto $x$ con una piccola quantità $\Delta x =  \in sign(\nabla_x J(\theta,x,y))$ dove $\theta$ rappresenta i parametri del modello e $J$ il costo necessario a classificare $x$ come $y$.
+Ricerche precedenti hanno dimostrato che molti modelli di machine learning, incluse le reti neurali, sono vulnerabili agli \textit{adversarial examples} \cite{1312.6199},  \cite{1412.6572}. In particolare la ricerca proposta in \cite{1412.6572} introduce il metodo del \textit{fast gradient sign} per scoprire \textit{adversarial examples} perturbando un campione noto $x$ con una piccola quantità definita  
+\[\Delta x =  \in sign(\nabla_x J(\theta,x,y))\] 
+dove $\theta$ rappresenta i parametri del modello e $J$ il costo necessario a classificare $x$ come $y$.
 Separatamente \cite{1406.2661} propone l'uso di \textit{Generative Adversarial Network (abbr. GAN})  come \textit{framework} in grado di generare campioni artificiali provenienti dalla stessa distribuzione del training set.
 Le \textit{GAN} incorporano due modelli: un generatore ed un discriminatore i quali competono in una serie di turni antagonisti. All'interno del contesto del lavoro presentato in questo elaborato, il generatore impara a creare nuovi domini artificiali mentre il discriminatore impara a distinguere tali domini artificiali da quelli reali. L'intento di tale lavoro è usare la \textit{GAN} per produrre domini artificiali realistici e di conseguenza incrementare la precisione del classificatore presentato nella sezione precedente attraverso l'\textit{adversarial training}. I presupposti progettuali di questo elaborato sono ispirati alla ricerca presentata in \cite{deepdga}.
 
 \newpage
 \section{Autoencoder}
 \label{autoencoder}
-Il punto di partenza per il lavoro di progettazione di una \textit{GAN} è stato l'implementazione di un \textit{Autoencoder} funzionante.  Un \textit{Autoencoder} è un modello di rete neurale non supervisionata con lo scopo di riprodurre il proprio input passando attraverso una rappresentazione codificata, generalmente a dimensione inferiore \cite{MAL-006} \cite{Liou:2008:MWP:1411851.1412074}. Si supponga di avere un set di training $\left\{ x^{(1)}, x^{(2)}, x^{(3)}, \ldots \right\}$ dove $x^{(i)} \in \mathbb{R}^n$. L'obiettivo di un autoencoder generico è $y^{(i)} = x^{(i)}$ cercando di imparare una funzione che approssima x $h_{W,b}(x) \approx x$. Un \textit{autoencoder} tipicamente consiste in due macro-componenti:
+Il punto di partenza per il lavoro di progettazione di una \textit{GAN} è stato l'implementazione di un \textit{Autoencoder} funzionante.  Un \textit{Autoencoder} è un modello di rete neurale non supervisionata con lo scopo di riprodurre il proprio input passando attraverso una rappresentazione codificata, generalmente a dimensione inferiore \cite{MAL-006} \cite{Liou:2008:MWP:1411851.1412074}. Si supponga di avere un set di training $\left\{ x^{(1)}, x^{(2)}, x^{(3)}, \ldots \right\}$ dove $x^{(i)} \in \mathbb{R}^n$. L'obiettivo di un autoencoder generico è \[y^{(i)} = x^{(i)}\] cercando di imparare una funzione che approssima x \[h_{W,b}(x) \approx x\]. Un \textit{autoencoder} tipicamente consiste in due macro-componenti:
 \begin{itemize}
 \item funzione \textbf{Encoder} $h = f(x)$ la quale trasforma l'input una rappresentazione codificata (generalmente a dimensione minore)
 \item funzione \textbf{Decoder} $r = g(h)$ in grado di ricostruire l'input a partire dalla rappresentazione codificata. 
@@ -235,7 +236,7 @@ Il punto di partenza per il lavoro di progettazione di una \textit{GAN} è stato
 
 \begin{figure}[htb]
     \centering
-	\input{figures/autoencoder_general.tex}
+	\includegraphics[width=\columnwidth]{figures/autoencoder_general.tex}
 	\caption{Struttura generica di un autoencoder, il quale mappa l'input $x$ in un output $r$ attraverso una rappresentazione codificata $h$.
 \label{fig:autoencodergen}}
 \end{figure}
@@ -272,7 +273,7 @@ In figura \ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoen
 \label{encoder}
 La composizione interna dell'\textit{encoder} è formata da una Rete Convoluzionale accoppiata ad una LSTM. A differenza del lavoro proposto in \cite{deepdga}, si è voluto mantenere la composizione dell'autoencoder il più semplice possibile, in quanto la trasformazione in \textit{GAN} ed il suo \textit{tuning} in fase di \textit{training} è notoriamente difficoltoso in presenza di molti parametri. In Figura \ref{fig:encoder} viene mostrata la struttura semplificata dell'encoder.
 
-\begin{figure}[!htb]
+\begin{figure}[!htbp]
     \centering
 	\input{figures/encoder.tex}
 	\caption{Struttura dell'\textit{encoder}.
@@ -282,7 +283,7 @@ La composizione interna dell'\textit{encoder} è formata da una Rete Convoluzion
 \subsection{Rete Convoluzionale}
 Una Rete Convoluzionale è un modello di rete neurale usato generalmente per classificazione di immagini, in alternativa ai layer densamente connessi. Il vantaggio nell'uso delle reti convoluzionali è la capacità di quest'ultime di memorizzare pattern locali all'interno dello spazio di input mentre layer densamente connessi sono in grado di riconoscere solo pattern globali. Nel caso in esame si sono applicati due filtri convoluzionali in parallelo, con l'obiettivo di cogliere pattern locali all'interno dei domini, ovvero n-grammi significativi da poter replicare. Generalmente i filtri convoluzionali lavorano su di un tensore 3-dimensionale, chiamato \textit{feature map}, avente due assi spaziali ("altezza" e "larghezza") ed un asse di profondità; nel caso di riconoscimento di immagini tali assi corrispondono alle dimensioni dell'immagine di input ed al numero dei canali colore. Nel caso in esame si sono trattati di input tridimensionali ad altezza 1, larghezza equivalente alla dimensione massima dei domini nel dataset e canale di dimensione 1. L'operazione di convoluzione estrae frammenti dalla \textit{feature map} di input ed applica una trasformazione a tutti i frammenti, generando una \textit{output feature map} la quale è ancora in forma di tensore 3D, di dimensione ridotta, contenente sull'asse della profondità i valori dei \textit{filtri}. I filtri codificano determinati aspetti caratteristici dell'input, analizzando l'input in una "finestra" di dimensione fissata che scorre lungo la sequenza; ad ogni passo il filtro estrae il sotto-tensore 3-dimensionale per trasformarlo(tramite un prodotto tensore con una matrice di pesi (chiamato \textit{convolutional kernel}) in un vettore 1D di dimensione fissata. L'insieme di vettori vengono riassemblati in un tensore 3D con altezza e larghezza identiche alle precedenti e l'inseme di features come terzo asse. In figura \ref{fig:cnn} è possibile vedere un diagramma del funzionamento di una rete convoluzionale.
 
-\begin{figure}[!htb]
+\begin{figure}[!htbp]
     \centering
 	\includegraphics[width=\columnwidth]{figures/CNN.png}
 	\caption{Funzionamento di una Convolutional Neural Network,\textit{ fonte} \cite{fig:cnnfonte}.
@@ -330,6 +331,8 @@ Il design delle celle LSTM con gate moltiplicativi permette ad una rete neurale 
 \subsection{Output Encoder}
 L'output in uscita da questo encoder è in forma di un tensore monodimensionale, di dimensione fissata, contenente le caratteristiche principali che compongono un nome di dominio.
 
+\todo{ampliare}
+
 \newpage
 \section{Decoder}
 \label{decoder}
@@ -337,7 +340,7 @@ La struttura del decoder è lascamente una copia speculare dell'encoder. L'obiet
 
 La struttura di massima presenta come primo layer un \textit{repeat vector} che ripete il tensore di input per un numero di volte pari alla lunghezza massima di dominio, fissata in fase di codifica del dataset, formando così un tensore 3-dimensionale, dello stessa dimensione dei domini provenienti dal dataset. La sequenza così formata viene data in input ad un layer LSTM avente le identiche caratteristiche del layer LSTM presente all'interno dell'encoder. Successivamente la sequenza di emissioni in output dalla LSTM viene fornita ad due reti convoluzionali parallele identiche al quelle inserite all'interno dell'encoder. il risultato di tale operazione è un vettore di dimensione pari a dizionario di caratteri ammissibili per i domini, per ogni step della sequenza di caratteri che compone un dominio. In Figura \ref{fig:decoder} viene mostrato lo schema di massima del \textit{decoder}.
 
-\begin{figure}[!htb]
+\begin{figure}[p]
     \centering
 	\input{figures/decoder.tex}
 	\caption{Struttura del \textit{decoder}.
@@ -365,7 +368,7 @@ Tramite questa funzione è stato possibile mettere a a punto in fase sperimental
 \label{ganintro}
 La \textit{Generative Adversarial Network (abbr. GAN)} èun modello di rete neurale formata da due reti che competono l'una contro l'altra: un \textit{generatore} che cerca di creare dati sintetici basati sulla vera distribuzione, con l'aggiunta di rumore in input ed un \textit{discriminatore}, che riceve un campione e deve predire se appartiene al set reale o sintetico. Questo processo continua in forma di competizione tra le due reti, nella quale il discriminatore apprende in maniera sempre più accurata a distinguere i campioni ed il generatore apprende la costruzione di dati sintetici sempre più realistici. Notevole è la struttura della GAN, la quale rende particolarmente difficoltosa la fase di \textit{training}: a differenza di reti neurali più semplici, non è possibile fissare un minimo da ottimizzare. Normalmente si attua una di discesa del gradiente, la quale fornisce l'ottimo per la fase di training, mentre nel caso di GAN, ogni passo effettuato durante la discesa del gradiente causa un cambiamento nella conformazione superficie di discesa. La composizione della GAN fa si che sia necessario invece trovare un equilibrio tra le due forze in gioco, impersonate da discriminatore e generatore. In figura \ref{fig:gan} si può vedere una struttura di massima di una GAN.
 
-\begin{figure}[!htb]
+\begin{figure}[!bp]
     \centering
 	\includegraphics[width=\columnwidth]{figures/gan.tex}
 	\caption{Struttura di una \textit{Generative Adversarial Network}.
@@ -399,7 +402,7 @@ Il Generator laye è formato da un generatore di rumore randomico di distribuzio
 
 \begin{figure}[htbp]
     \centering
-	\includegraphics[width=0.5\columnwidth]{figures/generator.tex}
+	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{figures/generator.tex}
 	\caption{Struttura del generatore.
 \label{fig:generator}}
 \end{figure}

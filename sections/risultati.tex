@@ -17,7 +17,7 @@ $X_{1}$ è il punteggio per un'istanza positiva e $X_{0}$ è il punteggio per un
 \end{itemize}
 
 \newpage
-\section{Classificatore Random Forest}
+\section{Classificatore Supervisionato}
 \label{res:crf}
 Il classificatore Random Forest è stato testato in diverse configurazioni. La configurazione che è stata presentata nella sezione \ref{imp:randomforest} ha mostrato i migliori risultati in ogni test.
 
@@ -98,6 +98,9 @@ Come ultimo test è stato eseguito il training aggiungendo al precedente dataset
 Il classificatore neurale, nato per superare le mancanze del classificatore random forest, è stato testato nelle stesse condizioni utilizzate precedentemente: in particolare è stato utilizzato lo stesso dataset mostrato in sezione \ref{res:crf} e diviso ancora una volta in $\frac{9}{10}$ per la fase di training e $\frac{1}{10}$ per la fase di testing.
 
 In prima fase si sono messe a confronto le tre architetture presentate in sezione \ref{classificatorenninterno}. Tali architetture hanno dimostrato tre andamenti simili; tuttavia a fronte dei risultati mostrati e della minore richiesta di risorse, il modello intermedio è risultato vincente rispetto agli altri testati. ( Figura \ref{fig:cfrmlp} )
+
+
+\todo{parlarne nella fase implementativa}
 
 \begin{figure}[!bp] 
 \centering

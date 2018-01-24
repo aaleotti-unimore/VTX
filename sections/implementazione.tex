@@ -4,7 +4,7 @@ In questa sezione è descritta l'implementazione del progetto definito nel capit
 Di seguito sono elencati i dettagli implementativi delle singole entità, ed i parametri usati durante la fase sperimentale.
 
 \newpage
-\section{Classificatore Random Forest}
+\section{Classificatore Supervisionato}
 \label{imp:randomforest}
 Il classificatore Random Forest è stato implementato tramite l'uso della libreria python Scikit-learn \cite{sklearn}. 
 Al fine di avere un ambiente di testing facilmente fruibile, è stata creata una classe $MyClassifier$ in grado di gestire la serie di esperimenti effettuata sul classificatore. Tali esperimenti hanno permesso di testare i differenti parametri di funzionamento e la composizione delle features che compongo il dataset del classificatore. In figura \ref{fig:uml_randomforest} è mostrata la struttura della classe $MyClassifier$, la quale contiene le funzioni principali di inizializzazione, salvataggio e caricamento dei parametri, salvataggio e caricamento dei risultati oltre che alle funzioni necessarie per allenare il classificatore (funzione $fit$), eseguire cross-validation (funzione $cross\_validate$), produrre grafici di risultati ($classification\_report$ e $plot_AUC$) ed eseguire predizione su di una lista di domini in input (a fini di testing).
@@ -139,6 +139,14 @@ Come definito all'interno della sezione \ref{classificatorenninterno}, la compos
 \lstinputlisting[language={}, caption={Baseline intermedia.},label={lst:pieraz}]{code/pieraz_baseline.txt}
 
 \end{itemize}
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=.6\columnwidth]{figures/pieraz_baseline.png}
+    \caption{Grafico del modello intermedio. Escluso il layer di input iniziale, si notino gli \textit{hidden layer} dense2 e dense3 di dimensioni rispettivamente 128 e 64.
+\label{fig:pieraz}}
+\end{figure}
+
 
 Tutti i modelli contengono al loro interno oltre che i dense layer, dei layer aggiuntivi per ottimizzare la fase di training, in particolare i layer Dropout e Batch Normalization per contrastare il fenomeno dell'\textit{overfitting}. Dopo una fase sperimentale si è deciso di optare per il modello intermedio, in quanto ha espresso i risultati migliori a fronte di un ridotto consumo di risorse.
 
