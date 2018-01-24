@@ -69,7 +69,7 @@ In fase preliminare si è effettuato un confronto con altri due algoritmi di cla
 
 Il classificatore random forest è stato testato inserendo \textit{suppobox} tra le famiglie DGA già presenti. Si è scelto tale malware come campione esterno in quanto presenta la maggiore differenza rispetto alle famiglie mostrate in tabella \ref{tab:malware}. I risultati si possono vedere in figura \ref{fig:repsup} e \ref{fig:rocsup} e come si può notare la performance ne è fortemente influenzata, introducendo una grande percentuale di falsi nelle predizioni effettuate dal classificatore.
 
-\begin{figure}[htbp]
+\begin{figure}[!bp]
     \centering
     \includegraphics[width=.85\columnwidth]{figures/rndf_tra_nosup_sup/class_rep.png}
     \caption{Classificatore Random Forest: Report di classificazione su un subset di domini reali (legit) e malware, comprendenti suppobox (DGA).\label{fig:repsup}}
@@ -82,7 +82,7 @@ Il classificatore random forest è stato testato inserendo \textit{suppobox} tra
 \newpage
 Come ultimo test è stato eseguito il training aggiungendo al precedente dataset di training una parte di domini generati da suppobox (Figura \ref{fig:repall} e \ref{fig:rocall}). Come si può notare la performance è migliorata sensibilmente, non raggiungendo comunque i risultati eccellenti del primo test.
 
-\begin{figure}[!hb]
+\begin{figure}[!bp]
     \centering
     \includegraphics[width=.85\columnwidth]{figures/rndf_tra_sup_sup/class_rep.png}
     \caption{Classificatore Random Forest: Report di classificazione su un subset di domini reali (legit) e malware, comprendenti suppobox (DGA).\label{fig:repall}}
