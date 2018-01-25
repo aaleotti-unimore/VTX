@@ -274,11 +274,11 @@ Per completezza di seguito è elencato il codice essenziale che compone l'encode
 \label{imp:autoe:dec}
 La composizione del decoder è pressochè identica a quella mostrata dall'encoder e ricalca il progetto mostrato in sezione \ref{decoder}. Di seguito sono elencati gli iperparametri che compongono il modello decoder. Si può notare come siano identici a quelli mostrati dall'encoder a differenza del \lstinline!dropout_value!, il quale gioca un ruolo maggiore nel pilotare l'equilibrio tra i due modelli.
 
-\lstinputlisting[caption={Iperarametri Decoder.},label={lst:par_enc},lastline=10]{code/decoder.py}
+\lstinputlisting[caption={Iperarametri Decoder.},label={lst:par_dec},lastline=10]{code/decoder.py}
 
 Per completezza si riporta l'implementazione del decoder:
 
-\lstinputlisting[caption={Struttura livelli Decoder.},label={lst:str_enc},firstline=10]{code/decoder.py}
+\lstinputlisting[caption={Struttura livelli Decoder.},label={lst:str_dec},firstline=10]{code/decoder.py}
 
 \subsection{Training}
 Durante la fase di training si è realizzato il modello generale che compone l'autoencoder, sottoforma di modello sequenziale Keras \lstinline!keras.models.Sequential!. Tale modello è composto da due livelli: Encoder e Decoder

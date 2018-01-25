@@ -5,11 +5,11 @@
 
 In questo capitolo si propone il progetto realizzato per raggiungere gli obiettivi preposti: la realizzazione di un classificatore basato sull'algoritmo di machine learning \textit{Random Forest} in grado di distinguere domini generati algoritmicamente da domini reali. Si è successivamente progettato un classificatore più raffinato basato su rete neurale in grado di superare le mancanze de precedente classificatore. A partire da tale sistema, si è passati alla progettazione di un sistema di \textit{adversarial learning} in grado di rafforzare il classificatore neurale: una \textit{Generative Adversarial Network} (abbr. \textit{GAN}) in grado di creare domini sintetici realistici da fornire successivamente al classificatore in fase di training (Figura \ref{fig:intro}). Tale GAN è stata progettata a partire da un Autoencoder, il cui compito è mimare la distribuzione di un dataset fornito in input (Figura \ref{fig:auttogan}).
 
-\begin{figure}[htbp]
+\begin{figure}[p]
     \centering
-	\includegraphics[]{figures/introduction.tex}
+	\input{figures/introduction.tex}
 	\caption{Diagramma generale di progetto. \label{fig:intro}}
-   \vfill
+    \vspace{3cm}
     \centering
 	\includegraphics[width=\columnwidth]{figures/auttogan.tex}
 	\caption{Schema generale della progettazione da Autoencoder a Gan. \label{fig:auttogan}}
@@ -82,7 +82,7 @@ Il passo seguente  stato creare una serie di \textit{features} che fossero in gr
     \centering
     \includegraphics[width=\columnwidth]{figures/chardistr.png}
     \caption{Distribuzione dei singoli caratteri in \textit{cryptolocker, ramnit, dyre}, \textit{suppobox} (dictionary-based DGA) ed il primo milione di domini più visitati secondo Alexa \cite{amazon:alexa}.
-\textit{fonte:} \cite{deepdga}. \label{fig:relu}}
+\textit{fonte:} \cite{deepdga}. \label{fig:Chardistr}}
 \end{figure}
 
 
