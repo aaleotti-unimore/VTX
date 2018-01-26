@@ -94,7 +94,6 @@ Inizialmente i pesi della rete neurale sono assegnati a valori randomici, causan
 	 \cite{chollet2017deep} \label{fig:neuralloss} }
 \end{figure}
 
-
 \newpage
 \section{Adversarial Learning}
 Le tecniche di machine learning possono essere utilizzate per prevenire azioni vietate o illegali e nel caso vi siano degli incentivi economici, vi possono essere probabili antagonisti intenzionati ad eludere tali restrizioni. Un esempio tipico è il caso del filtraggio anti spam, nel quale gli spammers forgiano messaggi ad hoc per eludere le più recenti tecniche di filtraggio. Tali tecniche possono essere identificate come \textit{adversarial learning} (apprendimento antagonista).
@@ -119,109 +118,91 @@ deliberatamente modificate per manipolare i motori di ricerca sfruttandone le vu
 	 \cite{wiki:Adversarial_machine_learning} \label{fig:advarms} }
 \end{figure}
 
+\newpage
+\section{Generative Deep Learning}
+I recenti risultati ottenuti nell'ambito del machine learning e del deep learning hanno permesso di ottenere algoritmi e architetture in grado di modellare complesse strutture di dati come immagini, suoni e testo. Questi avanzamenti sono stati incentrati principalmente in algoritmi di apprendimento supervisionato in grado di stimare una distribuzione di probabilità $p(x|y)$ dato un input ed un output di target. Tali modelli vengono definiti come modelli discriminativi o predditivi.
 
-\subsection{Adversarial Networks}
-The adversarial modeling framework is most straightforward to apply when the models are both multilayer perceptrons. To learn the generator's distribution $p_g$ over data $\bm{x}$, we
-define a prior on input noise variables $p_{\bm{z}}(\bm{z})$, then represent a
-mapping to data space as $G(\bm{z}; \theta_g)$, where $G$ is a differentiable function
-represented by a multilayer perceptron with parameters $\theta_g$. We also define a second
-multilayer perceptron $D(\bm{x}; \theta_d)$ that outputs a single scalar. $D(\bm{x})$ represents
-the probability that $\bm{x}$ came from the data rather than $p_g$. We train $D$ to maximize the
-probability of assigning the correct label to both training examples and samples from $G$.
-We simultaneously train $G$ to minimize $\log(1-D(G(\bm{z})))$:
+I modelli Generativi, al contrario, tentano di apprendere una funzione $p(y,x)$ nota come \textit{probabilità congiunta}. Tali funzioni di probabilità sono correlate secondo la relazione: 
+\[p(x,y)=p(x)p(x|y)\]
+dove $p(x)$ indica la densità di probabilità per l'evento $x$. 
+Nel caso di modelli generativi, il modello ha accesso alla probabilità di input ed output allo stesso istante; permettendo ad esempio di generare immagini di animali, campionando specie di animali $y$ e nuove immagini $x$ a partire da $p(x,y)$.
+Il passo successivo è l'abilità di apprendere solo la funzione di densità $p(x)$, dipendente unicamente dallo spazio degli input. Tali algoritmi sono definiti come Modelli Generativi non Supervisionati (\textit{Unsupervised Generative Models}), dove il termine \textit{generativo} indica l'abilità di campionare dalla distribuzione catturata dal modello. 
 
-In other words, $D$ and $G$ play the following two-player minimax game with value function $V(G, D)$: 
+L'idea fondamentale alla base dei modelli generativi è la volontà di convertire il problema di generazione di dati in un problema di predizione ed usare l'insieme di tecniche di deep learning già note per risolvere tale problema. Gli algoritmi di deep learning odierni sono in grado di modellare mappature molto complesse e offrono flessibilità nel definire problemi in termini di grafi computazionali che possono essere ottimizzati da varianti di algoritmi di back-propagation.
+
+\subsection{Autoencoder}
+La forma più semplificata di conversione da problema generativo a problema discriminativo è l'apprendimento di una mappatura a partire dallo spazio degli input stesso. Sia dato un input $x$, si vuole ottenere una identità di tale input $x=f(x)$ dove $f$ rappresenta il modello predittivo. Il modello generativo può essere definito come l'insieme formato da un modello \textit{encoder} $q_e(h|x)$ in grado di mappare l'input in un nuovo spazio, definito come \textit{spazio latente} rappresentato da $h$ ed un modello \textit{decoder} $q_d(x|h)$ in grado di apprendere la mappatura inversa a partire dallo spazio latente.
+Queste due componenti possono essere connesse assieme, a formare un modello end-to-end allenabile, caratterizzato da un vincolo di dimensione nello spazio latente $h$; generalmente definito come una riduzione di dimensione con lo scopo di far apprendere al modello un vettore di caratteristiche fondamentali dell'input. (figura \ref{fig:aut}
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=\columnwidth]{figures/deep_autoencoder.png}
+	\caption{Schema concettuale di un Autoencoder.  \label{fig:aut} }
+\end{figure}
+
+Una volta che il modello è stato appreso, decoder ed encoder possono essere utilizzati indipendentemente, ad esempio per generare nuovi campioni a partire dallo spazio latente.
+
+\subsection{Generative Adversarial Networks}
+La naturale evoluzione delle architetture Autoencoder è la Generative Adversarial Network in cui encoder e decoder vengono rimodellati due reti :discriminatore e generatore. 
+
+Con l'obiettivo di apprendere la distribuzione del \textit{generatore} $p_g$ rispetto ai dati $\bm{x}$, si definisce precedentemente una variabile di rumore input  $p_{\b{z}}(\bm{z})$, e successivamente si rappresenta una mappatura dello spazio dei dati come $G(\bm{z}; \theta_g)$, dove $G$ è una funzione differenziabile rappresentata da una rete neurale a parametri $\theta_g$. Si definisce inoltre una seconda rete neurale \textit{discriminatore}
+ $D(\bm{x}; \theta_d)$ che emette un singolo scalare. $D(\bm{x})$ rappresenta la probabilità che tale $\bm{x}$ provenga dai dati reali piuttosto che da $p_g$. 
+A tal scopo si allena $D$ per massimizzare la probabilità di assegnare l'etichetta corretta sia ai campioni di allenamento che a quelli provenienti da $G$.
+Simultaneamente si allema $G$ per minimizzare $\log(1-D(G(\bm{z})))$:
+
+In altri termini, $D$ e $G$ eseguono una partita a due giocatori di minimo-massimo con funzione di valore $V(G, D)$: 
 
 \begin{equation}
 \label{eq:minimaxgame-definition}
 \min_G \max_D V(D, G) = \mathbb{E}_{\bm{x} \sim p_{\text{data}}(\bm{x})}[\log D(\bm{x})] + \mathbb{E}_{\bm{z} \sim p_{\bm{z}}(\bm{z})}[\log (1 - D(G(\bm{z})))].
 \end{equation}
 
-In the next section, we present a theoretical analysis of adversarial nets,
-essentially showing that the training criterion allows one to recover the data
-generating distribution as $G$ and $D$ are given enough capacity, i.e., in the
-non-parametric limit. See Figure~\ref{fig:intuition} for a less formal, more pedagogical
-explanation of the approach.
-In practice, we must implement the game using an iterative, numerical approach. Optimizing $D$ to completion in the
-inner loop of training is computationally prohibitive,
-and on finite datasets would result in overfitting. Instead, we alternate between $k$ steps
-of optimizing $D$ and one step of optimizing $G$. This results in $D$ being maintained
-near its optimal solution, so long as $G$ changes slowly enough. This strategy is analogous
-to the way that SML/PCD~\citep{Younes1999,Tieleman08} training maintains samples from a Markov chain from one
-learning step to the next in order to avoid burning in a Markov chain as part of the inner loop
-of learning. The procedure is formally presented
-in Algorithm~\ref{alg:AGF}.
+In pratica è necessario implementare la partita in maniera iterativa. L'ottimizzazione di $D$ fino al completamento in un training a se stante risulta computazionalmente proibitivo e su dataset finiti risulta nel fenomeno di \textit{overfitting}. In maniera differente si alternano $k$ passi di ottimizzazione di $D$ ed un passo di ottimizzazione di $G$. Questo risulta nel mantenimento di $D$ vicino alla sua soluzione ottimale, cambiando gradualmente $G$. Questa strategia è mostrata formalmente all'interno dell'algoritmo~\ref{alg:AGF}.
 
-In practice, equation~\ref{eq:minimaxgame-definition} may not provide sufficient gradient for $G$ to learn
-well. Early in learning, when $G$ is poor, $D$ can reject samples with high confidence because they are
-clearly different from the training data. In this case, $\log ( 1- D(G(\bm{z})))$ saturates. Rather than
-training $G$ to minimize $\log (1 - D(G(\bm{z})))$ we can train $G$ to maximize $\log D(G(\bm{z}))$.
-This objective function results in the same fixed point of the dynamics of $G$ and $D$ but provides much
-stronger gradients early in learning.
+In pratica l'equazione~\ref{eq:minimaxgame-definition} può non fornire un gradiente sufficiente per permettere a $G$ di apprendere. Nelle fasi iniziali dove $G$ è debole, $D$ può rifiutare i campioni con buona certezza in quanto chiaramente differenti dai dati di training. In tal caso, $\log ( 1- D(G(\bm{z})))$ satura. Piuttosto che allenare $G$ al fine di minimizzare $\log (1 - D(G(\bm{z})))$ si allena per massimizzare $\log D(G(\bm{z}))$. 
+Questa funzione obiettivo risulta nello stesso punto fisso che forma la dinamica di $G$ and $D$ ma fornisce un gradiente molto più stabile nelle fasi iniziali.
 
+In figura \ref{fig:intuition} viene mostrata la fase di apprendimento di una GAN. Tale architettura è allenata aggiornando simultaneamente il gradiente della distribuzione discriminativa ($D$, linea blu tratteggiata) in modo che discrimini tra campioni della distribuzione generatrice di dati (linea nera tratteggata) $p_{\bm{x}}$ e i campioni provenienti dalla distribuzione del generatore $p_g$ (G) (linea verde).
+La linea nera orizzontale da cui $\bm{z}$ è campionato è in questo caso uniforme; mentre la linea nera superiore è parte del dominio di $\bm{x}$. Le freccie indicano come la mappatura $\bm{x}=G(\bm{z})$ imponga una distribuzione non uniforme $p_g$ sui campioni trasformati. $G$ si contrae in regioni ad alta densità ed espande in regioni a bassa densità $p_g$. 
 
-%explains the intuition
-%behind these asymptotic consistency results. When $D$ tracks its optimum,
-%it classifies $x$'s according to Bayes rule, i.e., 
-%$D^*(x) = \frac{P_X}{P_X(x) + P_G(x)}$, and the gradient of $D(G(z))$ on $G(z)$ pushes
-%probability mass in the direction of increasing value of $D$, i.e., towards regions 
-%where $P_X(x)>P_G(x)$. This necessarily pulls probability mass away from
-%regions where $P_X(x)<P_G(x)$. This happens because on the border of regions
-%where $P_X(x)>P_G(x)$ the derivative of $D^*$ must point inside, and vice-versa.
-%Hence the gradient pushes $G$ towards allocating more mass where it did not put enough,
-%and vice-versa. A more formal proof of convergence is presented in Section~\ref{},
-%also showing that the criterion is consistent, so long as $D$ is allowed to track
-%its optimum, i.e., $G$ is making small changes between optimizations of $D$.
+\begin{itemize}
+\item (a) si considera una coppia avversaria prossima alla convergenza: $p_g$ è simile a $p_\text{data}$ e
+$D$ è un classificatore parzialmente accurato.
 
-\begin{figure}[h]
-\begin{tabular}{m{3cm}m{3cm}m{3cm}m{0.1cm}m{3cm}}
-    \includegraphics[width=3cm, height=4cm]{fig1.pdf} 
-    &  
-    \includegraphics[width=3cm, height=4cm]{fig2.pdf}
-    & 
-    \includegraphics[width=3cm, height=4cm]{fig3.pdf}
-    &
-    \dots
-    &
-    \includegraphics[width=3cm, height=4cm]{fig4.pdf}
-    \\
-    \centering (a)
-    & 
-    \centering (b) 
-    & 
-    \centering (c) 
-    &  
-    & 
-    \centering (d)
-\end{tabular}
+\item (b) Nell'iterazione interna dell'algoritmo, $D$ è allenato a discriminare dati covergenti da 
 
-\caption{\small
-Generative adversarial nets are trained by simultaneously updating the \textbf{d}iscriminative 
-distribution ($D$, blue, dashed line) so that it discriminates between samples from
-the data generating distribution (black, dotted line)
-$p_{\bm{x}}$ 
-from those of the \textbf{g}enerative distribution $p_g$ (G) (green, solid line).
-The lower horizontal line is the domain from which $\bm{z}$ is sampled, in this case uniformly.
-The horizontal line above is part of the domain of $\bm{x}$. The upward arrows show
-how the mapping $\bm{x}=G(\bm{z})$ imposes the non-uniform distribution $p_g$ on transformed samples.
-$G$ contracts in regions of high density and expands in regions of low density of $p_g$.
-(a) Consider an adversarial pair near convergence: $p_g$ is similar to $p_\text{data}$ and
-$D$ is a partially accurate classifier.
-(b) In the inner loop of the algorithm $D$ is trained to discriminate samples from data,
-converging to
-$D^*(\bm{x}) = 
+\[D^*(\bm{x}) = 
 \frac{
     p_\text{data}(\bm{x})
     }{
         p_\text{data}(\bm{x}) + p_g(\bm{x})}
-$. 
-(c) After an update to $G$, gradient of $D$ has guided $G(\bm{z})$ to flow to regions that are more likely
-to be classified as data.
-(d) After several steps of training, if $G$ and $D$ have enough capacity, they will reach a point at which
-both cannot improve because $p_g = p_\text{data}$.
-The discriminator is unable to differentiate between the two 
-distributions, i.e. $D(\bm{x}) = \frac{1}{2}$.
-}
+\]
+ 
+\item (c) dopo un aggiornamento a $G$, il gradiente di $D$ ha guidato $G(\bm{z})$ verso regioni dove sia più probabile che sia classificato come dato.
+
+\item (d) dopo numerosi step di training se $G$ e $D$ hanno sufficiente capacità, raggiungono entrambi un punto in cui entrambi non possono migliorarsi a causa di 
+\[p_g = p_\text{data}\].
+
+Il discriminatore non è in grado di differenziare tra le due distribuzioni. (ad esempio: $D(\bm{x}) = \frac{1}{2}$).
+\end{itemize}
+
+\begin{figure}[h]
+	\begin{minipage}[t]{.5\columnwidth}
+		 \includegraphics[]{fig1.pdf}
+		 \caption{(a)}
+	\end{minipage}
+		\begin{minipage}[c]{.5\columnwidth}
+		 \includegraphics[]{fig2.pdf}
+		 \caption{(b)}
+	\end{minipage}
+		\begin{minipage}[c]{.5\colunmwidth}
+		 \includegraphics[]{fig3.pdf}
+		 \caption{(c)}
+	\end{minipage}
+		\begin{minipage}[b]{.5\columnwidth}
+		 \includegraphics[]{fig4.pdf}
+		 \caption{(d)}
+	\end{minipage}
 \label{fig:intuition}
 \end{figure}
 
