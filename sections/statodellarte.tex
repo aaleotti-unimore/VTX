@@ -2,10 +2,63 @@
 \label{statodellarte}
 In questo capitolo saranno mostrati i fondamenti teorici su cui è basato il lavoro presentato all'interno di questo elaborato.... ><<<<><<<
 
+\section{Botnet}
+Una botnet è composta da svariati dispositivi connessi a Internet, come host, smartphone o dispositivi IoT, ciascuno dei quali esegue uno o più bot. I proprietari delle botnet controllano queste ultime tramite software C\&C (Command and Control) per svolgere svariate attività, solitamente dannose, che richiedono un livello di automazione su vasta scala, tra cui:
+\begin{itemize}
+\item Attacchi DDoS (Distributed Denial-of-Service) che causano downtime non pianificati delle applicazioni
+\item Verifica di elenchi di credenziali divulgate (attacchi di compilazione delle credenziali) che portano al controllo degli account
+\item Attacchi alle applicazioni web allo scopo di sottrarre dati
+\item Fornire a utenti malintenzionati accesso a un dispositivo e alla relativa connessione a una rete
+\end{itemize}
+
+Le botnet vengono sempre più affittate dai cyber criminali per gli scopi più diversi e rappresentano una minaccia reale per qualsiasi azienda presente in Internet. Questo significa che non è più necessario che gli autori degli attacchi siano in possesso delle conoscenze necessarie per realizzare le proprie botnet, in quanto possono utilizzare botnet già create da altri. Il numero di bot varia notevolmente da una botnet all'altra e dipende dall'abilità del proprietario della botnet di infettare dispositivi non protetti. 
+
+Le botnet possono essere divise in due classi, operando la suddivisione per architettura (Figura~\ref{fig:botnet}):
+\begin{itemize}
+\item Botnet Centralizzate: il tipo di architettura è più semplice, tutti i bot sono connessi direttamente al C\&C. Il server C\&C gestisce la lista di tutte le macchine infettate, controlla il loro status e da loro informazioni operative. Questa tipologia di botnet è estremamente vulnerabile, una volta "convertito" un bot, si hanno tutte le informazioni necessarie per poter effettuare un attacco al C\&C e smantellare la rete; esistono alcune estensioni a questa struttura, in cui si usano più server di comando e controllo, ma i vantaggi che si ottengono sono trascurabili.
+\item Botnet Decentralizzate o P2P: in questo schema i bot non sono necessariamente connessi al server C\&C ma tutti insieme costituiscono una rete di comunicazione in cui i comandi sono trasmessi anche da zombie a zombie. Ogni nodo della rete è un bot, il quale comunica solo con una lista di nodi “vicini”. In questo schema per gestire la botnet è necessario l'accesso ad almeno un client. Il punto di forza di questi schemi è la difficoltà che s'incontra nel momento in cui si è interessati a smantellare l'intera rete; il reverse engineering di un singolo bot non è più sufficiente a individuare tutti i computer coinvolti né tantomeno a smantellare i server C\&C.
+\end{itemize}
+
+\begin{figure}[hbp] 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/botnet.png} \\ 
+    Botnet Centralizzata
+    \vspace{4ex}
+  \end{minipage}%%
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/botnetp2p.png} \\
+    Botnet Decentralizzata 
+    \vspace{4ex}
+  \end{minipage} 
+     \caption{Anatomia di Botnet\label{fig:botnet} }
+\end{figure}
+
+\subsection{Command and Control Phase}
+Durante la fase C\&C una macchina appena infettata diventa attivamente a far parte della botnet. Un bot tradizionale client-server, una volta installato su una nuova macchina, tenterà immediatamente il collegamento attraverso una rete IRC o contattando il server C\&C via HTTP.
+part of the botnet. A traditional client-server bot, once installed on a new
+machine, will immediately attempt to “phone home” through an IRC network
+or contacting a HTTP C&C server. Decentralised P2P bots are distributed
+with a predefined bootstrapping method to connect to the relevant DHT.
+Once connected, the newly compromised machine will ask one of its peers
+for the latest command. Some of the P2P bots require that a specific port is
+open for the peers to be able to communicate with each other [121]. Through
+the deployment of a firewall, many of the unnecessarily open ports on any
+given machine will be blocked. Any new application that attempts to access
+the network for any reason can also be flagged to the user, e.g., immediately
+after a recent infection of the botnet malware. Newer versions of the bot client
+software will not use a predefined port number to aid in avoiding detection.
+There are two different ways to spread a command in a botnet system, namely
+push and pull. IRC based bots belong to the push-based category as they sit in
+an IRC chat room listening for a new command. HTTP based bots periodically
+check with the server to verify if there is any new work. P2P bots can do both
+as they send and receive commands to/from other bots
+
 \newpage
 \section{Machine Learning}
 \label{machinelearning}
-Il Machine Learning è un sottocampo dell'intelligenza artificiale (IA) è stato definito da Arthur Samuel nel 1959 \cite{5392560}. L'obiettivo del machine learning generalmente è capire la struttura dei dati e adattare tali dati in modelli in grado di essere capiti e utilizzati da utenti.
+Il Machine Learning è un sottocampo dell'intelligenza artificiale (IA) è stato definito da Arthur Samuel nel 1959~\cite{5392560}. L'obiettivo del machine learning generalmente è capire la struttura dei dati e adattare tali dati in modelli in grado di essere capiti e utilizzati da utenti.
 
 Nonostante il Machine Learning sia un campo informatico, si differenzia dai tradizionali approcci computazionali. Nell'informatica tradizionale, gli algoritmi sono serie di istruzioni programmate esplicitamente usate dai calcolatori per elaborare dati o risolvere problemi. Gli algoritmi Machine Learning, al contrario, permettono ai calcolatori di allenarsi su input di dati ed usare analisi statistica in modo da produrre valori che ricadono all'interno di intorni specifici. Grazie a questo, il machine learning facilita ai calcolatori la costruzione di modelli che siano in grado di automatizzare processi decisionali basati su campioni di dati.
 
@@ -20,7 +73,7 @@ Il machine learning è impiegato principalmente per la risoluzione di tre tipolo
 \begin{itemize}
 \item \textbf{classificazione}, quando è necessario decidere a quale categoria appartiene un determinato dato. Ad esempio per l'identificazione di specie di piante fornendo un'immagine.
 \item \textbf{raggruppamento} (clustering), quando si vuole raggruppare i dati che presentano caratteristiche simili. Ad esempio, un sistema può raggruppare immagini di figure geometriche separando figure con 4 lati e i cui angoli sono a 90 gradi oppure tutte le figure con quattro lati in cui solo due sono paralleli, ecc. In marketing, ad esempio, il raggruppamento viene utilizzato per l'individuazione di clienti e mercati potenziali.
-\item \textbf{regressione}, cioè prevedere il valore futuro di un dato avendo noto il suo valore attuale. Un esempio è la previsione della quotazione delle valute o delle azioni di una società. Nel marketing viene utilizzato per prevedere il tasso di risposta di una campagna sulla base di un dato profilo di clienti; nell’ambito commerciale per stimare come varia il fatturato dell’azienda al mutare della strategia.
+\item \textbf{regressione}, cioè prevedere il valore futuro di un dato avendo noto il suo valore attuale. Un esempio è la previsione della quotazione delle valute o delle azioni di una società. Nel marketing viene utilizzato per prevedere il tasso di risposta di una campagna sulla base di un dato profilo di clienti; nell'ambito commerciale per stimare come varia il fatturato dell'azienda al mutare della strategia.
 \end{itemize}
 
 \subsection{Apprendimento Supervisionato}
@@ -40,10 +93,10 @@ L'apprendimento non supervisionato viene comunemente utilizzato per dati transaz
 L'apprendimento non supervisionato, grazie alla mancanza di un target da raggiungere, è in grado di analizzare dati che   apparentemente non mostrano relazioni ed estrarne dati significativi. Viene spesso usato per eseguire \textit{anomaly detection}, come l'utilizzo fraudolento di carte di credito; oppure è possibile eseguire classificazione di immagini (come nel precedente caso di razze canine) in maniera autonoma partendo da immagini non categorizzate.
 
 \subsection{Apprendimento Semi Supervisionato}
-Posto a metà tra il supervisonato e il non-supervisionato, l’apprendimento parzialmente supervisionato si basa su dati misti in cui una minima parte è già etichettata e una larghissima maggioranza è costituita da dati non etichettati.  Questo approccio viene utilizzato per migliorare le previsioni fatte dalla macchina sui dati non etichettati e richiede, normalmente, l’intervento di un analista. L’approccio è principalmente usato nei problemi di classificazione e di raggruppamento o nella descrizione delle relazioni causa-effetto tra le variabili.
+Posto a metà tra il supervisonato e il non-supervisionato, l'apprendimento parzialmente supervisionato si basa su dati misti in cui una minima parte è già etichettata e una larghissima maggioranza è costituita da dati non etichettati.  Questo approccio viene utilizzato per migliorare le previsioni fatte dalla macchina sui dati non etichettati e richiede, normalmente, l'intervento di un analista. L'approccio è principalmente usato nei problemi di classificazione e di raggruppamento o nella descrizione delle relazioni causa-effetto tra le variabili.
 
 \subsection{Apprendimento per Rinforzo}
-L'apprendimento per rinforzo (Reinforcement learning) è una tecnica di apprendimento automatico che punta a realizzare sistemi in grado di apprendere ed adattarsi ai cambiamenti dell’ambiente in cui sono immersi attraverso la distribuzione di una “ricompensa” detta rinforzo, data dalla valutazione delle prestazioni.
+L'apprendimento per rinforzo (Reinforcement learning) è una tecnica di apprendimento automatico che punta a realizzare sistemi in grado di apprendere ed adattarsi ai cambiamenti dell'ambiente in cui sono immersi attraverso la distribuzione di una “ricompensa” detta rinforzo, data dalla valutazione delle prestazioni.
 Il suo funzionamento è attuato da tre componenti:
 \begin{itemize}
 \item un sistema logico di esecuzione (definito A), che sulla base dei dati in ingresso (Input) riesce a restituire un risultato (Output)
@@ -51,14 +104,14 @@ Il suo funzionamento è attuato da tre componenti:
 \item un sistema logico di ottimizzazione (definito C) che osserva il comportamento di A e B e modifica il modello utilizzato da A per aumentare il premio e ridurre le penalità che B assegna ad A.
 \end{itemize}
 
-L’apprendimento per rinforzo è utilizzato in tutti quei campi in cui è essenziale che la macchina risponda ai cambiamenti dell’ambiente. Per questo è utilizzato frequentemente nella robotica, per controllare i movimenti degli automi, ma anche nelle auto a guida autonoma. Trova anche applicazione in ambiti industriali nella produzione e nel controllo qualità e in diversi altri settori.
+L'apprendimento per rinforzo è utilizzato in tutti quei campi in cui è essenziale che la macchina risponda ai cambiamenti dell'ambiente. Per questo è utilizzato frequentemente nella robotica, per controllare i movimenti degli automi, ma anche nelle auto a guida autonoma. Trova anche applicazione in ambiti industriali nella produzione e nel controllo qualità e in diversi altri settori.
 
 
 
 \newpage
 \section{Deep Learning e Reti neurali}
 Il Deep Learning è uno specifico sottocampo del machine learning, un diverso modo di apprendere rappresentazioni di dati, principalmente orientato verso l'apprendimento di successivi strati (\textit{layers}) di rappresentazione via via più significativi. Il termine "deep" indica la presenza di questa moltitudine di strati che compongono il modello
-di rappresentazione dei dati; infatti il deep learning odierno comprende generalmente modelli composti da decine o centinaia di strati successivi di rappresentazione, i quali apprendono in maniera automatica tramite l'esposizione ai dati di allenamento. Per confronto, gli approcci di machine learning descritti in sezione \ref{machinelearning} generalmente coinvolgono uno o due strati di rappresentazione dei dati. Difatti tali modelli vengono definiti anche come \textit{shallow learning}.
+di rappresentazione dei dati; infatti il deep learning odierno comprende generalmente modelli composti da decine o centinaia di strati successivi di rappresentazione, i quali apprendono in maniera automatica tramite l'esposizione ai dati di allenamento. Per confronto, gli approcci di machine learning descritti in sezione~\ref{machinelearning} generalmente coinvolgono uno o due strati di rappresentazione dei dati. Difatti tali modelli vengono definiti anche come \textit{shallow learning}.
  
 \begin{figure}[htbp]
 	\centering
@@ -72,10 +125,10 @@ All'interno del deep learning, queste rappresentazioni a più strati sono quasi 
 	\centering
 	\includegraphics[width=\columnwidth]{figures/deeplearning.png}
 	\caption{Esempio di rappresentazione di una cifra numerica tramite rete neurale. \textit{fonte}%
-	 \cite{chollet2017deep} \label{fig:neuralnetwork} }
+	~\cite{chollet2017deep} \label{fig:neuralnetwork} }
 \end{figure}
 
-Come è possibile vedere in figura \ref{fig:neuralnetwork}, la rete neurale trasforma l'immagine di una cifra numerica disegnata a mano in una rappresentazione via via più informativa riguardo il risultato finale. Si può considerare il deep leraning come una operazione di distillazione di informazioni composta da più fasi in cui i dati vengono filtrati in maniera sempre più fine.
+Come è possibile vedere in figura~\ref{fig:neuralnetwork}, la rete neurale trasforma l'immagine di una cifra numerica disegnata a mano in una rappresentazione via via più informativa riguardo il risultato finale. Si può considerare il deep leraning come una operazione di distillazione di informazioni composta da più fasi in cui i dati vengono filtrati in maniera sempre più fine.
 
 \subsection{Funzionamento Reti Neurali}
 Le informazioni specifiche riguardo quali operazioni un livello apporta ai dati di input sono immagazzinate all'interno degli strati stessi, nella matrice dei "pesi". La trasformazione implementata da un livello è parametrizzata da tali pesi. Generalmente la fase di apprendimento consiste nel trovare un set di valori per i quali i pesi di tutti gli strati che compongono una rete neurale mappino correttamente i dati di esempio ai loro target associati.
@@ -85,13 +138,13 @@ Per superare tale vincolo, la fase di apprendimento di una rete neurale è compo
 
 Il meccanismo principale nel deep learning è l'uso di questo punteggio come segnale di \textit{feedback} per aggiustare il valore dei pesi in maniera da diminuire il valore del punteggio di loss per l'esempio analizzato. Questo aggiustamento è compito dell'\textit{ottimizzatore}, il quale implementa l'algoritmo di \textit{backpropagation} che attua la modifica dei pesi durante la fase di apprendimento.
 
-Inizialmente i pesi della rete neurale sono assegnati a valori randomici, causando per le prime fasi di apprendimento un valore di loss particolarmente alto. Via via che le fasi di apprendimento mostrano diversi esempi alla rete i pesi vengono aggiustati di una piccola parte nella direzione corretta, causando una decrescita nel punteggo di loss. Questo \textit{training loop} viene ripetuto per un numero sufficiente di volte fino al raggiungimento di un valore minimo di loss e alla produzione di output il più possibile simile a quello desiderato. In figura \ref{fig:neuralloss} è mostrato uno schema di alto livello.
+Inizialmente i pesi della rete neurale sono assegnati a valori randomici, causando per le prime fasi di apprendimento un valore di loss particolarmente alto. Via via che le fasi di apprendimento mostrano diversi esempi alla rete i pesi vengono aggiustati di una piccola parte nella direzione corretta, causando una decrescita nel punteggo di loss. Questo \textit{training loop} viene ripetuto per un numero sufficiente di volte fino al raggiungimento di un valore minimo di loss e alla produzione di output il più possibile simile a quello desiderato. In figura~\ref{fig:neuralloss} è mostrato uno schema di alto livello.
 
 \begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=0.8\columnwidth]{figures/deeploss.png}
 	\caption{Schema di alto livello del funzionamento di una rete neurale. \textit{fonte}%
-	 \cite{chollet2017deep} \label{fig:neuralloss} }
+	~\cite{chollet2017deep} \label{fig:neuralloss} }
 \end{figure}
 
 \newpage
@@ -100,13 +153,13 @@ Le tecniche di machine learning possono essere utilizzate per prevenire azioni v
 
 Le vulnerabilità dei metodi di machine learning rispetto a manipolazione antagonista non possono venire semplicemente ignorate con la richiesta di tecniche più "robuste". I fondamenti teorici del machine learning odierno sono largamente costruiti sull'assunto che i dati di allenamento descrivano adeguatamente la realtà del fenomeno studiato. Questo assunto viene chiaramente violato nel caso che le distribuzioni di allenamento o di test vengano alterate, assumendo che gli antagonisti utilizzino qualsiasi mezzo possibile per disturbare l'algoritmo di apprendimento. I metodi di apprendimento in caso di ambienti antagonisti dovrebbero quindi essere in grado di sostenere una distorsione nei propri dati.
 
-Come dimostrato da ricerche precedenti ( \cite{kearnsli}, \cite{Auer2002}, \cite{paclearning} ) un antagonista senza vincoli che può arbitrariamente alterare dati e target, può introdurre un errore fino al 100\%. Tuttavia nei casi pratici gli attackers devono atteneresi a determinati vincoli; ad esempio una email di spam deve recapitare il suo messaggio, un malware inviato ad un host deve eseguire correttamente e sfruttare una vulnerabilità e antagonisti che cercano di alterare i motori di ricerca possono controllare solo una frazione di tutti i domini raggiungibili. In alcuni casi si può mostrare come certi vincoli possono rendere la rilevazione di un attacco computazionalmente intrattabile \cite{fogla}.
+Come dimostrato da ricerche precedenti (~\cite{kearnsli},~\cite{Auer2002},~\cite{paclearning} ) un antagonista senza vincoli che può arbitrariamente alterare dati e target, può introdurre un errore fino al 100\%. Tuttavia nei casi pratici gli attackers devono atteneresi a determinati vincoli; ad esempio una email di spam deve recapitare il suo messaggio, un malware inviato ad un host deve eseguire correttamente e sfruttare una vulnerabilità e antagonisti che cercano di alterare i motori di ricerca possono controllare solo una frazione di tutti i domini raggiungibili. In alcuni casi si può mostrare come certi vincoli possono rendere la rilevazione di un attacco computazionalmente intrattabile~\cite{fogla}.
 
-L'investigazione di metodi di machine learning per ambienti ostili è stata attuata in tre aree di ricerca largamente distinte: machine learning, sicurezza informatica e spam filtering. Nel caso di machine learning ricerche precedenti si sono incentrate su metodi di minimo-massimo con l'obiettivo di ottenere robustezza rispetto alla incertezza dell'input. Ad esempio classificatori più robusti sono stati sviluppati per gestire casi come il feature deletion \cite{globerson} ; oppure ricerche hanno dimostrato che equilibri unici di Nash esistono per alcune tipologie di situazioni antagoniste \cite{nash} .
+L'investigazione di metodi di machine learning per ambienti ostili è stata attuata in tre aree di ricerca largamente distinte: machine learning, sicurezza informatica e spam filtering. Nel caso di machine learning ricerche precedenti si sono incentrate su metodi di minimo-massimo con l'obiettivo di ottenere robustezza rispetto alla incertezza dell'input. Ad esempio classificatori più robusti sono stati sviluppati per gestire casi come il feature deletion~\cite{globerson} ; oppure ricerche hanno dimostrato che equilibri unici di Nash esistono per alcune tipologie di situazioni antagoniste~\cite{nash} .
 
-Una differente visione dei problemi di apprendimento antagonista è emersa nel campo della sicurezza informatica, specialmente per quel che riguarda il rilevamento di intrusioni (\textit{intrusion detection} ). Diversi metodi sono stati proposti per rilevare pacchetti di rete anomali o per generare automaticamente \textit{signatures} strettamente legate a metodi di machine learning (ad esempio i lavori eseguiti in \cite{wangstolfo} e \cite{wang2006} ).
+Una differente visione dei problemi di apprendimento antagonista è emersa nel campo della sicurezza informatica, specialmente per quel che riguarda il rilevamento di intrusioni (\textit{intrusion detection} ). Diversi metodi sono stati proposti per rilevare pacchetti di rete anomali o per generare automaticamente \textit{signatures} strettamente legate a metodi di machine learning (ad esempio i lavori eseguiti in~\cite{wangstolfo} e~\cite{wang2006} ).
 
-L'area dello spam filtering ha richiesto sforzi fondamentali da parte degli esperti in sicurezza; la costante ricerca di tecniche di evasione dei filtri anti-spam ha portato a studi estensivi riguardo vincoli e tecniche robuste di filtering \cite{dalvi}. 
+L'area dello spam filtering ha richiesto sforzi fondamentali da parte degli esperti in sicurezza; la costante ricerca di tecniche di evasione dei filtri anti-spam ha portato a studi estensivi riguardo vincoli e tecniche robuste di filtering~\cite{dalvi}. 
 
 Il machine learning può fornire soluzione a difficili problemi di sicurezza di rete, compresi filtri anti-spam, rilevazione di vari tipologie di attacchi contro server e host, rilevazione di pagine web 
 deliberatamente modificate per manipolare i motori di ricerca sfruttandone le vulnerabilità. Tutte queste problematiche riguardano la manipolazione di grandi quantità di dati in un ambiente altamente variabile e il bisogno di tecniche di classificazione veloci ed accurate. L'esistenza di antagonisti che possono trarre profitto in queste aree complica l'applicazione di machine learning e crea una "corsa agli armamenti" tra chi sviluppa classificatori sempre piu robusti e antagonisti che cercano di manipolare tali classificatori. Fortunatamente ogni area di applicazione fornisce vincoli riguardo le azioni antagoniste che rendono la classificazione fattibile. 
@@ -115,7 +168,7 @@ deliberatamente modificate per manipolare i motori di ricerca sfruttandone le vu
 	\centering
 	\includegraphics[width=\columnwidth]{figures/Reactive_arms_race.jpg}
 	\caption{Schema concettuale del rapporto tra difensori ed antagonisti. \textit{fonte}%
-	 \cite{wiki:Adversarial_machine_learning} \label{fig:advarms} }
+	~\cite{wiki:Adversarial_machine_learning} \label{fig:advarms} }
 \end{figure}
 
 \newpage
@@ -132,7 +185,7 @@ L'idea fondamentale alla base dei modelli generativi è la volontà di convertir
 
 \subsection{Autoencoder}
 La forma più semplificata di conversione da problema generativo a problema discriminativo è l'apprendimento di una mappatura a partire dallo spazio degli input stesso. Sia dato un input $x$, si vuole ottenere una identità di tale input $x=f(x)$ dove $f$ rappresenta il modello predittivo. Il modello generativo può essere definito come l'insieme formato da un modello \textit{encoder} $q_e(h|x)$ in grado di mappare l'input in un nuovo spazio, definito come \textit{spazio latente} rappresentato da $h$ ed un modello \textit{decoder} $q_d(x|h)$ in grado di apprendere la mappatura inversa a partire dallo spazio latente.
-Queste due componenti possono essere connesse assieme, a formare un modello end-to-end allenabile, caratterizzato da un vincolo di dimensione nello spazio latente $h$; generalmente definito come una riduzione di dimensione con lo scopo di far apprendere al modello un vettore di caratteristiche fondamentali dell'input. (figura \ref{fig:aut}
+Queste due componenti possono essere connesse assieme, a formare un modello end-to-end allenabile, caratterizzato da un vincolo di dimensione nello spazio latente $h$; generalmente definito come una riduzione di dimensione con lo scopo di far apprendere al modello un vettore di caratteristiche fondamentali dell'input. (figura~\ref{fig:aut}
 
 \begin{figure}[!htbp]
 	\centering
@@ -157,19 +210,19 @@ In altri termini, $D$ e $G$ eseguono una partita a due giocatori di minimo-massi
 \min_G \max_D V(D, G) = \mathbb{E}_{\bm{x} \sim p_{\text{data}}(\bm{x})}[\log D(\bm{x})] + \mathbb{E}_{\bm{z} \sim p_{\bm{z}}(\bm{z})}[\log (1 - D(G(\bm{z})))].
 \end{equation}
 
-In pratica è necessario implementare la partita in maniera iterativa. L'ottimizzazione di $D$ fino al completamento in un training a se stante risulta computazionalmente proibitivo e su dataset finiti risulta nel fenomeno di \textit{overfitting}. In maniera differente si alternano $k$ passi di ottimizzazione di $D$ ed un passo di ottimizzazione di $G$. Questo risulta nel mantenimento di $D$ vicino alla sua soluzione ottimale, cambiando gradualmente $G$. Questa strategia è mostrata formalmente all'interno dell'algoritmo~\ref{alg:AGF}.
+In pratica è necessario implementare la partita in maniera iterativa. L'ottimizzazione di $D$ fino al completamento in un training a se stante risulta computazionalmente proibitivo e su dataset finiti risulta nel fenomeno di \textit{overfitting}. In maniera differente si alternano $k$ passi di ottimizzazione di $D$ ed un passo di ottimizzazione di $G$. Questo risulta nel mantenimento di $D$ vicino alla sua soluzione ottimale, cambiando gradualmente $G$. Questa strategia è mostrata formalmente all'interno dell'algoritmo~~\ref{alg:AGF}.
 
-In pratica l'equazione~\ref{eq:minimaxgame-definition} può non fornire un gradiente sufficiente per permettere a $G$ di apprendere. Nelle fasi iniziali dove $G$ è debole, $D$ può rifiutare i campioni con buona certezza in quanto chiaramente differenti dai dati di training. In tal caso, $\log ( 1- D(G(\bm{z})))$ satura. Piuttosto che allenare $G$ al fine di minimizzare $\log (1 - D(G(\bm{z})))$ si allena per massimizzare $\log D(G(\bm{z}))$. 
+In pratica l'equazione~~\ref{eq:minimaxgame-definition} può non fornire un gradiente sufficiente per permettere a $G$ di apprendere. Nelle fasi iniziali dove $G$ è debole, $D$ può rifiutare i campioni con buona certezza in quanto chiaramente differenti dai dati di training. In tal caso, $\log ( 1- D(G(\bm{z})))$ satura. Piuttosto che allenare $G$ al fine di minimizzare $\log (1 - D(G(\bm{z})))$ si allena per massimizzare $\log D(G(\bm{z}))$. 
 Questa funzione obiettivo risulta nello stesso punto fisso che forma la dinamica di $G$ and $D$ ma fornisce un gradiente molto più stabile nelle fasi iniziali.
 
-In figura \ref{fig:intuition} viene mostrata la fase di apprendimento di una GAN. Tale architettura è allenata aggiornando simultaneamente il gradiente della distribuzione discriminativa ($D$, linea blu tratteggiata) in modo che discrimini tra campioni della distribuzione generatrice di dati (linea nera tratteggata) $p_{\bm{x}}$ e i campioni provenienti dalla distribuzione del generatore $p_g$ (G) (linea verde).
-La linea nera orizzontale da cui $\bm{z}$ è campionato è in questo caso uniforme; mentre la linea nera superiore è parte del dominio di $\bm{x}$. Le freccie indicano come la mappatura $\bm{x}=G(\bm{z})$ imponga una distribuzione non uniforme $p_g$ sui campioni trasformati. $G$ si contrae in regioni ad alta densità ed espande in regioni a bassa densità $p_g$. 
-
+In figura~\ref{fig:intuition} viene mostrata la fase di apprendimento di una GAN. Tale architettura è allenata aggiornando simultaneamente il gradiente della distribuzione discriminativa ($D$, linea blu tratteggiata) in modo che discrimini tra campioni della distribuzione generatrice di dati (linea nera tratteggata) $p_{\bm{x}}$ e i campioni provenienti dalla distribuzione del generatore $p_g$ (G) (linea verde).
+La linea nera orizzontale da cui $\bm{z}$ è campionato è in questo caso uniforme; mentre la linea nera superiore è parte del dominio di $\bm{x}$. Le frecce indicano come la mappatura $\bm{x}=G(\bm{z})$ imponga una distribuzione non uniforme $p_g$ sui campioni trasformati. $G$ si contrae in regioni ad alta densità ed espande in regioni a bassa densità $p_g$. 
+Di seguito la descrizione di quanto mostrato in figura~\ref{fig:intuition}
 \begin{itemize}
 \item (a) si considera una coppia avversaria prossima alla convergenza: $p_g$ è simile a $p_\text{data}$ e
 $D$ è un classificatore parzialmente accurato.
 
-\item (b) Nell'iterazione interna dell'algoritmo, $D$ è allenato a discriminare dati covergenti da 
+\item (b) Nell'iterazione interna dell'algoritmo, $D$ è allenato a discriminare dati convergenti da:
 
 \[D^*(\bm{x}) = 
 \frac{
@@ -177,49 +230,62 @@ $D$ è un classificatore parzialmente accurato.
     }{
         p_\text{data}(\bm{x}) + p_g(\bm{x})}
 \]
- 
+
 \item (c) dopo un aggiornamento a $G$, il gradiente di $D$ ha guidato $G(\bm{z})$ verso regioni dove sia più probabile che sia classificato come dato.
 
-\item (d) dopo numerosi step di training se $G$ e $D$ hanno sufficiente capacità, raggiungono entrambi un punto in cui entrambi non possono migliorarsi a causa di 
-\[p_g = p_\text{data}\].
-
-Il discriminatore non è in grado di differenziare tra le due distribuzioni. (ad esempio: $D(\bm{x}) = \frac{1}{2}$).
+\item (d) dopo numerosi step di training se $G$ e $D$ hanno sufficiente capacità, raggiungono entrambi un punto in cui entrambi non possono migliorarsi a causa di \[p_g = p_\text{data}\] Il discriminatore non è in grado di differenziare tra le due distribuzioni. (ad esempio: $D(\bm{x}) = \frac{1}{2}$).
 \end{itemize}
 
-\begin{figure}[h]
-	\begin{minipage}[t]{.5\columnwidth}
-		 \includegraphics[]{fig1.pdf}
-		 \caption{(a)}
-	\end{minipage}
-		\begin{minipage}[c]{.5\columnwidth}
-		 \includegraphics[]{fig2.pdf}
-		 \caption{(b)}
-	\end{minipage}
-		\begin{minipage}[c]{.5\colunmwidth}
-		 \includegraphics[]{fig3.pdf}
-		 \caption{(c)}
-	\end{minipage}
-		\begin{minipage}[b]{.5\columnwidth}
-		 \includegraphics[]{fig4.pdf}
-		 \caption{(d)}
-	\end{minipage}
-\label{fig:intuition}
+\begin{figure}[p] 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=.9\linewidth]{figures/fig1.pdf} \\ 
+    (a)
+    \vspace{4ex}
+  \end{minipage}%%
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=.9\linewidth]{figures/fig2.pdf} \\
+    (b) 
+    \vspace{4ex}
+  \end{minipage} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=.9\linewidth]{figures/fig3.pdf}  \\
+    (c) 
+    \vspace{4ex}
+  \end{minipage}%% 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=.9\linewidth]{figures/fig4.pdf} \\
+   (d) 
+    \vspace{4ex}
+  \end{minipage}
+   \caption{\label{fig:intuition} }
+ 
 \end{figure}
 
+Il minimo globale del criterio di training virtuale $C(G)$ è ottenuto solo se $p_g=p_\text{data}$. 
+A tal punto, si raggiungerà il valore $C(G) = -\log 4$. 
+Se $G$ e $D$ hanno sufficiente capacità e ad ogni step dell'algoritmo~\ref{alg:AGF} il discriminatore è in grado di raggiungere il suo ottimo dato $G$, ed inoltre se $p_g$ venga aggiornato così da migliorare il criterio 
+\[\mathbb{E}_{\bm{x} \sim p_\text{data}}[\log D^*_G(\bm{x})] + \mathbb{E}_{\bm{x} \sim p_g}[\log (1 - D^*_G(\bm{x}))]\] 
+allora $p_g$ convergerà a $p_\text{data}$.
 
+\subsubsection{Vantaggi e Svantaggi}
+Questo framework moderno presenta vantaggie  e svantaggi relativi ai precedenti framework. Gli svantaggi primariamente sono che non esiste una esplicita rappresentazione di $p_g(\bm{x})$, e che $D$ deve essere ben sincronizzato con $G$ durante la fase di training (in particolare, $G$ non deve essere allenato troppo senza aggiornare $D$, in modo da evitare uno scenario degenerativo in cui $G$ collassa troppi valori di $\mathbf{z}$ verso lo stesso valore di $\mathbf{x}$ per ottenere abbastanza diversità da modellare $p_\text{data}$). 
+I vantaggi rispetto a modelli alternativi come le Catene di Markov sono principalmente di tipo computazionale. I modelli antagonisti possono trarre un vantaggio statistico non dovendo aggiornare la rete generatrice con campioni di dati ma solamente tramite il flusso di gradiente che attraversa il discriminatore. Questo significa che le componenti dell'input non sono copiate direttamente nei parametri del generatore. Un ulteriore vantaggio delle reti antagoniste è la capacità di rappresentare distribuzioni molto nette mentre metodi alternativi basati su Catene di Markov richiedono che la distribuzione sia meno distinta in modo da garantire alle catene la capacità di mischiare le modalità.
 
-\begin{algorithm}[ht]
-\caption{\small Minibatch stochastic gradient descent training of generative adversarial nets.
-The number of steps to apply to the discriminator, $k$, is a hyperparameter. We used $k=1$, the
-least expensive option, in our experiments.
+\begin{algorithm}[p]
+\caption{Discesa stocastica del gradiente durante la fase di training di una GAN.
+il numero di passi applicati al discriminatore, $k$, è un iperparametro della rete.
 }
 \begin{algorithmic}
 \label{alg:AGF}
-\FOR{number of training iterations}
-  \FOR{$k$ steps}
-    \STATE{$\bullet$ Sample minibatch of $m$ noise samples $\{ \bm{z}^{(1)}, \dots, \bm{z}^{(m)} \}$ from noise prior $p_g(\bm{z})$.}
-    \STATE{$\bullet$ Sample minibatch of $m$ examples $\{ \bm{x}^{(1)}, \dots, \bm{x}^{(m)} \}$ from data generating distribution $p_\text{data}(\bm{x})$.}
-    \STATE{$\bullet$ Update the discriminator by ascending its stochastic gradient:
+\FOR{numero di iterazioni di trainingons}
+  \FOR{$k$ passi}
+    \STATE{$\bullet$ Campionare un mini-batch di $m$ campioni generati da rumore $\{ \bm{z}^{(1)}, \dots, \bm{z}^{(m)} \}$ dal rumore precedente $p_g(\bm{z})$.}
+    \STATE{$\bullet$ Campionare un mini-batch di $m$ esempi $\{ \bm{x}^{(1)}, \dots, \bm{x}^{(m)} \}$ dalla distribuzione di dati reali $p_\text{data}(\bm{x})$.}
+    \STATE{$\bullet$ Aggiornare il discriminatore aumentando il proprio gradiente stocastico:
         \[
             \nabla_{\theta_d} \frac{1}{m} \sum_{i=1}^m \left[
             \log D\left(\bm{x}^{(i)}\right)
@@ -232,17 +298,17 @@ least expensive option, in our experiments.
    %$P_g$ (target = 0, input = $G(\bm{z})$), i.e., towards minimizing
    % \mbox{$-\log D(\bm{x}) - \log(1 - D(G(\bm{z})))$}.}
    \ENDFOR
-  \STATE{$\bullet$ Sample minibatch of $m$ noise samples $\{ \bm{z}^{(1)}, \dots, \bm{z}^{(m)} \}$ from noise prior $p_g(\bm{z})$.}
-    \STATE{$\bullet$ Update the generator by descending its stochastic gradient:
+  \STATE{$\bullet$ Campionare un mini-batch di $m$ campioni generati da rumore $\{ \bm{z}^{(1)}, \dots, \bm{z}^{(m)} \}$ dal rumore precedente $p_g(\bm{z})$.}
+    \STATE{$\bullet$ Aggiornare il generatore, aumentando il proprio gradiente stocastico:
         \[
             \nabla_{\theta_g} \frac{1}{m} \sum_{i=1}^m
             \log \left(1-D\left(G\left(\bm{z}^{(i)}\right)\right)\right)
             .
         \]}
   \ENDFOR
-  \\The gradient-based updates can use any standard gradient-based learning rule. We used momentum in our experiments.
-\end{algorithmic}
+  \\Gli aggiornamenti di gradiente possono utilizzare qualsiasi legge di apprendimento.
+  \end{algorithmic}
 \end{algorithm}
 
-\subsubsection{Autoencoder}
+
 
