@@ -18,10 +18,10 @@
 \newpage
 \section{Classificatore Machine Learning}
 \label{fig:classml}
+
+\todo{rivedere nominazione del classificatore. rileggere capitolo}
+
 La prima fase di questo studio è stata quella di progettare un classificatore in grado di separare efficacemente domini \textit{DGA} da domini reali basandosi unicamente sulle caratteristiche linguistiche dei domini: infatti, ad un esame preliminare, i domini \textit{DGA} presentano caratteristiche ben differenti dalle semplici frasi o parole che solitamente compongono i domini reali.
-
-\todo{Si è scelto di utilizzare Random Forest in quanto ritenuto il più adatto al caso in esame. L'algoritmo è stato inoltre messo a confronto con \textit{Support Vector Machine} e \textit{Naive-Bayes}.~\cite{randomforest}
-
 All'interno del classificatore, ogni albero dell'insieme è costruito a partire da un campione estratto con sostituzione dal \textit{training set}. In aggiunta, al momento della divisione del nodo durante la costruzione di un albero, la divisione scelta non è più la migliore soluzione tra tutte le \textit{features}. Al suo posto, la divisone che viene scelta è la migliore divisione all'interno di un \textit{subset} casuale tra tutte le \textit{features}. Come risultato di questa casualità, il \textit{bias} della foresta di solito aumenta leggermente (rispetto al \textit{bias} di un singolo albero non casuale) ma, a causa della media, la sua varianza diminuisce, di solito compensando l'aumento di \textit{bias}, quindi dando un modello generale migliore.}
 
 \subsection{Dataset}
@@ -158,10 +158,11 @@ La funzione di decisione è:
 
 \item \textbf{Naive Bayes}: Metodo di classificazione supervisionata basati sul teorema di Bayes con un assunto "\textit{naive}" di indipendenza tra ogni coppia di feature. Data una variabile di classe $y$ e un vettore di features indipendenti $x_1 \dots, x_n$ il teorema di Bayes dimostra la seguente relazione: 
 
-\[P\left(y|x_1,\dots,x_n) = \frac{P(y)P(x_1,\dots,x_n|y)}{P(x_1,\dots,x_n)}\]
+\[P\left(y|x_1,\dots,x_n\right) = \frac{P(y)P(x_1,\dots,x_n|y)}{P(x_1,\dots,x_n)}\]
  
- Siccome $P(x_1,\dots,x_n)$ è una costante data in ingresso è definita la seguente regola di classificazione:
+Siccome $P(x_1,\dots,x_n)$ è una costante data in ingresso è definita la seguente regola di classificazione:
  
+ \[\hat{y} = arg,\max_{y}P(y)\displaystyle\prod_{i=1}^n P(x_i|y)\]
  
 \end{itemize}
 
