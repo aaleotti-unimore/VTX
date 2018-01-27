@@ -122,12 +122,51 @@ L'implementazione di tali \textit{features} ha permesso di ottenere un \textit{d
 \subsection{Architettura Interna}
 La scelta della tipologia di architettura da utilizzare per il classificatore è stata ridotta a tre modelli di classificazione differenti: 
 \begin{itemize}
-\item Random Forest
-\item Support Vector Machine
-\item Naive-Bayes 
+\item \textbf{Random Forest}~\cite{randomforest}: un metodo di \textit{ensemble learning}~\cite{ensemble} supervisionato per la classificazione che opera tramite la costruzione di un insieme di alberi decisionali durante la fase di training ed emette la classe che rappresenta la moda statistica delle classi individuate dai singoli alberi. Formalmente è definita dalla seguente funzione:
+Per un punto $x$, sia $v_j(x)$ il nodo terminale a  cui $x$ è assegnato durante la discesa dell'albero $T_j$ $\left(j=1,2,\dots,t\right)$.
+Sia indicata da $P(c|v_j(x))$ la probabilità a posteriori che $x$ appartenga alla classe $c (c = 1,2,\dots,n)$ come:
+\[P(c|v_j(x) = \frac{P(c,v_j(x))}{\sum_{l=1}^n P(c_t,v_j(x))}\]
+Tale probabilità può essere stimata dalla frazione di punti di classe $c$ rispetto a tutti i punti che sono assegnati a $v_j(x)$. 
+La funzione di discriminazione è definita da:
+\[g_c(x) = \frac{1}{t}\displaystyle\sum_{j=1}^{t} \hat{P}(c|v_j(x))\]
+e la regola decisionale è assegnare $x$ alla classe $c$ per cui $g_c(x)$ è massimo.
+
+\item \textbf{Support Vector Machine}~\cite{svm}:  un metodo di apprendimento supervisionato per la classificazione basati sul concetto di piani decisionali, che definiscono i limiti di decisione. L'algoritmo costruisce un iperpiano o un set di iperpiani in uno spazio multidimensionale, usato per la classificazione. Un esempio è mostrato in figura~\ref{fig:svm}
+
+Formalmente è definito da:
+Dati i vettori di training $x_i \in \mathbb{R^p}, i=1,\dots,n$ in due classi e un vettore $y \in \left\lbrace1,-1\right\rbrace^n$ il classificatore risolve il problema:
+\begin{align*}
+& \min_{\omega,b,\zeta} \frac{1}{2} \omega^T \omega + C  \displaystyle\sum_{i=1}^n \zeta_i \\
+&\text{soggetto a } y_i(\omega^T \phi(x_i) + b) \geq 1 - \zeta_i, \\
+&\zeta_i \geq 0, i =1,\dots,n
+\end{align*}
+il cui duale è definito da:
+\begin{align*}
+& \min_{\alpha} \frac{1}{2} \alpha^T Q\alpha - e^T \alpha \\
+&\text{soggetto a } y^T \alpha = 0 \\
+& 0 \leq \alpha_i \leq C, i = 1, \dots, n
+\end{align*}
+dove $e$ è un vettore di 1, $C > 0$ è il limite superiore, $Q$ è una matrice $n \times n$ positiva semidefinita, $Q_{ij} \equiv y_iy_jK(x_i,x_j)$, dove $K(x_i,x_j) = \phi(x_i)^T \phi(x_j)$ è il kernel. I vettori di training sono implicitamente mappanti in uno spazio dimensionale più grande dalla funzione $\phi$. 
+La funzione di decisione è:
+\[ sgn \left(\displaystyle\sum_{i=1}^n y_i \alpha_i K(x_i,x) + \rho \right) \] 
+
+\begin{figure}[!bp]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/svm.png}
+    \caption{Esempio di iperpiano di una SVM. \label{fig:Chardistr}}
+\end{figure}
+
+\item \textbf{Naive Bayes}: Metodo di classificazione supervisionata basati sul teorema di Bayes con un assunto "\textit{naive}" di indipendenza tra ogni coppia di feature. Data una variabile di classe $y$ e un vettore di features indipendenti $x_1 \dots, x_n$ il teorema di Bayes dimostra la seguente relazione: 
+
+\[P\left(y|x_1,\dots,x_n) = \frac{P(y)P(x_1,\dots,x_n|y)}{P(x_1,\dots,x_n)}\]
+ 
+ Siccome $P(x_1,\dots,x_n)$ è una costante data in ingresso è definita la seguente regola di classificazione:
+ 
+ 
 \end{itemize}
 
-Il classificatore 
+Il classificatore è stato implementato e testato con i tre modelli. Si confrontino i risultati all'interno del capitolo~\ref{risultati}.
+
 \subsection{Output}
 \label{randomforestoutput}
 L'obiettivo di tale classificatore è quello di riuscire a separare in maniera efficace i domini reali da quelli generati algoritmicamente. Durante la fase di sperimentazione il classificatore si è rivelato efficace rispetto la maggior parte delle famiglie di \textit{DGA}; tuttavia il caso particolare della famiglia \textit{suppobox}~\cite{geffner2013end} ha messo in particolare difficoltà il classificatore in quanto tale algoritmo genera domini in maniera pseudo-casuale, concatenando due parole a partire da un \textit{subset} di 384 parole provenienti dal dizionario inglese. Tale caratteristica fa si che le \textit{features} linguistiche estratte da questa famiglia di \textit{malware} siano molto simili a quelle presenti nei domini reali. In tabella~\ref{tab:suppobox} sono mostrati alcuni esempi di domini generati da Suppobox.
