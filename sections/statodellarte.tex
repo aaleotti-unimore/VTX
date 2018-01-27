@@ -35,25 +35,16 @@ Le botnet possono essere divise in due classi, operando la suddivisione per arch
      \caption{Anatomia di Botnet\label{fig:botnet} }
 \end{figure}
 
-\subsection{Command and Control Phase}
+\subsection{Command and Control}
 Durante la fase C\&C una macchina appena infettata diventa attivamente a far parte della botnet. Un bot tradizionale client-server, una volta installato su una nuova macchina, tenterà immediatamente il collegamento attraverso una rete IRC o contattando il server C\&C via HTTP.
-part of the botnet. A traditional client-server bot, once installed on a new
-machine, will immediately attempt to “phone home” through an IRC network
-or contacting a HTTP C&C server. Decentralised P2P bots are distributed
-with a predefined bootstrapping method to connect to the relevant DHT.
-Once connected, the newly compromised machine will ask one of its peers
-for the latest command. Some of the P2P bots require that a specific port is
-open for the peers to be able to communicate with each other [121]. Through
-the deployment of a firewall, many of the unnecessarily open ports on any
-given machine will be blocked. Any new application that attempts to access
-the network for any reason can also be flagged to the user, e.g., immediately
-after a recent infection of the botnet malware. Newer versions of the bot client
-software will not use a predefined port number to aid in avoiding detection.
-There are two different ways to spread a command in a botnet system, namely
-push and pull. IRC based bots belong to the push-based category as they sit in
-an IRC chat room listening for a new command. HTTP based bots periodically
-check with the server to verify if there is any new work. P2P bots can do both
-as they send and receive commands to/from other bots
+I bot P2P decentralizzati ecentralised sono distribuiti con un metodo di bootstrapping predeficino per connettersi ad un DHT rilevante. Una volta connesse, le macchine compromesse chiedereanno ad uno deipropri peer riguardo gli ultimi comandi richiesti. Alcuni bot P2P richiedono che una specifica porta sia aperta ai peer per abilitare la comunicazione tra peer~\cite{p2pbots}. 
+Vi sono due tecniche principali per la propagazione di comandi in un sistema botnet: push e pull.
+In botnet basate su comunicazione IRC viene utilizzato il sistema push, in quanto i bot risiedono in una chat-room, in ascolto per nuovi comandi. 
+In botnet basate su HTTP, i bot controllano periodicamente il server per verificare nuovi comandi. 
+Reti basate su P2P possono agire in entrambe le modalità in quanto ricevono ed inviano comandi in maniera paritaria.
+
+
+Molte famiglie di botnet contengono algoritmi di generazione di domini (DGA) per rendere le difese preventive inefficaci. I domini vengono generati algoritmicamente in maniera pseudo-randomica (decine di migliaia al giorno) da un campione iniziale. La macchina infetta successivamente invia una richiesta HTTP ad una larga parte di tali domini contemporaneamente, nella speranza che uno di questi domini sia effettivamente registrato e ospiti il C\&C della botnet. L'attacker ha solamente il compito di registrare un piccolo numero di questo domini, avendo a disposizione gli stessi domini generati. Dal lato dei difensori invece è necessario che tutti i domini generati da tali algoritmi siano rilevati e inseriti in una lista di esclusione per ottenere una difesa efficace della rete. Tale metodo di difesa risulta via via più inefficiente man mano che il numero d domini DGA aumenta.
 
 \newpage
 \section{Machine Learning}

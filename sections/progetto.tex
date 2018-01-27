@@ -33,7 +33,7 @@ La maggior parte dei DGA opera a livello di singoli caratteri, mentre altre tipo
 Il DGA symmi produce domini vagamente pronunciabili tra i quali “hakeshoubar.ddns.net” estraendo una vocale o una consonante casualmente per ogni indice pari e successivamente estraendo l’opposto all’indice successivo oltre che ad aggiungere un dominio di primo e secondo livello al termine della stringe come .ddns.net
 La distribuzione dei singoli caratteri (unigrammi) per 4 famiglie di DGA e Alexa sono mostrate di seguito. La distribuzione di cryptolocker e ramnit sono entrambe uniformi all’interno dello stesso range. Si tratta di una caratteristica attesa in quanto entrambi sono generati tramite una serie di moltiplicazioni, divisioni e resti basati su di un singolo seme. Suppobox, d’altro canto presenta caratteristiche interessanti in quanto genera unigrammi simili per distribuzione ad Alexa. 
 
-\begin{table}[H]
+\begin{table}[p]
     \centering
     \resizebox{0.4\textwidth}{!}{%
     \begin{tabular}{ l|l }
@@ -78,7 +78,7 @@ A partire da tale \textit{dataset} combinato si è proceduto alla creazione di u
 Il passo seguente  stato creare una serie di \textit{features} che fossero in grado di descrivere le caratteristiche linguistiche dei domini presi in esame.
 
 
-\begin{figure}[htb]
+\begin{figure}[!bp]
     \centering
     \includegraphics[width=\columnwidth]{figures/chardistr.png}
     \caption{Distribuzione dei singoli caratteri in \textit{cryptolocker, ramnit, dyre}, \textit{suppobox} (dictionary-based DGA) ed il primo milione di domini più visitati secondo Alexa \cite{amazon:alexa}.
@@ -273,7 +273,7 @@ In figura \ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoen
 \label{encoder}
 La composizione interna dell'\textit{encoder} è formata da una Rete Convoluzionale accoppiata ad una LSTM. A differenza del lavoro proposto in \cite{deepdga}, si è voluto mantenere la composizione dell'autoencoder il più semplice possibile, in quanto la trasformazione in \textit{GAN} ed il suo \textit{tuning} in fase di \textit{training} è notoriamente difficoltoso in presenza di molti parametri. In Figura \ref{fig:encoder} viene mostrata la struttura semplificata dell'encoder.
 
-\begin{figure}[!htbp]
+\begin{figure}[!bp]
     \centering
 	\input{figures/encoder.tex}
 	\caption{Struttura dell'\textit{encoder}.
