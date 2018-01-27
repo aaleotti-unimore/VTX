@@ -1,8 +1,12 @@
 \chapter{Stato dell'arte}
 \label{statodellarte}
-In questo capitolo saranno mostrati i fondamenti teorici su cui è basato il lavoro presentato all'interno di questo elaborato.... ><<<<><<<
+All'interno di questo capitolo vengono presentate le basi teoriche che compongono il lavoro mostrato in questo elaborato. In sezione~\ref{sec:botnet} viene presentata una breve introduzione alle botnet, la loro tassonomia ed il funzionamento del Command \& Control. In Sezione~\ref{sec:machinelearning} viene introdotto il campo di studio del Machine Learning, mostrando una panoramica delle problematiche affrontabili con tale strumento ed una tassonomia delle tecniche possibili di utilizzo. In Sezione~\ref{sec:deeplearning} viene presentato il sottocampo di applicazione Machine Learning: Deep Learning, assieme ad una spiegazione dei fondamenti di funzionamento.
+In sezione~\ref{sec:advlearning} si espone l'argomento dell'Adversarial Learning e le problematiche che esso comporta nell'ambito dell'information security. 
+All'interno della sezione~\ref{sec:gan} vengono mostrate le tecniche di Generative Deep Learning che saranno utilizzate all'interno di questo elaborato nei capitoli successivi quali Autoencoder e Generative Adversarial Network.
 
+\newpage
 \section{Botnet}
+\label{sec:botnet}
 Una botnet è composta da svariati dispositivi connessi a Internet, come host, smartphone o dispositivi IoT, ciascuno dei quali esegue uno o più bot. I proprietari delle botnet controllano queste ultime tramite software C\&C (Command and Control) per svolgere svariate attività, solitamente dannose, che richiedono un livello di automazione su vasta scala, tra cui:
 \begin{itemize}
 \item Attacchi DDoS (Distributed Denial-of-Service) che causano downtime non pianificati delle applicazioni
@@ -19,7 +23,7 @@ Le botnet possono essere divise in due classi, operando la suddivisione per arch
 \item Botnet Decentralizzate o P2P: in questo schema i bot non sono necessariamente connessi al server C\&C ma tutti insieme costituiscono una rete di comunicazione in cui i comandi sono trasmessi anche da zombie a zombie. Ogni nodo della rete è un bot, il quale comunica solo con una lista di nodi “vicini”. In questo schema per gestire la botnet è necessario l'accesso ad almeno un client. Il punto di forza di questi schemi è la difficoltà che s'incontra nel momento in cui si è interessati a smantellare l'intera rete; il reverse engineering di un singolo bot non è più sufficiente a individuare tutti i computer coinvolti né tantomeno a smantellare i server C\&C.
 \end{itemize}
 
-\begin{figure}[hbp] 
+\begin{figure}[!bp] 
   \begin{minipage}[b]{0.5\linewidth}
     \centering
     \includegraphics[width=\linewidth]{figures/botnet.png} \\ 
@@ -44,25 +48,34 @@ In botnet basate su HTTP, i bot controllano periodicamente il server per verific
 Reti basate su P2P possono agire in entrambe le modalità in quanto ricevono ed inviano comandi in maniera paritaria.
 
 
-Molte famiglie di botnet contengono algoritmi di generazione di domini (DGA) per rendere le difese preventive inefficaci. I domini vengono generati algoritmicamente in maniera pseudo-randomica (decine di migliaia al giorno) da un campione iniziale. La macchina infetta successivamente invia una richiesta HTTP ad una larga parte di tali domini contemporaneamente, nella speranza che uno di questi domini sia effettivamente registrato e ospiti il C\&C della botnet. L'attacker ha solamente il compito di registrare un piccolo numero di questo domini, avendo a disposizione gli stessi domini generati. Dal lato dei difensori invece è necessario che tutti i domini generati da tali algoritmi siano rilevati e inseriti in una lista di esclusione per ottenere una difesa efficace della rete. Tale metodo di difesa risulta via via più inefficiente man mano che il numero d domini DGA aumenta.
+Molte famiglie di botnet contengono algoritmi di generazione di domini (DGA) per rendere le difese preventive inefficaci. I domini vengono generati algoritmicamente in maniera pseudo-randomica (decine di migliaia al giorno) da un campione iniziale. La macchina infetta successivamente invia una richiesta HTTP ad una larga parte di tali domini contemporaneamente, nella speranza che uno di questi domini sia effettivamente registrato e ospiti il C\&C della botnet. L'attacker ha solamente il compito di registrare un piccolo numero di questo domini, avendo a disposizione gli stessi domini generati. Dal lato dei difensori invece è necessario che tutti i domini generati da tali algoritmi siano rilevati e inseriti in una lista di esclusione per ottenere una difesa efficace della rete. Tale metodo di difesa risulta via via più inefficiente man mano che il numero di domini DGA aumenta.
 
 \newpage
 \section{Machine Learning}
-\label{machinelearning}
-Il Machine Learning è un sottocampo dell'intelligenza artificiale (IA) è stato definito da Arthur Samuel nel 1959~\cite{5392560}. L'obiettivo del machine learning generalmente è capire la struttura dei dati e adattare tali dati in modelli in grado di essere capiti e utilizzati da utenti.
+\label{sec:machinelearning}
+Il Machine Learning è un sottocampo dell'intelligenza artificiale (IA) è stato definito da Arthur Samuel nel 1959~\cite{5392560}. L'obiettivo del Machine Learning generalmente è capire la struttura dei dati e adattare tali dati in modelli in grado di essere capiti e utilizzati da utenti.
 
-Nonostante il Machine Learning sia un campo informatico, si differenzia dai tradizionali approcci computazionali. Nell'informatica tradizionale, gli algoritmi sono serie di istruzioni programmate esplicitamente usate dai calcolatori per elaborare dati o risolvere problemi. Gli algoritmi Machine Learning, al contrario, permettono ai calcolatori di allenarsi su input di dati ed usare analisi statistica in modo da produrre valori che ricadono all'interno di intorni specifici. Grazie a questo, il machine learning facilita ai calcolatori la costruzione di modelli che siano in grado di automatizzare processi decisionali basati su campioni di dati.
+Nonostante il Machine Learning sia un campo informatico, si differenzia dai tradizionali approcci computazionali. Nell'informatica tradizionale, gli algoritmi sono serie di istruzioni programmate esplicitamente usate dai calcolatori per elaborare dati o risolvere problemi. Gli algoritmi Machine Learning, al contrario, permettono ai calcolatori di allenarsi su input di dati ed usare analisi statistica in modo da produrre valori che ricadono all'interno di intorni specifici. Grazie a questo, il Machine Learning facilita ai calcolatori la costruzione di modelli che siano in grado di automatizzare processi decisionali basati su campioni di dati.
 
-Molti campi tecnologici odierni sfruttano i benefici del machine learning; ad esempio tecnologie di riconoscimento facciale permettono alle piattaforme di social networks di aiutare gli utenti nel tag delle foto di amici. Altro esempio sono le tecnologie di Optical Character Recognition (OCR) in grado di convertire immagini di testi stampati in documenti testuali modificabili da un word processor. I recommendation engines, basati su machine learning, suggeriscono agli utenti i programmi televisivi o film basati sulle loro preferenze. Le auto a guida autonoma si basano su machine learning in molte applicazioni, ad esempio per il riconoscimento della segnaletica stradale.
+Molti campi tecnologici odierni sfruttano i benefici del Machine Learning; ad esempio tecnologie di riconoscimento facciale permettono alle piattaforme di social networks di aiutare gli utenti nel tag delle foto di amici. Altro esempio sono le tecnologie di Optical Character Recognition (OCR) in grado di convertire immagini di testi stampati in documenti testuali modificabili da un word processor. I recommendation engines, basati su Machine Learning, suggeriscono agli utenti i programmi televisivi o film basati sulle loro preferenze. Le auto a guida autonoma si basano su Machine Learning in molte applicazioni, ad esempio per il riconoscimento della segnaletica stradale.
 
-Nel machine learning i compiti sono generalmente classificati in grandi categorie. Tali categorie sono basate su come l'apprendimento è impostato o su come il feedback dell'apprendimento viene dato al sistema.
+Nel Machine Learning i compiti sono generalmente classificati in grandi categorie. Tali categorie sono basate su come l'apprendimento è impostato o su come il feedback dell'apprendimento viene dato al sistema.
 
 Due dei metodi di apprendimento più comunemente adottati sono l'apprendimento supervisionato in cui si allenano algoritmi basandosi su input e output di esempio, categorizzati da esseri umani e l'apprendimento non supervisionato, in cui non vengono forniti dati categorizzati agli algoritmi in modo da permettere al sistema di trovare autonomamente la struttura che compone i dati di input. Nelle sezioni seguenti si mostrano tali metodi in dettaglio.
 
 \subsection{Tipologie di Problemi}
-Il machine learning è impiegato principalmente per la risoluzione di tre tipologie di problemi:
+Il Machine Learning è impiegato principalmente per la risoluzione di tre tipologie di problemi:
+
 \begin{itemize}
-\item \textbf{classificazione}, quando è necessario decidere a quale categoria appartiene un determinato dato. Ad esempio per l'identificazione di specie di piante fornendo un'immagine.
+\item \textbf{classificazione}, ovvero identificare la classe di un nuovo obiettivo sulla base di conoscenza estratta da un training set. I classificatori estraggono dal dataset un modello che utilizzano poi per classificare le nuove istanze. Se una singola istanza può essere espressa come un vettore in uno spazio numerico $R^n$ il problema della classificazione può essere ricondotto alla ricerca delle superfici chiuse che delimitano le classi. Esistono molte tecniche per costruire un classificatore, in questa tesi si tratterà in particolare l'uso di Alberi di Decisione. Si tratta di un classificatore implementato attraverso una struttura ad albero; è quindi costituito da una struttura gerarchica che applica una strategia “dividi et impera” per classificare i dati. Data la sua struttura di albero può essere facilmente convertito in un set di regole, permettendo così di estrarre conoscenza. La ricerca delle curve che delimitano le classi viene ricondotta alla ricerca ricorsiva di punti di split.
+Ogni nodo interno rappresenta un vincolo che porta a una scelta determinando uno split, e ogni foglia indica la classe di appartenenza dell’elemento. Gli alberi sono tipicamente costruiti con strategie Greedy, che individuano di volta in volta il punto più conveniente in cui effettuare lo split. (Figura~\ref{fig:alberoastratto}).
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=\columnwidth]{figures/AlberoAstratto.png}
+	\caption{Utilizzo di un albero per la classificazione di un dataset \label{fig:alberoastratto}}
+\end{figure} 
+
 \item \textbf{raggruppamento} (clustering), quando si vuole raggruppare i dati che presentano caratteristiche simili. Ad esempio, un sistema può raggruppare immagini di figure geometriche separando figure con 4 lati e i cui angoli sono a 90 gradi oppure tutte le figure con quattro lati in cui solo due sono paralleli, ecc. In marketing, ad esempio, il raggruppamento viene utilizzato per l'individuazione di clienti e mercati potenziali.
 \item \textbf{regressione}, cioè prevedere il valore futuro di un dato avendo noto il suo valore attuale. Un esempio è la previsione della quotazione delle valute o delle azioni di una società. Nel marketing viene utilizzato per prevedere il tasso di risposta di una campagna sulla base di un dato profilo di clienti; nell'ambito commerciale per stimare come varia il fatturato dell'azienda al mutare della strategia.
 \end{itemize}
@@ -75,7 +88,7 @@ Ad esempio, con l'apprendimento supervisionato, si può fornire ad un algoritmo 
 Un comune uso dell'apprendimento supervisionato è l'uso di dati storici per predire probabili eventi futuri. Può usare informazioni statistiche sull'andamento del mercato azionario ed anticipare fluttuazioni future o utilizzato per filtrare email di spam. E' possibile utilizzare foto di cani etichettate per identificare la razza di un cane unicamente dalla sua foto.
 
 \subsection{Apprendimento non Supervisionato}
-Nell'apprendimento non supervisionato, i dati non sono etichettati. L'algoritmo viene lasciato libero di rilevare affinità tra i dati di input. Siccome i dati non classificati sono molto piu comuni che grandi quantità di dati etichettati, i metodi di machine learning che facilitano l'apprendimento non supervisionato sono considerabili come molto pregiati.
+Nell'apprendimento non supervisionato, i dati non sono etichettati. L'algoritmo viene lasciato libero di rilevare affinità tra i dati di input. Siccome i dati non classificati sono molto piu comuni che grandi quantità di dati etichettati, i metodi di Machine Learning che facilitano l'apprendimento non supervisionato sono considerabili come molto pregiati.
 
 L'obiettivo dell'apprendimento non supervisionato può essere diretto, come la ricerca di pattern nascosti all'interno dei dati, ma può anche avere l'obiettivo di \textit{feature learning}: l'apprendimento di caratteristiche particolari che permette al sistema di scoprire automaticamente le rappresentazioni necessarie a classificare i dati grezzi.
 
@@ -101,10 +114,11 @@ L'apprendimento per rinforzo è utilizzato in tutti quei campi in cui è essenzi
 
 \newpage
 \section{Deep Learning e Reti neurali}
-Il Deep Learning è uno specifico sottocampo del machine learning, un diverso modo di apprendere rappresentazioni di dati, principalmente orientato verso l'apprendimento di successivi strati (\textit{layers}) di rappresentazione via via più significativi. Il termine "deep" indica la presenza di questa moltitudine di strati che compongono il modello
-di rappresentazione dei dati; infatti il deep learning odierno comprende generalmente modelli composti da decine o centinaia di strati successivi di rappresentazione, i quali apprendono in maniera automatica tramite l'esposizione ai dati di allenamento. Per confronto, gli approcci di machine learning descritti in sezione~\ref{machinelearning} generalmente coinvolgono uno o due strati di rappresentazione dei dati. Difatti tali modelli vengono definiti anche come \textit{shallow learning}.
+\label{sec:deeplearning}
+Il Deep Learning è uno specifico sottocampo del Machine Learning, un diverso modo di apprendere rappresentazioni di dati, principalmente orientato verso l'apprendimento di successivi strati (\textit{layers}) di rappresentazione via via più significativi. Il termine "deep" indica la presenza di questa moltitudine di strati che compongono il modello
+di rappresentazione dei dati; infatti il deep learning odierno comprende generalmente modelli composti da decine o centinaia di strati successivi di rappresentazione, i quali apprendono in maniera automatica tramite l'esposizione ai dati di allenamento. Per confronto, gli approcci di Machine Learning descritti in sezione~\ref{sec:machinelearning} generalmente coinvolgono uno o due strati di rappresentazione dei dati. Difatti tali modelli vengono definiti anche come \textit{shallow learning}.
  
-\begin{figure}[htbp]
+\begin{figure}[!bp]
 	\centering
 	\includegraphics[width=\columnwidth]{figures/mlp-network.png}
 	\caption{Schema generico di una rete Neurale \label{nn}}
@@ -131,7 +145,7 @@ Il meccanismo principale nel deep learning è l'uso di questo punteggio come seg
 
 Inizialmente i pesi della rete neurale sono assegnati a valori randomici, causando per le prime fasi di apprendimento un valore di loss particolarmente alto. Via via che le fasi di apprendimento mostrano diversi esempi alla rete i pesi vengono aggiustati di una piccola parte nella direzione corretta, causando una decrescita nel punteggo di loss. Questo \textit{training loop} viene ripetuto per un numero sufficiente di volte fino al raggiungimento di un valore minimo di loss e alla produzione di output il più possibile simile a quello desiderato. In figura~\ref{fig:neuralloss} è mostrato uno schema di alto livello.
 
-\begin{figure}[!htbp]
+\begin{figure}[!bp]
 	\centering
 	\includegraphics[width=0.8\columnwidth]{figures/deeploss.png}
 	\caption{Schema di alto livello del funzionamento di una rete neurale. \textit{fonte}%
@@ -140,22 +154,23 @@ Inizialmente i pesi della rete neurale sono assegnati a valori randomici, causan
 
 \newpage
 \section{Adversarial Learning}
-Le tecniche di machine learning possono essere utilizzate per prevenire azioni vietate o illegali e nel caso vi siano degli incentivi economici, vi possono essere probabili antagonisti intenzionati ad eludere tali restrizioni. Un esempio tipico è il caso del filtraggio anti spam, nel quale gli spammers forgiano messaggi ad hoc per eludere le più recenti tecniche di filtraggio. Tali tecniche possono essere identificate come \textit{adversarial learning} (apprendimento antagonista).
+\label{sec:advlearning}
+Le tecniche di Machine Learning possono essere utilizzate per prevenire azioni vietate o illegali e nel caso vi siano degli incentivi economici, vi possono essere probabili antagonisti intenzionati ad eludere tali restrizioni. Un esempio tipico è il caso del filtraggio anti spam, nel quale gli spammers forgiano messaggi ad hoc per eludere le più recenti tecniche di filtraggio. Tali tecniche possono essere identificate come \textit{adversarial learning} (apprendimento antagonista).
 
-Le vulnerabilità dei metodi di machine learning rispetto a manipolazione antagonista non possono venire semplicemente ignorate con la richiesta di tecniche più "robuste". I fondamenti teorici del machine learning odierno sono largamente costruiti sull'assunto che i dati di allenamento descrivano adeguatamente la realtà del fenomeno studiato. Questo assunto viene chiaramente violato nel caso che le distribuzioni di allenamento o di test vengano alterate, assumendo che gli antagonisti utilizzino qualsiasi mezzo possibile per disturbare l'algoritmo di apprendimento. I metodi di apprendimento in caso di ambienti antagonisti dovrebbero quindi essere in grado di sostenere una distorsione nei propri dati.
+Le vulnerabilità dei metodi di Machine Learning rispetto a manipolazione antagonista non possono venire semplicemente ignorate con la richiesta di tecniche più "robuste". I fondamenti teorici del Machine Learning odierno sono largamente costruiti sull'assunto che i dati di allenamento descrivano adeguatamente la realtà del fenomeno studiato. Questo assunto viene chiaramente violato nel caso che le distribuzioni di allenamento o di test vengano alterate, assumendo che gli antagonisti utilizzino qualsiasi mezzo possibile per disturbare l'algoritmo di apprendimento. I metodi di apprendimento in caso di ambienti antagonisti dovrebbero quindi essere in grado di sostenere una distorsione nei propri dati.
 
 Come dimostrato da ricerche precedenti (~\cite{kearnsli},~\cite{Auer2002},~\cite{paclearning} ) un antagonista senza vincoli che può arbitrariamente alterare dati e target, può introdurre un errore fino al 100\%. Tuttavia nei casi pratici gli attackers devono atteneresi a determinati vincoli; ad esempio una email di spam deve recapitare il suo messaggio, un malware inviato ad un host deve eseguire correttamente e sfruttare una vulnerabilità e antagonisti che cercano di alterare i motori di ricerca possono controllare solo una frazione di tutti i domini raggiungibili. In alcuni casi si può mostrare come certi vincoli possono rendere la rilevazione di un attacco computazionalmente intrattabile~\cite{fogla}.
 
-L'investigazione di metodi di machine learning per ambienti ostili è stata attuata in tre aree di ricerca largamente distinte: machine learning, sicurezza informatica e spam filtering. Nel caso di machine learning ricerche precedenti si sono incentrate su metodi di minimo-massimo con l'obiettivo di ottenere robustezza rispetto alla incertezza dell'input. Ad esempio classificatori più robusti sono stati sviluppati per gestire casi come il feature deletion~\cite{globerson} ; oppure ricerche hanno dimostrato che equilibri unici di Nash esistono per alcune tipologie di situazioni antagoniste~\cite{nash} .
+L'investigazione di metodi di Machine Learning per ambienti ostili è stata attuata in tre aree di ricerca largamente distinte: Machine Learning, sicurezza informatica e spam filtering. Nel caso di Machine Learning ricerche precedenti si sono incentrate su metodi di minimo-massimo con l'obiettivo di ottenere robustezza rispetto alla incertezza dell'input. Ad esempio classificatori più robusti sono stati sviluppati per gestire casi come il feature deletion~\cite{globerson} ; oppure ricerche hanno dimostrato che equilibri unici di Nash esistono per alcune tipologie di situazioni antagoniste~\cite{nash} .
 
-Una differente visione dei problemi di apprendimento antagonista è emersa nel campo della sicurezza informatica, specialmente per quel che riguarda il rilevamento di intrusioni (\textit{intrusion detection} ). Diversi metodi sono stati proposti per rilevare pacchetti di rete anomali o per generare automaticamente \textit{signatures} strettamente legate a metodi di machine learning (ad esempio i lavori eseguiti in~\cite{wangstolfo} e~\cite{wang2006} ).
+Una differente visione dei problemi di apprendimento antagonista è emersa nel campo della sicurezza informatica, specialmente per quel che riguarda il rilevamento di intrusioni (\textit{intrusion detection} ). Diversi metodi sono stati proposti per rilevare pacchetti di rete anomali o per generare automaticamente \textit{signatures} strettamente legate a metodi di Machine Learning (ad esempio i lavori eseguiti in~\cite{wangstolfo} e~\cite{wang2006} ).
 
 L'area dello spam filtering ha richiesto sforzi fondamentali da parte degli esperti in sicurezza; la costante ricerca di tecniche di evasione dei filtri anti-spam ha portato a studi estensivi riguardo vincoli e tecniche robuste di filtering~\cite{dalvi}. 
 
-Il machine learning può fornire soluzione a difficili problemi di sicurezza di rete, compresi filtri anti-spam, rilevazione di vari tipologie di attacchi contro server e host, rilevazione di pagine web 
-deliberatamente modificate per manipolare i motori di ricerca sfruttandone le vulnerabilità. Tutte queste problematiche riguardano la manipolazione di grandi quantità di dati in un ambiente altamente variabile e il bisogno di tecniche di classificazione veloci ed accurate. L'esistenza di antagonisti che possono trarre profitto in queste aree complica l'applicazione di machine learning e crea una "corsa agli armamenti" tra chi sviluppa classificatori sempre piu robusti e antagonisti che cercano di manipolare tali classificatori. Fortunatamente ogni area di applicazione fornisce vincoli riguardo le azioni antagoniste che rendono la classificazione fattibile. 
+Il Machine Learning può fornire soluzione a difficili problemi di sicurezza di rete, compresi filtri anti-spam, rilevazione di vari tipologie di attacchi contro server e host, rilevazione di pagine web 
+deliberatamente modificate per manipolare i motori di ricerca sfruttandone le vulnerabilità. Tutte queste problematiche riguardano la manipolazione di grandi quantità di dati in un ambiente altamente variabile e il bisogno di tecniche di classificazione veloci ed accurate. L'esistenza di antagonisti che possono trarre profitto in queste aree complica l'applicazione di Machine Learning e crea una "corsa agli armamenti" tra chi sviluppa classificatori sempre piu robusti e antagonisti che cercano di manipolare tali classificatori. Fortunatamente ogni area di applicazione fornisce vincoli riguardo le azioni antagoniste che rendono la classificazione fattibile. 
 
-\begin{figure}[!htbp]
+\begin{figure}[!bp]
 	\centering
 	\includegraphics[width=\columnwidth]{figures/Reactive_arms_race.jpg}
 	\caption{Schema concettuale del rapporto tra difensori ed antagonisti. \textit{fonte}%
@@ -164,7 +179,8 @@ deliberatamente modificate per manipolare i motori di ricerca sfruttandone le vu
 
 \newpage
 \section{Generative Deep Learning}
-I recenti risultati ottenuti nell'ambito del machine learning e del deep learning hanno permesso di ottenere algoritmi e architetture in grado di modellare complesse strutture di dati come immagini, suoni e testo. Questi avanzamenti sono stati incentrati principalmente in algoritmi di apprendimento supervisionato in grado di stimare una distribuzione di probabilità $p(x|y)$ dato un input ed un output di target. Tali modelli vengono definiti come modelli discriminativi o predditivi.
+\label{sec:gan}
+I recenti risultati ottenuti nell'ambito del Machine Learning e del deep learning hanno permesso di ottenere algoritmi e architetture in grado di modellare complesse strutture di dati come immagini, suoni e testo. Questi avanzamenti sono stati incentrati principalmente in algoritmi di apprendimento supervisionato in grado di stimare una distribuzione di probabilità $p(x|y)$ dato un input ed un output di target. Tali modelli vengono definiti come modelli discriminativi o predditivi.
 
 I modelli Generativi, al contrario, tentano di apprendere una funzione $p(y,x)$ nota come \textit{probabilità congiunta}. Tali funzioni di probabilità sono correlate secondo la relazione: 
 \[p(x,y)=p(x)p(x|y)\]
@@ -178,7 +194,7 @@ L'idea fondamentale alla base dei modelli generativi è la volontà di convertir
 La forma più semplificata di conversione da problema generativo a problema discriminativo è l'apprendimento di una mappatura a partire dallo spazio degli input stesso. Sia dato un input $x$, si vuole ottenere una identità di tale input $x=f(x)$ dove $f$ rappresenta il modello predittivo. Il modello generativo può essere definito come l'insieme formato da un modello \textit{encoder} $q_e(h|x)$ in grado di mappare l'input in un nuovo spazio, definito come \textit{spazio latente} rappresentato da $h$ ed un modello \textit{decoder} $q_d(x|h)$ in grado di apprendere la mappatura inversa a partire dallo spazio latente.
 Queste due componenti possono essere connesse assieme, a formare un modello end-to-end allenabile, caratterizzato da un vincolo di dimensione nello spazio latente $h$; generalmente definito come una riduzione di dimensione con lo scopo di far apprendere al modello un vettore di caratteristiche fondamentali dell'input. (figura~\ref{fig:aut}
 
-\begin{figure}[!htbp]
+\begin{figure}[!bp]
 	\centering
 	\includegraphics[width=\columnwidth]{figures/deep_autoencoder.png}
 	\caption{Schema concettuale di un Autoencoder.  \label{fig:aut} }
