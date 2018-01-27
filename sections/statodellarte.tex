@@ -1,7 +1,6 @@
 \chapter{Stato dell'arte}
 \label{statodellarte}
-All'interno di questo capitolo vengono presentate le basi teoriche che compongono il lavoro mostrato in questo elaborato. In sezione~\ref{sec:botnet} viene presentata una breve introduzione alle botnet, la loro tassonomia ed il funzionamento del Command \& Control. In Sezione~\ref{sec:machinelearning} viene introdotto il campo di studio del Machine Learning, mostrando una panoramica delle problematiche affrontabili con tale strumento ed una tassonomia delle tecniche possibili di utilizzo. In Sezione~\ref{sec:deeplearning} viene presentato il sottocampo di applicazione Machine Learning: Deep Learning, assieme ad una spiegazione dei fondamenti di funzionamento.
-In sezione~\ref{sec:advlearning} si espone l'argomento dell'Adversarial Learning e le problematiche che esso comporta nell'ambito dell'information security. 
+All'interno di questo capitolo vengono presentate le basi teoriche che compongono il lavoro mostrato in questo elaborato. In sezione~\ref{sec:botnet} viene presentata una breve introduzione alle botnet, la loro tassonomia ed il funzionamento del Command \& Control. In sezione~\ref{sec:advlearning} si espone l'argomento dell'Adversarial Learning e le problematiche che esso comporta nell'ambito dell'information security. In Sezione~\ref{sec:machinelearning} viene introdotto il campo di studio del Machine Learning, mostrando una panoramica delle problematiche affrontabili con tale strumento ed una tassonomia delle tecniche possibili di utilizzo. In Sezione~\ref{sec:deeplearning} viene presentato il sottocampo di applicazione Machine Learning: Deep Learning, assieme ad una spiegazione dei fondamenti di funzionamento.
 All'interno della sezione~\ref{sec:gan} vengono mostrate le tecniche di Generative Deep Learning che saranno utilizzate all'interno di questo elaborato nei capitoli successivi quali Autoencoder e Generative Adversarial Network.
 
 \newpage
@@ -49,6 +48,30 @@ Reti basate su P2P possono agire in entrambe le modalità in quanto ricevono ed 
 
 
 Molte famiglie di botnet contengono algoritmi di generazione di domini (DGA) per rendere le difese preventive inefficaci. I domini vengono generati algoritmicamente in maniera pseudo-randomica (decine di migliaia al giorno) da un campione iniziale. La macchina infetta successivamente invia una richiesta HTTP ad una larga parte di tali domini contemporaneamente, nella speranza che uno di questi domini sia effettivamente registrato e ospiti il C\&C della botnet. L'attacker ha solamente il compito di registrare un piccolo numero di questo domini, avendo a disposizione gli stessi domini generati. Dal lato dei difensori invece è necessario che tutti i domini generati da tali algoritmi siano rilevati e inseriti in una lista di esclusione per ottenere una difesa efficace della rete. Tale metodo di difesa risulta via via più inefficiente man mano che il numero di domini DGA aumenta.
+
+\newpage
+\section{Adversarial Learning}
+\label{sec:advlearning}
+Le tecniche di Machine Learning possono essere utilizzate per prevenire azioni vietate o illegali e nel caso vi siano degli incentivi economici, vi possono essere probabili antagonisti intenzionati ad eludere tali restrizioni. Un esempio tipico è il caso del filtraggio anti spam, nel quale gli spammers forgiano messaggi ad hoc per eludere le più recenti tecniche di filtraggio. Tali tecniche possono essere identificate come \textit{adversarial learning} (apprendimento antagonista).
+
+Le vulnerabilità dei metodi di Machine Learning rispetto a manipolazione antagonista non possono venire semplicemente ignorate con la richiesta di tecniche più "robuste". I fondamenti teorici del Machine Learning odierno sono largamente costruiti sull'assunto che i dati di allenamento descrivano adeguatamente la realtà del fenomeno studiato. Questo assunto viene chiaramente violato nel caso che le distribuzioni di allenamento o di test vengano alterate, assumendo che gli antagonisti utilizzino qualsiasi mezzo possibile per disturbare l'algoritmo di apprendimento. I metodi di apprendimento in caso di ambienti antagonisti dovrebbero quindi essere in grado di sostenere una distorsione nei propri dati.
+
+Come dimostrato da ricerche precedenti (~\cite{kearnsli},~\cite{Auer2002},~\cite{paclearning} ) un antagonista senza vincoli che può arbitrariamente alterare dati e target, può introdurre un errore fino al 100\%. Tuttavia nei casi pratici gli attackers devono atteneresi a determinati vincoli; ad esempio una email di spam deve recapitare il suo messaggio, un malware inviato ad un host deve eseguire correttamente e sfruttare una vulnerabilità e antagonisti che cercano di alterare i motori di ricerca possono controllare solo una frazione di tutti i domini raggiungibili. In alcuni casi si può mostrare come certi vincoli possono rendere la rilevazione di un attacco computazionalmente intrattabile~\cite{fogla}.
+
+L'investigazione di metodi di Machine Learning per ambienti ostili è stata attuata in tre aree di ricerca largamente distinte: Machine Learning, sicurezza informatica e spam filtering. Nel caso di Machine Learning ricerche precedenti si sono incentrate su metodi di minimo-massimo con l'obiettivo di ottenere robustezza rispetto alla incertezza dell'input. Ad esempio classificatori più robusti sono stati sviluppati per gestire casi come il feature deletion~\cite{globerson} ; oppure ricerche hanno dimostrato che equilibri unici di Nash esistono per alcune tipologie di situazioni antagoniste~\cite{nash} .
+
+Una differente visione dei problemi di apprendimento antagonista è emersa nel campo della sicurezza informatica, specialmente per quel che riguarda il rilevamento di intrusioni (\textit{intrusion detection} ). Diversi metodi sono stati proposti per rilevare pacchetti di rete anomali o per generare automaticamente \textit{signatures} strettamente legate a metodi di Machine Learning (ad esempio i lavori eseguiti in~\cite{wangstolfo} e~\cite{wang2006} ).
+
+L'area dello spam filtering ha richiesto sforzi fondamentali da parte degli esperti in sicurezza; la costante ricerca di tecniche di evasione dei filtri anti-spam ha portato a studi estensivi riguardo vincoli e tecniche robuste di filtering~\cite{dalvi}. 
+
+Il Machine Learning può fornire soluzione a difficili problemi di sicurezza di rete, compresi filtri anti-spam, rilevazione di vari tipologie di attacchi contro server e host, rilevazione di pagine web deliberatamente modificate per manipolare i motori di ricerca sfruttandone le vulnerabilità. Tutte queste problematiche riguardano la manipolazione di grandi quantità di dati in un ambiente altamente variabile e il bisogno di tecniche di classificazione veloci ed accurate. L'esistenza di antagonisti che possono trarre profitto in queste aree complica l'applicazione di Machine Learning e crea una "corsa agli armamenti" tra chi sviluppa classificatori sempre piu robusti e antagonisti che cercano di manipolare tali classificatori. Fortunatamente ogni area di applicazione fornisce vincoli riguardo le azioni antagoniste che rendono la classificazione fattibile. 
+
+\begin{figure}[!bp]
+	\centering
+	\includegraphics[width=\columnwidth]{figures/Reactive_arms_race.jpg}
+	\caption{Schema concettuale del rapporto tra difensori ed antagonisti. \textit{fonte}%
+	~\cite{wiki:Adversarial_machine_learning} \label{fig:advarms} }
+\end{figure}
 
 \newpage
 \section{Machine Learning}
@@ -150,31 +173,6 @@ Inizialmente i pesi della rete neurale sono assegnati a valori randomici, causan
 	\includegraphics[width=0.8\columnwidth]{figures/deeploss.png}
 	\caption{Schema di alto livello del funzionamento di una rete neurale. \textit{fonte}%
 	~\cite{chollet2017deep} \label{fig:neuralloss} }
-\end{figure}
-
-\newpage
-\section{Adversarial Learning}
-\label{sec:advlearning}
-Le tecniche di Machine Learning possono essere utilizzate per prevenire azioni vietate o illegali e nel caso vi siano degli incentivi economici, vi possono essere probabili antagonisti intenzionati ad eludere tali restrizioni. Un esempio tipico è il caso del filtraggio anti spam, nel quale gli spammers forgiano messaggi ad hoc per eludere le più recenti tecniche di filtraggio. Tali tecniche possono essere identificate come \textit{adversarial learning} (apprendimento antagonista).
-
-Le vulnerabilità dei metodi di Machine Learning rispetto a manipolazione antagonista non possono venire semplicemente ignorate con la richiesta di tecniche più "robuste". I fondamenti teorici del Machine Learning odierno sono largamente costruiti sull'assunto che i dati di allenamento descrivano adeguatamente la realtà del fenomeno studiato. Questo assunto viene chiaramente violato nel caso che le distribuzioni di allenamento o di test vengano alterate, assumendo che gli antagonisti utilizzino qualsiasi mezzo possibile per disturbare l'algoritmo di apprendimento. I metodi di apprendimento in caso di ambienti antagonisti dovrebbero quindi essere in grado di sostenere una distorsione nei propri dati.
-
-Come dimostrato da ricerche precedenti (~\cite{kearnsli},~\cite{Auer2002},~\cite{paclearning} ) un antagonista senza vincoli che può arbitrariamente alterare dati e target, può introdurre un errore fino al 100\%. Tuttavia nei casi pratici gli attackers devono atteneresi a determinati vincoli; ad esempio una email di spam deve recapitare il suo messaggio, un malware inviato ad un host deve eseguire correttamente e sfruttare una vulnerabilità e antagonisti che cercano di alterare i motori di ricerca possono controllare solo una frazione di tutti i domini raggiungibili. In alcuni casi si può mostrare come certi vincoli possono rendere la rilevazione di un attacco computazionalmente intrattabile~\cite{fogla}.
-
-L'investigazione di metodi di Machine Learning per ambienti ostili è stata attuata in tre aree di ricerca largamente distinte: Machine Learning, sicurezza informatica e spam filtering. Nel caso di Machine Learning ricerche precedenti si sono incentrate su metodi di minimo-massimo con l'obiettivo di ottenere robustezza rispetto alla incertezza dell'input. Ad esempio classificatori più robusti sono stati sviluppati per gestire casi come il feature deletion~\cite{globerson} ; oppure ricerche hanno dimostrato che equilibri unici di Nash esistono per alcune tipologie di situazioni antagoniste~\cite{nash} .
-
-Una differente visione dei problemi di apprendimento antagonista è emersa nel campo della sicurezza informatica, specialmente per quel che riguarda il rilevamento di intrusioni (\textit{intrusion detection} ). Diversi metodi sono stati proposti per rilevare pacchetti di rete anomali o per generare automaticamente \textit{signatures} strettamente legate a metodi di Machine Learning (ad esempio i lavori eseguiti in~\cite{wangstolfo} e~\cite{wang2006} ).
-
-L'area dello spam filtering ha richiesto sforzi fondamentali da parte degli esperti in sicurezza; la costante ricerca di tecniche di evasione dei filtri anti-spam ha portato a studi estensivi riguardo vincoli e tecniche robuste di filtering~\cite{dalvi}. 
-
-Il Machine Learning può fornire soluzione a difficili problemi di sicurezza di rete, compresi filtri anti-spam, rilevazione di vari tipologie di attacchi contro server e host, rilevazione di pagine web 
-deliberatamente modificate per manipolare i motori di ricerca sfruttandone le vulnerabilità. Tutte queste problematiche riguardano la manipolazione di grandi quantità di dati in un ambiente altamente variabile e il bisogno di tecniche di classificazione veloci ed accurate. L'esistenza di antagonisti che possono trarre profitto in queste aree complica l'applicazione di Machine Learning e crea una "corsa agli armamenti" tra chi sviluppa classificatori sempre piu robusti e antagonisti che cercano di manipolare tali classificatori. Fortunatamente ogni area di applicazione fornisce vincoli riguardo le azioni antagoniste che rendono la classificazione fattibile. 
-
-\begin{figure}[!bp]
-	\centering
-	\includegraphics[width=\columnwidth]{figures/Reactive_arms_race.jpg}
-	\caption{Schema concettuale del rapporto tra difensori ed antagonisti. \textit{fonte}%
-	~\cite{wiki:Adversarial_machine_learning} \label{fig:advarms} }
 \end{figure}
 
 \newpage

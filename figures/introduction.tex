@@ -1,6 +1,6 @@
 %\documentclass{standalone}
 %\usepackage{tikz}
-
+%
 %\usetikzlibrary{shapes,arrows,fit,calc,positioning}
 %\usetikzlibrary{backgrounds}
 \tikzstyle{input} = [coordinate]
@@ -11,7 +11,7 @@
 %\begin{document}
 \begin{tikzpicture}[auto, node distance=10em]
 	\node [input](input){};
-	\node [box, right of=input](clas){Classificatore Neurale};
+	\node [box, right of=input](clas){Classificatore};
 	\node [box, below of=clas](gan){Generative Adversarial Network};
 	\node [container, fit=(gan)](adv){};
 	\node at (adv.south) [below,node distance=0 and 0] {Adversarial Learning};	
