@@ -24,7 +24,6 @@ Il dataset utilizzato per le fasi di training e testing del classificatore è st
 \item \textbf{MCRExtractor} si occupa di fornire il rapporto tra caratteri significativi. \`E caratterizzato dal parametro che identifica la minima sottostringa da analizzare, composta da 3 caratteri. L'algoritmo cicla per ogni dimensione di n-gramma $\geq 3$ , estrae le tuple di dimensione $i$ dalla stringa e per ogni tupla $s$ presente in una $word$ del dizionario inglese, viene aggiunta la sua lunghezza alla somma dei caratteri significativi della stringa. 
 Il risultato è il rapporto tra la somma della lunghezza dei caratteri significativi e la lunghezza totale della stringa. Listato \ref{MCRExtractor}.
 
-\begin{minipage}{\lstlisting\noindent}
 \begin{lstlisting}[language=Python, caption={MCRExtractor}, label={MCRExtractor}]
 min_subtr = 3
 maxl = 0
@@ -43,11 +42,9 @@ for i in range(min_subtr, len(str(domain_name))):
 		maxl = tmpsum
 return maxl / int(len(str(domain_name)))
 \end{lstlisting}
-\end{minipage}
 
 \item \textbf{NormalityScoreExtractor} estrae il punteggio di normalità degli n-grammi. A differenza del lavoro propsoto in \cite{Schiavoni2014}, si è scelto di estrarre il \textit{normality score} per gli n-grammi di lunghezza 1,2,3,4,5 caratteri, in quanto in fase sperimentale hanno dimostrato di fornire un apporto significativo alla precisione del classificatore. \`E definito dal seguente algoritmo, dove il valore $self.n$ identifica la lunghezza dell'n-gramma da valutare. L'algoritmo separa in n-grammi di dimensione $n$ la stringa e per ogni tupla di caratteri $s$, somma il numero di occorrenze di tale tupla all'interno del vocabolario inglese, ritornando il rapporto tra il valore complessivo delle occorenze delle tuple nel vocabolario inglese e la lunghezza della stringa meno $n+1$. Listato \ref{NormalityScoreExtractor}.
 
-\begin{minipage}{\lstlisting\noindent}
 \begin{lstlisting}[language=Python, caption={NormalityScoreExtractor}, label={NormalityScoreExtractor}]
 if len(str(domain_name)) < self.n:
             return 0
@@ -65,7 +62,6 @@ return scoresum / (len(str(domain_name)) - self.n + 1)
 
 \item \textbf{NumCharRatio} estrae il rapporto di caratteri numerici rispetto alla lunghezza della stringa. Listato \ref{NumCharRatio}
 
-\begin{minipage}{\lstlisting\noindent}
 \begin{lstlisting}[language=Python, caption={NumCharRatio}, label={NumCharRatio}]
 counter = Counter(domain_name)
 ncr = 0
@@ -78,16 +74,13 @@ return ncr / len(domain_name)
 
 \item \textbf{DomainNameLength} estrae la lunghezza del nome di dominio. Listato \ref{DomainNameLength}.
 
-\begin{minipage}{\lstlisting\noindent}
 \begin{lstlisting}[language=Python,caption={DomainNameLength}, label={DomainNameLength}]
 return (len(domain_name))
 \end{lstlisting}
-\end{minipage}
 
 
 \item \textbf{VowelConsonantRatio} estrae il rapporto tra vocali e consonanti all'interno della stringa. Listato \ref{VowelConsonantRatio}.
 
-\begin{minipage}{\lstlisting\noindent}
 \begin{lstlisting}[language=Python,caption={VowelConsonantRatio}, label={VowelConsonantRatio}]
 count = 0
 vowels = set("aeiou")
@@ -96,7 +89,6 @@ for letter in domain_name:
 		count += 1
 return count / (len(domain_name) - count)
 \end{lstlisting}
-\end{minipage}
 
 
 \end{itemize}
