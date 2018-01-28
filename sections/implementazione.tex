@@ -1,15 +1,16 @@
 \chapter{Implementazione}
 \label{implementazione}
 In questa sezione è descritta l'implementazione del progetto definito nel capitolo precedente. I principali strumenti utilizzati sono Python come linguaggio di programmazione e le librerie Scikit-learn \cite{sklearn} per attuare machine learning e Keras \cite{keras} per realizzare reti neurali. La libreria per reti neurali su cui opera Keras è Tensorflow \cite{tensorflow}.
-Di seguito sono elencati i dettagli implementativi delle singole entità, ed i parametri usati durante la fase sperimentale.
+In Sezione~\ref{imp:randomforest} è mostrata l'implementazione del classificatore realizzato tramite algoritmi Machine Learning, e l'impianto di testing creato per gestire gli esperimenti. All'interno della sezione~\ref{imp:classneurale} è mostrata l'implementazione del classificatore realizzato mediante reti neurali comprendente delle diverse architetture testate, la composizione del dataset ed una spiegazione della fase di training. 
+In Sezione~\ref{imp:autoencoder} è mostrata l'implementazione dell'Autoencoder, le composizioni del dataset, delle reti neurali Encoder e Decoder ed il funzionamento della fase di training mentre in sezione \ref{imp:gan} è mostrata l'implementazione della Generative Adversarial Network, comprendente del dataset, composizione del Discriminato e Generatore oltre che ad una dettagliata spiegazione della fase di training implementata.
 
 \newpage
-\section{Classificatore Supervisionato}
+\section{Classificatore Machine Learning}
 \label{imp:randomforest}
-Il classificatore Random Forest è stato implementato tramite l'uso della libreria python Scikit-learn \cite{sklearn}. 
+Il classificatore Machine Learning è stato implementato tramite l'uso della libreria python Scikit-learn \cite{sklearn}. 
 Al fine di avere un ambiente di testing facilmente fruibile, è stata creata una classe $MyClassifier$ in grado di gestire la serie di esperimenti effettuata sul classificatore. Tali esperimenti hanno permesso di testare i differenti parametri di funzionamento e la composizione delle features che compongo il dataset del classificatore. In figura \ref{fig:uml_randomforest} è mostrata la struttura della classe $MyClassifier$, la quale contiene le funzioni principali di inizializzazione, salvataggio e caricamento dei parametri, salvataggio e caricamento dei risultati oltre che alle funzioni necessarie per allenare il classificatore (funzione $fit$), eseguire cross-validation (funzione $cross\_validate$), produrre grafici di risultati ($classification\_report$ e $plot_AUC$) ed eseguire predizione su di una lista di domini in input (a fini di testing).
 
-\begin{figure}[!htb]
+\begin{figure}[!bp]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/uml_randomforest.png}
 	\caption{Diagramma UML della classe MyClassifier 			\label{fig:uml_randomforest}}
@@ -21,9 +22,10 @@ Il dataset utilizzato per le fasi di training e testing del classificatore è st
 
 \begin{itemize}
 \item \textbf{MCRExtractor} si occupa di fornire il rapporto tra caratteri significativi. \`E caratterizzato dal parametro che identifica la minima sottostringa da analizzare, composta da 3 caratteri. L'algoritmo cicla per ogni dimensione di n-gramma $\geq 3$ , estrae le tuple di dimensione $i$ dalla stringa e per ogni tupla $s$ presente in una $word$ del dizionario inglese, viene aggiunta la sua lunghezza alla somma dei caratteri significativi della stringa. 
-Il risultato è il rapporto tra la somma della lunghezza dei caratteri significativi e la lunghezza totale della stringa.
- 
-\begin{lstlisting}[language=Python]
+Il risultato è il rapporto tra la somma della lunghezza dei caratteri significativi e la lunghezza totale della stringa. Listato \ref{MCRExtractor}.
+
+\begin{minipage}{\lstlisting\noindent}
+\begin{lstlisting}[language=Python, caption={MCRExtractor}, label={MCRExtractor}]
 min_subtr = 3
 maxl = 0
 for i in range(min_subtr, len(str(domain_name))):
@@ -41,10 +43,12 @@ for i in range(min_subtr, len(str(domain_name))):
 		maxl = tmpsum
 return maxl / int(len(str(domain_name)))
 \end{lstlisting}
+\end{minipage}
 
-\item \textbf{NormalityScoreExtractor} estrae il punteggio di normalità degli n-grammi. A differenza del lavoro propsoto in \cite{Schiavoni2014}, si è scelto di estrarre il \textit{normality score} per gli n-grammi di lunghezza 1,2,3,4,5 caratteri, in quanto in fase sperimentale hanno dimostrato di fornire un apporto significativo alla precisione del classificatore. \`E definito dal seguente algoritmo, dove il valore $self.n$ identifica la lunghezza dell'n-gramma da valutare. L'algoritmo separa in n-grammi di dimensione $n$ la stringa e per ogni tupla di caratteri $s$, somma il numero di occorrenze di tale tupla all'interno del vocabolario inglese, ritornando il rapporto tra il valore complessivo delle occorenze delle tuple nel vocabolario inglese e la lunghezza della stringa meno $n+1$.
+\item \textbf{NormalityScoreExtractor} estrae il punteggio di normalità degli n-grammi. A differenza del lavoro propsoto in \cite{Schiavoni2014}, si è scelto di estrarre il \textit{normality score} per gli n-grammi di lunghezza 1,2,3,4,5 caratteri, in quanto in fase sperimentale hanno dimostrato di fornire un apporto significativo alla precisione del classificatore. \`E definito dal seguente algoritmo, dove il valore $self.n$ identifica la lunghezza dell'n-gramma da valutare. L'algoritmo separa in n-grammi di dimensione $n$ la stringa e per ogni tupla di caratteri $s$, somma il numero di occorrenze di tale tupla all'interno del vocabolario inglese, ritornando il rapporto tra il valore complessivo delle occorenze delle tuple nel vocabolario inglese e la lunghezza della stringa meno $n+1$. Listato \ref{NormalityScoreExtractor}.
 
-\begin{lstlisting}[language=Python]
+\begin{minipage}{\lstlisting\noindent}
+\begin{lstlisting}[language=Python, caption={NormalityScoreExtractor}, label={NormalityScoreExtractor}]
 if len(str(domain_name)) < self.n:
             return 0
 tuples = ngrams(str(domain_name), self.n)
@@ -59,9 +63,10 @@ for s in myngrams:
 return scoresum / (len(str(domain_name)) - self.n + 1)
 \end{lstlisting}
 
-\item \textbf{NumCharRatio} estrae il rapporto di caratteri numerici rispetto alla lunghezza della stringa
+\item \textbf{NumCharRatio} estrae il rapporto di caratteri numerici rispetto alla lunghezza della stringa. Listato \ref{NumCharRatio}
 
-\begin{lstlisting}[language=Python]
+\begin{minipage}{\lstlisting\noindent}
+\begin{lstlisting}[language=Python, caption={NumCharRatio}, label={NumCharRatio}]
 counter = Counter(domain_name)
 ncr = 0
 for key, value in counter.iteritems():
@@ -71,15 +76,19 @@ for key, value in counter.iteritems():
 return ncr / len(domain_name)
 \end{lstlisting}
 
-\item \textbf{DomainNameLength} estrae la lunghezza del nome di dominio.
+\item \textbf{DomainNameLength} estrae la lunghezza del nome di dominio. Listato \ref{DomainNameLength}.
 
-\begin{lstlisting}[language=Python]
+\begin{minipage}{\lstlisting\noindent}
+\begin{lstlisting}[language=Python,caption={DomainNameLength}, label={DomainNameLength}]
 return (len(domain_name))
 \end{lstlisting}
+\end{minipage}
 
-\item \textbf{VowelConsonantRatio} estrae il rapporto tra vocali e consonanti all'interno della stringa.
 
-\begin{lstlisting}[language=Python]
+\item \textbf{VowelConsonantRatio} estrae il rapporto tra vocali e consonanti all'interno della stringa. Listato \ref{VowelConsonantRatio}.
+
+\begin{minipage}{\lstlisting\noindent}
+\begin{lstlisting}[language=Python,caption={VowelConsonantRatio}, label={VowelConsonantRatio}]
 count = 0
 vowels = set("aeiou")
 for letter in domain_name:
@@ -87,6 +96,8 @@ for letter in domain_name:
 		count += 1
 return count / (len(domain_name) - count)
 \end{lstlisting}
+\end{minipage}
+
 
 \end{itemize}
 
@@ -224,7 +235,7 @@ Come definito all'interno della sezione \ref{classificatorenninput} il dataset u
 Tale mapping permette al MLP di estrarre features a partire dai caratteri che compongono i domini.
 
 \subsection{Ottimizzatore}
-I modelli testati in questa sezione sono stati compilati utilizzando l'ottimizzatore \textit{Adaptive Moment Estimation (abbr. adam)} \cite{adam}. Tale ottimizzatore fornisce generalmente le prestazioni migliori nel caso di classificazione binaria e pertanto si è optati per tale soluzione.
+I modelli testati in questa sezione sono stati compilati utilizzando l'ottimizzatore \textit{Adaptive Moment Estimation (abbr. adam)} \cite{adam}. Tale ottimizzatore fornisce generalmente le prestazioni migliori nel caso di classificazione binaria e pertanto si è optato per tale soluzione.
 
 \subsection{Fase di Training}
 Durante la fase di training si sono testati gli iperparametri principali che pilotano la performance del classificatore: in particolare i valori della dimensione del tensore di ingresso  \lstinline!batch_size! ed il numero di epoche \lstinline!epochs! sul quale eseguire la fase di training.
@@ -238,7 +249,8 @@ Dopo una fase sperimentale i valori che hanno mostrato i risultati migliori in f
 \newpage
 \section{Autoencoder}
 \label{imp:autoencoder}
-L'implementazione dell'autoencoder descritto in sezione \ref{autoencoder} è stata eseguita in ambiente Python con l'ausilio della libreria Keras per reti neurali. 
+L'implementazione dell'autoencoder descritto in sezione \ref{autoencoder} è stata eseguita in ambiente Python con l'ausilio della libreria Keras per reti neurali. Di seguito sono mostrati le composizioni del dataset, delle reti neurali Encoder e Decoder ed il funzionamento della fase di training.
+
 
 \subsection{Dataset}
 \label{imp:autoencoder:dataset}
@@ -266,19 +278,22 @@ I valori \lstinline!timesteps!, \lstinline!word_index!, \lstinline!latent_vector
 
 I valori \lstinline!dropout_value! e \lstinline!leaky_relu_alpha! sono il risultato di una lunga fase di \textit{tuning} degli iperparametri, particolarmente critici per il mantenimento dell'equilibrio della successiva GAN.
 
-Per completezza di seguito è elencato il codice essenziale che compone l'encoder.
+Per completezza di seguito è elencato il codice essenziale che compone l'encoder all'interno del listato \ref{lst:str_enc}.
 
 \lstinputlisting[caption={Struttura livelli Encoder.},label={lst:str_enc},firstline=9]{code/encoder.py}
+
 
 \subsection{Decoder}
 \label{imp:autoe:dec}
 La composizione del decoder è pressochè identica a quella mostrata dall'encoder e ricalca il progetto mostrato in sezione \ref{decoder}. Di seguito sono elencati gli iperparametri che compongono il modello decoder. Si può notare come siano identici a quelli mostrati dall'encoder a differenza del \lstinline!dropout_value!, il quale gioca un ruolo maggiore nel pilotare l'equilibrio tra i due modelli.
 
-\lstinputlisting[caption={Iperarametri Decoder.},label={lst:par_dec},lastline=10]{code/decoder.py}
+\lstinputlisting[language=Python, caption={Iperarametri Decoder.},label={lst:par_dec},lastline=10]{code/decoder.py}
 
-Per completezza si riporta l'implementazione del decoder:
+Per completezza si riporta l'implementazione del decoder all'interno del listato \ref{lst:str_dec}.
 
+\pagebreak
 \lstinputlisting[caption={Struttura livelli Decoder.},label={lst:str_dec},firstline=10]{code/decoder.py}
+
 
 \subsection{Training}
 Durante la fase di training si è realizzato il modello generale che compone l'autoencoder, sottoforma di modello sequenziale Keras \lstinline!keras.models.Sequential!. Tale modello è composto da due livelli: Encoder e Decoder
@@ -297,7 +312,7 @@ Durante la fase di training l'indicatore principale di performance è il valore 
 \newpage
 \section{Generative Adversarial Network}
 \label{imp:gan}
-L'implementazione della Generative Adversarial Network (sezione \ref{ganintro}, è stata evoluta a partire da quella eseguita per l'autoencoder. 
+L'implementazione della Generative Adversarial Network (sezione \ref{ganintro}, è stata evoluta a partire da quella eseguita per l'autoencoder. Di seguito sono mostrate le composizioni del dataset, delle reti neurali Discriminatore e Generatore ed una spiegazione esaustiva dell'implementazione della fase di training.
 
 \subsection{Dataset}
 La composizione del dataset di domini è identica a quella fornita per l'autoencoder. Durante la fase di training si alternano mini-batch provenienti da tale dataset e mini-batch create sinteticamente dal generatore a partire da un vettore randomico di valori compresi tra $[-1.0,1.0]$.
@@ -309,11 +324,18 @@ Il modello del discriminatore è derivato dal modello definito dall'encoder: in 
 Dense(1, activation='sigmoid', kernel_initializer='normal')
 \end{lstlisting}
 
-Questo layer aggiuntivo trasforma la funzione dell'encoder in un classificatore in grado di discriminare tra domini reali e domini generati sinteticamente.
+Questo layer aggiuntivo trasforma la funzione dell'encoder in un classificatore in grado di discriminare tra domini reali e domini generati sinteticamente. All'interno del listato \ref{lst:disc} è mostrata l'implementazione.
 
+\pagebreak 
+\lstinputlisting[language=Python, caption={Implementazione Discriminatore.},label={lst:disc}]{code/discriminator.py}
+\newpage
 \subsection{Generatore}
-La struttura del generatore è identica alla struttura definita per il decoder. La differenza principale sta nel tipo di input dato in ingresso: Nel caso decoder l'input proviene dall'uscita dell'encoder, mentre nel caso generatore l'input è fornito in forma di vettore randomico creato con l'ausilio della libreria \textit{numpy} \cite{numpy} \lstinline!np.random.normal! con valori compresi tra $[-1.0,1.0]$.
+La struttura del generatore è identica alla struttura definita per il decoder. La differenza principale sta nel tipo di input dato in ingresso: Nel caso decoder l'input proviene dall'uscita dell'encoder, mentre nel caso generatore l'input è fornito in forma di vettore randomico creato con l'ausilio della libreria \textit{numpy} \cite{numpy} \lstinline!np.random.normal! con valori compresi tra $[-1.0,1.0]$. All'interno del listato \ref{lst:gen} è mostrata l'implementazione.
 
+\pagebreak
+\lstinputlisting[language=Python, caption={Implementazione Generatore.},label={lst:gen}]{code/generator.py}
+
+\newpage
 \subsection{Training}
 La fase di training comporta più fasi, che coinvolgono separatamente i sottosistemi della GAN.
 
@@ -355,3 +377,7 @@ Per ogni epoca e per ogni minibatch del dataset si è proceduto con il seguente 
 \end{itemize}
 
 Tale procedura è ripetuta per tutti i mini-batch e per il numero di epoche di training impostato. 
+Di seguito all'interno del listato \ref{lst:gan} è mostrata la fase di training della GAN.
+
+\pagebreak
+\lstinputlisting[language=Python, caption={Implementazione fase di training GAN.},label={lst:gan}]{code/gantrain.py}
