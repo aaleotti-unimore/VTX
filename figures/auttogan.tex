@@ -22,8 +22,8 @@
 	\draw [line] (in) -- (E);
 	\draw [line] (D) -- (out);
 	
-	\node [box, right of=D, node distance=5cm](E2){Encoder};
-	\node [box, right of=E2](D2){Decoder};
+	\node [box, right of=D, node distance=5cm](E2){Discriminator};
+	\node [box, right of=E2](D2){Generator};
 	\node [input, below of=E2](az2){};
 	\node [input, above of=E2](in2){};
 	\node [output, above of=D2](out2){};

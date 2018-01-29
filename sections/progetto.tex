@@ -1,26 +1,17 @@
 \chapter{Progetto Classificatore}
-\label{progetto}
+\label{projclass}
+In questo capitolo viene mostrato il progetto di un classificatore in grado di distinguere tra domini reali e domini generati algoritmicamente da Malware. In Sezione~\ref{proj:classml} viene mostrato il progetto di un classificatore ideato con algoritmi "\textit{shallow}" per eseguire tale compito di classificazione, in particolare la composizione del dataset di training, l'ingegnerizzazione delle features, la scelta dell'architettura e l'output atteso. 
+Si è successivamente progettato un classificatore più raffinato basato su rete neurale in grado di superare le mancanze de precedente classificatore, definito all'interno della sezione~\ref{classificatorenn}; comprendente della composizione del dataset, la comformazione dell'architettura della rete e l'output atteso. L'obiettivo di tale progetto è ottenere un classificatore stabile in grado di essere successivamente rafforzato tramite Adversarial Learning (Capitolo~\ref{adv}). In Figura~\ref{fig:intro} è mostrato uno schema di alto livello del lavoro presentato all'interno di questi due capitoli.
 
-\todo{riscrivere}
-
-%In questo capitolo si propone il progetto realizzato per raggiungere gli obiettivi preposti: la realizzazione di un classificatore basato sull'algoritmo di machine learning \textit{Random Forest} in grado di distinguere domini generati algoritmicamente da domini reali. Si è successivamente progettato un classificatore più raffinato basato su rete neurale in grado di superare le mancanze de precedente classificatore. A partire da tale sistema, si è passati alla progettazione di un sistema di \textit{adversarial learning} in grado di rafforzare il classificatore neurale: una \textit{Generative Adversarial Network} (abbr. \textit{GAN}) in grado di creare domini sintetici realistici da fornire successivamente al classificatore in fase di training (Figura~\ref{fig:intro}). Tale GAN è stata progettata a partire da un Autoencoder, il cui compito è mimare la distribuzione di un dataset fornito in input (Figura~\ref{fig:auttogan}).
-
-\begin{figure}[p]
+\begin{figure}[H]
     \centering
 	\input{figures/introduction.tex}
 	\caption{Diagramma generale di progetto. \label{fig:intro}}
-    \vspace{3cm}
-    \centering
-	\includegraphics[width=\columnwidth]{figures/auttogan.tex}
-	\caption{Schema generale della progettazione da Autoencoder a Gan. \label{fig:auttogan}}
 \end{figure}
 
 \newpage
 \section{Classificatore Machine Learning}
-\label{fig:classml}
-
-\todo{rivedere nominazione del classificatore. rileggere capitolo}
-
+\label{proj:classml}
 La prima fase di questo studio è stata quella di progettare un classificatore in grado di separare efficacemente domini \textit{DGA} da domini reali basandosi unicamente sulle caratteristiche linguistiche dei domini: infatti, ad un esame preliminare, i domini \textit{DGA} presentano caratteristiche ben differenti dalle semplici frasi o parole che solitamente compongono i domini reali.
 All'interno del classificatore, ogni albero dell'insieme è costruito a partire da un campione estratto con sostituzione dal \textit{training set}. In aggiunta, al momento della divisione del nodo durante la costruzione di un albero, la divisione scelta non è più la migliore soluzione tra tutte le \textit{features}. Al suo posto, la divisone che viene scelta è la migliore divisione all'interno di un \textit{subset} casuale tra tutte le \textit{features}. Come risultato di questa casualità, il \textit{bias} della foresta di solito aumenta leggermente (rispetto al \textit{bias} di un singolo albero non casuale) ma, a causa della media, la sua varianza diminuisce, di solito compensando l'aumento di \textit{bias}, quindi dando un modello generale migliore.
 
@@ -29,7 +20,7 @@ All'interno del classificatore, ogni albero dell'insieme è costruito a partire 
 I \textit{dataset} di \textit{training} e \textit{testing} sono stati ricavati due fonti differenti: per quel che riguarda i domini reali si è fatto riferimento alla classifica dei domini più visitati al mondo fornita da \textit{Alexa Internet Inc.}~\cite{amazon:alexa} , per un totale di 1 milione di siti realmente esistenti; mentre grazie al repository fornito da~\cite{github:dgarepo} è stato possibile ottenere un \textit{dataset} esaustivo di esempi \textit{DGA} da diverse famiglie di \textit{malware} tra i quali ransomware come \textit{cryptolocker} e \textit{cryptowall}, trojans bancari come \textit{hesperbot}, e information stealers come \textit{ramnit}. Le tecniche DGA tradizionali variano in complessità da semplici approcci che estraggono caratteri casualmente a quelli che cercano di mimare la distribuzione di lettere o parole trovate nei domini reali. Il DGA di \textit{ramnit}, ad esempio, crea nomi di dominio usando una combinazione di moltiplicazioni, divisioni e resti a partire da un seme randomico. Agli antpodi, \textit{suppobox} crea domini concatenando due parole scelte in maniera pseudo-casuale da un piccolo dizionario Inglese.
 In tabella~\ref{tab:dga} vengono mostrati alcuni esempi di domini generati algoritmicamente a seconda delle diverse famiglie di malware.
 La maggior parte dei DGA opera a livello di singoli caratteri, mentre altre tipologie comuni come beebone hanno una struttura rigida, che produce domini come ns1.backdates13.biz e ns1.backdates0.biz.
-Il DGA symmi produce domini vagamente pronunciabili tra i quali “hakeshoubar.ddns.net” estraendo una vocale o una consonante casualmente per ogni indice pari e successivamente estraendo l’opposto all’indice successivo oltre che ad aggiungere un dominio di primo e secondo livello al termine della stringe come .ddns.net
+Il DGA symmi produce domini vagamente pronunciabili tra i quali “hakeshoubar.ddns.net” estraendo una vocale o una consonante casualmente per ogni indice pari e successivamente estraendo l’opposto all’indice successivo oltre che ad aggiungere un dominio di primo e secondo livello al termine della stringa come \textit{".ddns.net"}
 La distribuzione dei singoli caratteri (unigrammi) per 4 famiglie di DGA e Alexa sono mostrate di seguito. La distribuzione di cryptolocker e ramnit sono entrambe uniformi all’interno dello stesso range. Si tratta di una caratteristica attesa in quanto entrambi sono generati tramite una serie di moltiplicazioni, divisioni e resti basati su di un singolo seme. Suppobox, d’altro canto presenta caratteristiche interessanti in quanto genera unigrammi simili per distribuzione ad Alexa. 
 
 \begin{table}[p]
@@ -271,7 +262,16 @@ Ricerche precedenti hanno dimostrato che molti modelli di machine learning, incl
 \[\Delta x =  \in sign(\nabla_x J(\theta,x,y))\] 
 dove $\theta$ rappresenta i parametri del modello e $J$ il costo necessario a classificare $x$ come $y$.
 Separatamente~\cite{1406.2661} propone l'uso di \textit{Generative Adversarial Network (abbr. GAN})  come \textit{framework} in grado di generare campioni artificiali provenienti dalla stessa distribuzione del training set.
-Le \textit{GAN} incorporano due modelli: un generatore ed un discriminatore i quali competono in una serie di turni antagonisti. All'interno del contesto del lavoro presentato in questo elaborato, il generatore impara a creare nuovi domini artificiali mentre il discriminatore impara a distinguere tali domini artificiali da quelli reali. L'intento di tale lavoro è usare la \textit{GAN} per produrre domini artificiali realistici e di conseguenza incrementare la precisione del classificatore presentato nella sezione precedente attraverso l'\textit{adversarial training}. I presupposti progettuali di questo elaborato sono ispirati alla ricerca presentata in~\cite{deepdga}.
+Le \textit{GAN} incorporano due modelli: un generatore ed un discriminatore i quali competono in una serie di turni antagonisti. All'interno del contesto del lavoro presentato in questo elaborato, il generatore impara a creare nuovi domini artificiali mentre il discriminatore impara a distinguere tali domini artificiali da quelli reali. L'intento di tale lavoro è usare la \textit{GAN} per produrre domini artificiali realistici e di conseguenza incrementare la precisione del classificatore presentato nella sezione precedente attraverso l'\textit{adversarial training}. I presupposti progettuali di questo elaborato sono ispirati alla ricerca presentata in~\cite{deepdga}. In figura~\ref{fig:auttogan} viene mostrato uno schema di alto livello del progetto mostrato in questo capitolo.
+In sezione~\ref{autoencoder} viene mostrato il progetto dell'Autoencoder, il proprio dataset di training e l'architettura interna. In sezione~\ref{encoder} e~\ref{decoder} vengono mostrate nel dettaglio i progetti delle due sotto-reti neurali che compongono l'autoencoder: Encoder e Decoder; comprendenti gli strati ideati per entrambe le architetture. 
+In sezione~\ref{ganintro} è mostrato il progetto della Generative Adversarial Network derivata dall'autoencoder e le componenti di cui è formata.
+
+\begin{figure}[!bp]
+    \centering 
+	\includegraphics[width=\columnwidth]{figures/auttogan.tex}
+	\caption{Schema generale della progettazione da Autoencoder a Gan. \label{fig:auttogan}}
+\end{figure}
+
 
 \newpage
 \section{Autoencoder}

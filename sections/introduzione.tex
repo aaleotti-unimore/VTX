@@ -1,2 +1,20 @@
 \chapter{Introduzione}
 
+L'odierna "corsa agli armamenti" tra difensori e antagonisti in di information security è sbilanciata verso chi attacca, e chi difende è spesso costretto a prendere contromisure in modo reattivo. Molte famiglie di malware utilizzano la tecnica dei domini generati algoritmicamente (DGA) per stabilire una connessione con il centro di comando e controllo (C\&C).
+
+Nel caso particolare delle botnet, la difesa verso i DGA è resa particolarmente ostica dalla grandissima quantità di domini di rete generati, rendendo infattibile l'individuazione di tutti possibili domini da inserire in liste di esclusione. 
+
+Tuttavia gli approcci di Machine Learning odierni permettono ai difensori di utilizzare tecniche pro-attive nei confronti degli antagonisti. Infatti grazie ai metodi Machine Learning è possibile realizzare algoritmi predittivi in grado di classificare domini mai analizzati prima, discriminando tra malware e casi reali.
+
+All'interno di questo elaborato si dimostra in prima fase come è possibile realizzare un classificatore realizzato con algoritmi di Machine Learning in grado di discriminare con buona approssimazione tra domini generati tramite DGA e domini realmente esistenti (Capitolo~\ref{projclass}). All'interno dello stesso capitolo si presenta l'evoluzione di tale classificatore, utilizzando una rete neurale in grado di eseguire lo stesso compito senza l'ausilio di features ingegnerizzate a priori.
+
+Con Adversarial Machine Learning si intendono le tecniche adottate per rendere sicuri gli algoritmi di Machine Learning rispetto ad ambienti ostili. In particolare il problema sorge dal fatto che le tecniche di machine learning sono state originariamente ideate per ambienti stazionari in cui i dati di training e testing sono stati generati a partire dalla stessa distribuzione. In presenza di antagonisti spinti da fini economici, tale ipotesi è violabile in certa misura a seconda della tipologia di antagonista. Infatti un attacker può manipolare i dati di input sfruttando specifiche vulnerabilità degli algoritmi di apprendimento, compromettendo la sicurezza del sistema. 
+
+Nel contesto di questo elaborato si procede a dimostrare le vulnerabilità del classificatore mostrato nel Capitolo~\ref{projclass}, tramite la progettazione e implementazione di una Generative Adversarial Network (Capitolo~\ref{adv}) in grado di generare nomi di dominio sintetici basati su domini reali. I domini generati dalla GAN sono utilizzati come dataset di testing per il classificatore; successivamente si attua un ulteriore training di tale classificatore per irrobustire il meccanismo contro tale tipologia di attacco.
+
+
+\begin{figure}[!bp]
+    \centering
+	\input{figures/introduction.tex}
+	\caption{Diagramma generale di progetto. \label{fig:intro}}
+\end{figure}

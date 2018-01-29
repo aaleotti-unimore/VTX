@@ -1,10 +1,16 @@
 \chapter{Conclusioni}
 \label{conclusioni}
+Questo studio ha cercato di analizzare le problematiche mostrate dall'adversarial learning nel caso specifico del rilevamento di domini generati algoritmicamente (DGA) sfruttati dalle botnet per attuare comunicazione coi centri di comando e controllo (C\&C). 
 
-1. Creato un classificatore in grado di discriminare tra domini reali e domini generati algoritmicamente tramite l'ingegnerizzazione di features linguistiche.
+In prima fase si proceduto all'implementazione di un classificatore in grado di distinguere con successo i domini reali da quelli generati algoritmicamente. L'attività di progettazione ha richiesto la messa a punto di un dataset in grado di rappresentare realisticamente la varietà delle tipologie di DGA presenti in rete oltre che ad un subset dei domini di rete comunemente raggiungibili dagli utenti. Tale fase ha richiesto quindi l'ingegnerizzazione di features in grado di catturare le differenze linguistiche presenti nei domini e permettere al classificatore di separare correttamente le due categorie.
+Il classificatore è stato testato e allenato anche rispetto ad caso particolare di DGA, \textit{suppobox} che ha particolarmente messo in difficoltà la performance precedentemente ottenuta.
 
-2. Creato un classificatore neurale in grado di eseguire la medesima discriminazione senza l'ausilio di features ingegnerizzate a partire unicamente da domini mappati numericamente e che dimostra la stessa performance sui medesimi casi.
+Successivamente a ciò si è progettato un classificatore neurale, in grado di eseguire la medesima discriminazione senza l'ausilio di features ingegnerizzate, a partire unicamente da domini mappati numericamente. Tale classificatore ha dimostrato la medesima performance ottenuta precedentemente tramite algoritmi "shallow", con il vantaggio di poter fornire al sistema i domini e lasciare ad esso la libertà di estrarre le caratteristiche salienti che distinguono i nomi di dominio.
 
-3. Creato una GAN proveniente da un Autoencoder in grado di generare domini sintetici in grado di mettere in crisi la performance del classificatore neurale.
+In seconda fase si è proceduto a testare la vulnerabilità del classificatore così progettato, rispetto a casi di DGA non ancora esistenti. Tale esperimento è stato attuato tramite la creazione di una Generative Adversarial Network basata sull'architettura di un Autoencoder. 
 
-4. Allenato tale classificatore con i domini provenienti dalla GAN ed ottenuto robustezza riguardo tale caso, senza perdere performance per i casi precedenti.
+Il sistema Autoencoder ha reso possibile la codifica e decodifica di domini reali, estraendone nel processo le caratteristiche fondamentali. A partire da questo risultato si è progettata la Generative Adversarial Network basandosi sull'architettura precedentemente realizzata, con lo scopo di creare domini sintetici contenenti le stesse caratteristiche fondamentali estratte dai domini reali tramite l'autoencoder.
+
+Il risultato ottenuto è stato un subset di domini sintetici con i quali è stato possibile testare il classificatore neurale, ottenendo gravi perdite di performance rispetto la rilevazione efficace dei domini.
+
+Si è proceduto quindi ad allenare il classificatore neurale con i  domini provenienti dalla Generative Adversarial Network, ottenendo robustezza riguardo tale caso, senza perdere performance nei confronti dei domini DGA e domini reali che componevano inizialmente il dataset di allenamento.
