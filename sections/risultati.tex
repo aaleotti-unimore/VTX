@@ -414,15 +414,14 @@ Il classificatore così rafforzato tramite Adversarial Examples presenta un comp
 
 \newpage
 \section{Valutazione Risultati}
-I Risultati mostrati nelle sezioni precedenti hanno mostrato interessanti caratteristiche. 
+Di seguito si evidenziano le principali evidenze ottenute dai risultati sperimentali:
+
 \begin{itemize}
-\item Il progetto del classificatore Machine Learning ha dimostrato di essere sufficientemente stabile discriminare con buonissima approssimazione i DGA generati dalla stragrande maggioranza dei malware odierni. 
+\item Il classificatore basato su Machine Learning ha dimostrato di essere in grado di discriminare le maggiori famiglie di DGA esistenti quali cryptolocker, zeus, pushdo, rovnix, tinba, conficker, matsnu e ramdo. 
 
-\item Il caso particolare di Suppobox ha tuttavia ridotto la capacità del classificatore di una percentuale considerevole, ed anche l'architettura alternativa ideata tramite reti neurali non ha sortito l'effetto sperato e recuperato la prestazione perduta. 
-Tale risultato negativo è forse migliorabile utilizzando un'architettura di rete neurale più evoluta, ad esempio tramite l'utilizzo di una Rete Convoluzionale, in grado di eseguire una più precisa rilevazione delle caratteristiche fondamentali che compongono i domini.
+\item Il caso particolare di Suppobox ha tuttavia ridotto la capacità del classificatore, ed anche l'architettura alternativa ideata tramite reti neurali non ha sortito l'effetto atteso e migliorato il risultato precedente.
 
-\item Successivamente si è utilizzato l'Adversarial Learning per rafforzare il classificatore rispetto a casi non ancora esistenti. L'obiettivo di generare domini realistici tramite l'utilizzo di una GAN è stato in parte raggiunto. I domini generati dimostrano alcune caratteristiche linguistiche proprie dei vocaboli reali ma tuttavia sono ancora distinguibili dal subset reale utilizzato dai classificatori.
-Tale risultato in parte negativo ha comunque dimostrato di mettere in crisi la performance del classificatore neurale durante la fase di testing.
+\item Si è utilizzato l'Adversarial Learning per rafforzare il classificatore rispetto a casi non ancora esistenti. L'obiettivo  è stato in parte raggiunto in quanto i domini generati dimostrano alcune caratteristiche linguistiche proprie dei vocaboli reali ma al costo di uno sforzo realizzativo notevole.
 
-\item Il classificatore neurale successivamente riallenato aggiungendo l'insieme dei domini generati dalla GAN nel subset di training, non ha mostrato i miglioramenti sperati in fase progettuale, ma tuttavia ha dimostrato robustezza nei confronti degli stessi domini.
+\item Il classificatore neurale allenato ulteriormente con i domini generati dalla GAN non ha mostrato i miglioramenti auspicati in fase ideativa, ma tuttavia ha dimostrato robustezza nei confronti degli stessi domini sintetici.
 \end{itemize}

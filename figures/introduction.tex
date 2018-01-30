@@ -9,6 +9,7 @@
 \tikzstyle{container} = [draw, rectangle, dashed, inner sep=1em, node distance=5em]
 \tikzstyle{line} = [draw, thick, -latex']
 %\begin{document}
+\resizebox {0.8\textwidth} {!} {
 \begin{tikzpicture}[auto, node distance=10em]
 	\node [input](input){};
 	\node [box, right of=input](clas){Classificatore};
@@ -23,4 +24,5 @@
 	\path [line] (gan) -- node[right]{Adversarial Examples} (clas);
 	\path [line] (clas) -- (output)node[near end,name=out]{Previsione};
 \end{tikzpicture}
+}
 %\end{document}
