@@ -1,17 +1,18 @@
 \chapter{Risultati}
 \label{risultati}
-In questo capitolo si presentano i risultati della fase sperimentale effettuata su tutti i sistemi mostrati precedentemente: classificatore \textit{Random Forest}, classificatore neurale, autoencoder e Generative Adversarial Network. Le metriche di valutazione utilizzate sono enunciate all'interno della sezione~\ref{metriche}. In sezione~\ref{res:crf} vengono mostrati i risultati sperimentali ottenuti dal classificatore Random Forest, punto di partenza di questo studio. In sezione~\ref{ris:cnn} vengono mostrati i risultai sperimentali ottenuti dal classificatore neurale, evoluzione del classificatore Random Forest, e le problematiche incontrate durante tale fase. In sezione~\ref{ris:autoenc} viene mostrata la fase sperimentale che ha coinvolto l'autoencoder, per durante la quale si sono ottenuti i pesi utilizzati successivamente come punto di partenza per la fase di training della Generative Adversarial Network. All'interno dell'ultima sezione, ~\ref{ris:gan} sono mostrati i risultati ottenuti dal training della Generative Adversarial Network e la fase di affinamento degli iperparametri richiesta da quest'ultima.
+In questo capitolo si presentano i risultati della fase sperimentale effettuata su tutti i sistemi mostrati precedentemente: classificatore Machine Learning, classificatore neurale, Autoencoder e Generative Adversarial Network. Le metriche di valutazione utilizzate sono enunciate all'interno della sezione~\ref{metriche}. In sezione~\ref{res:crf} vengono mostrati i risultati sperimentali ottenuti dal classificatore Machine Learning, punto di partenza di questo studio. In sezione~\ref{ris:cnn} vengono mostrati i risultai sperimentali ottenuti dal classificatore neurale, evoluzione del classificatore Machine Learning, e le problematiche incontrate durante tale fase. In sezione~\ref{ris:autoenc} viene mostrata la fase sperimentale che ha coinvolto l'Autoencoder, durante la quale si sono ottenuti i pesi utilizzati  come punto di partenza per la successiva fase di training della Generative Adversarial Network. All'interno dell'ultima sezione~\ref{ris:gan} sono mostrati i risultati ottenuti dal training della Generative Adversarial Network e la fase di affinamento degli iperparametri richiesta da quest'ultima.
 
 \pagebreak
 \section{Metriche di valutazione}
 \label{metriche}
 Le metriche di valutazione utilizzate per testare la qualità dei modelli sono state:
+
 \begin{itemize}
 \item \textbf{Precision}: il rapporto $\frac{t_p}{t_p+f_p}$ dove $t_p$ è il numero di veri positivi e $f_p$ il numero di falsi positivi. Intuitivamente è l'abilità del classificatore di non marcare come positivo un campione negativo.
 \item \textbf{Recall}: il rapporto $\frac{t_p}{t_p+f_n}$  dove $f_n$ sono i falsi negativi. Intuitivamente è l'abilità del classificatore di trovare tutti i campioni positivi.
 \item \textbf{F-Score}: è definito come la media armonica tra \textit{precision} e \textit{recall}: 
 \[F_1 = 2 \cdot \frac{1}{\tfrac{1}{\mathrm{recall}} + \tfrac{1}{\mathrm{precision}}} = 2 \cdot \frac{\mathrm{precision} \cdot \mathrm{recall}}{\mathrm{precision} + \mathrm{recall}}\]
-\item \textbf{Area sottesa da Receiver Operating Characteristic}:  metodo grafico per la valutazione della qualità di un classificatore binario al variare della soglia di discriminazione. E' creata graficando la frazione dei veri positivi rispetto ai campioni positivi ($tpr$ = True positive rate) contro la frazione dei falsi positivi rispetto ai campioni negativi ($fpr$ = False positive rate). L'area sottesa dalla curva ROC equivale alla probabilità che il classificatore predica un campione positivo casuale rispetto ad un campione negativo casuale. Formalmente è definita da:
+\item \textbf{Area sottesa da Receiver Operating Characteristic}:  metodo grafico per la valutazione della qualità di un classificatore binario al variare della soglia di discriminazione. \`E creata graficando la frazione dei veri positivi rispetto ai campioni positivi ($tpr$ = True positive rate) contro la frazione dei falsi positivi rispetto ai campioni negativi ($fpr$ = False positive rate). L'area sottesa dalla curva ROC equivale alla probabilità che il classificatore predica un campione positivo casuale rispetto ad un campione negativo casuale. Formalmente è definita da:
 \begin{align*}
 A & = \int_{\infty}^{-\infty} \mbox{TPR}(T) \left(-\mbox{FPR}'(T)\right) \, dT \\
 & = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} I(T'>T)f_1(T') f_0(T) \, dT' \, dT = P(X_1 > X_0)
@@ -30,7 +31,7 @@ In fase preliminare si è effettuato un confronto tra tre algoritmi di classific
 \item \textit{SVC (C-Support Vector)}
 \item \textit{Naive Bayes}. 
 \end{itemize}
-Il classificatore è stato testato inizialmente testato con le famiglie di malware elencate in tabella~\ref{tab:malware}, contro un subset di dimensione simile di domini provenienti dalla classifica Alexa Top 1M~\cite{amazon:alexa}. Il dataset così formato è stato separato in due parti disuguali: il 90\% è stato utilizzato come dataset di training mentre il restante 10\% come testing in maniera da evitare il fenomeno di \textit{overfitting}. 
+Il classificatore è stato inizialmente testato con le famiglie di malware elencate in tabella~\ref{tab:malware}, contro un subset di dimensione simile di domini provenienti dalla classifica Alexa Top 1M~\cite{amazon:alexa}. Il dataset così formato è stato separato in due parti disuguali: il 90\% è stato utilizzato come subset di training mentre il restante 10\% come subset di testing in maniera da evitare il fenomeno di \textit{overfitting}. 
 
 \begin{table}[!bp]
     \centering
@@ -52,7 +53,7 @@ Il classificatore è stato testato inizialmente testato con le famiglie di malwa
 \caption{\label{tab:malware}}
 \end{table}
 
-I risultati della predizione sul dataset di testing sono mostrati in figure~\ref{fig:repdga}~\ref{fig:repsvc}~\ref{fig:repgnb}. A fianco dell'etichette \textit{legit} e \textit{DGA} è indicato il numero di campioni utilizzati per le due categorie. Come si può notare la performance del classificatore Random Forest è molto positiva, mostrando valori pari al 99\% in tuttel e categorie di valutazione.  Si ipotizza che tale risultato sia dovuto alla forte differenza linguistica tra domini reali e domini DGA, pertanto il classificatore soffre di un errore praticamente nullo. 
+I risultati della predizione sul subset di testing sono mostrati in figure~\ref{fig:repdga},~\ref{fig:repsvc},~\ref{fig:repgnb}. A fianco dell'etichette \textit{legit} e \textit{DGA} è indicato il numero di campioni utilizzati per le due categorie. Come si può notare la performance del Classificatore Machine Learning è molto positiva, mostrando valori pari al 99\% in tutte le categorie di valutazione.  Si ipotizza che tale risultato sia dovuto alla forte differenza linguistica tra domini reali e domini DGA; pertanto il classificatore soffre di un errore praticamente nullo. 
 
 \begin{figure}[!bp]
     \centering
@@ -60,7 +61,7 @@ I risultati della predizione sul dataset di testing sono mostrati in figure~\ref
     \caption{Report di classificazione algoritmo Random Forest.\label{fig:repdga}}
 \end{figure}
 
-I classificatori SVC e Naive Bayes non hanno mostrato risultati altrettanto eccellenti. In particolare SVC ha dimostrato una recall sui domini reali molto bassa, pari al 30\%; mentre lo stesso valore per i DGA è eccellente. Anche il valore di precision rispetto ai DGA è decisamente inferiore rispetto al classificatore Random Forest, infatti si attesta ad un valore del 70\%. Il valore di F-Score, che mostra una media dell'andamento del classificatore, mostra un basso valore per quel che riguarda i domini reali: 45\% ed un valore appena sufficiente per domini DGA: 82\%.
+I classificatori SVC e Naive Bayes non hanno mostrato risultati altrettanto eccellenti. In particolare SVC ha dimostrato una recall sui domini reali molto bassa, pari al 30\%; mentre lo stesso valore per i DGA è eccellente. Anche il valore di precision rispetto ai DGA è decisamente inferiore rispetto al Classificatore Machine Learning, infatti si attesta ad un valore del 70\%. Il valore di F-Score, che mostra una media dell'andamento del classificatore, mostra un basso valore per quel che riguarda i domini reali: 45\% ed un valore appena sufficiente per domini DGA: 82\%.
 Il classificatore Naive Bayes si piazza a metà tra i due casi precedenti, mostrando buoni risultati nel caso di DGA (Precision 96\%, Recall 91\%) e risultati intermedi per quel che riguarda i domini reali (Precision 87\% e Recall 93\%). A causa di questi risultati si è deciso di proseguire il resto del lavoro utilizzando Random Forest, dati gli eccellenti risultati nelle condizioni di esperimento più semplici. 
 In figura~\ref{fig:rocdga} è possibile vedere la curva ROC per il cassificatore Random Forest per l'esperimento in questione, confermando i risultati precedenti, con un'area sottesa dalla curva approssimata ad 1.00.
 
@@ -78,41 +79,43 @@ In figura~\ref{fig:rocdga} è possibile vedere la curva ROC per il cassificatore
 \begin{figure}[!bp]
     \centering
     \includegraphics[width=\columnwidth]{figures/rndf_tra_nosup_nosup/roc_plot.png}
-    \caption{Classificatore Random Forest: Area sottesa dalla curva ROC per il test con domini di tabella~\ref{tab:malware}.\label{fig:rocdga}}
+    \caption{Classificatore Machine Learning: Area sottesa dalla curva ROC per il test con domini di tabella~\ref{tab:malware}.\label{fig:rocdga}}
 \end{figure}
 
 \newpage
 \subsection{Caso Suppobox}
-Il classificatore Random Forest è stato successivamente testato inserendo \textit{suppobox} tra le famiglie DGA già presenti. Si è scelto tale malware come campione esterno in quanto presenta la maggiore differenza rispetto alle famiglie mostrate in tabella~\ref{tab:malware}. I risultati si possono vedere in figura~\ref{fig:repsup} e~\ref{fig:rocsup} e come si può notare la performance ne è fortemente influenzata, introducendo una grande percentuale di falsi nelle predizioni effettuate dal classificatore. In particolare si può vedere come sia nel caso dei domini reali la performance di precision ne ha risentito (Precision 20\%) oltre che la Recall nel caso DGA (Recall 14\%). In generale il classificatore dimostra una performance media data dall'F-score del 33\% e 24\%. 
-La ROC conferma i risultati precedenti, mostrando un'area sottesa dalla curva di 0.45, inferiore al caso ( indicato dalla linea tratteggiata rossa) in figura~\ref{fig:rocsup}.
+Il classificatore Machine Learning è stato successivamente testato inserendo \textit{suppobox} tra le famiglie DGA già presenti. Si è scelto tale malware come campione esterno in quanto presenta la maggiore differenza rispetto alle famiglie mostrate in tabella~\ref{tab:malware}. I risultati si possono vedere in figura~\ref{fig:repsup} e~\ref{fig:rocsup} e come si può notare la performance ne è fortemente influenzata, introducendo una grande percentuale di falsi nelle predizioni effettuate dal classificatore. In particolare si può vedere come sia nel caso dei domini reali la performance di precision è fortemente peggiorata (Precision 20\%) oltre che la Recall nel caso DGA (Recall 14\%). In generale il classificatore dimostra una performance media data dall'F-score del 33\% e 24\%. 
+La ROC conferma i risultati precedenti, mostrando un'area sottesa dalla curva di 0.45, inferiore al caso ( indicato dalla linea tratteggiata rossa) in figura~\ref{fig:rocsup}. La causa di tale risultato è da ricercarsi nell'algoritmo di generazione dei domini di suppobox, in quanto utilizza due parole ottenute dal dizionario inglese per formare in maniera pseudorandomica i domini. Tale tecnica quindi produce stringhe formate da parole leggibili, solitamente caratteristica dei domini reali provenienti da Alexa. Il classificatore risulta quindi in difficoltà nel discriminare domini reali e domini DGA per questo motivo.
 
 \begin{figure}[!bp]
     \centering
     \includegraphics[width=\columnwidth]{figures/rndf_tra_nosup_sup/class_rep.png}
-    \caption{Classificatore Random Forest: Report di classificazione su un subset di domini reali (legit) e malware, comprendenti suppobox (DGA).\label{fig:repsup}}
+    \caption{Classificatore Machine Learning: Report di classificazione su un subset di domini reali (legit) e malware, comprendenti suppobox (DGA).\label{fig:repsup}}
+
     \centering
     \includegraphics[width=\columnwidth]{figures/rndf_tra_nosup_sup/roc_plot.png}
-    \caption{Classificatore Random Forest: Area sottesa dalla curva ROC per il test con  suppobox.\label{fig:rocsup}}
+    \caption{Classificatore Machine Learning: Area sottesa dalla curva ROC per il test con  suppobox.\label{fig:rocsup}}
 \end{figure}
 
-Come ultimo test è stato eseguito il training aggiungendo al precedente dataset di training una parte di domini generati da suppobox (Figura~\ref{fig:repall} e~\ref{fig:rocall}). Come si può notare la performance è migliorata sensibilmente, non raggiungendo comunque i risultati eccellenti del primo test, con valori per i domini reali di Precision 94\% e Recall 88\% e rispetto ai domini DGA di precision 89\% e 92\%.
-L'area sotte dalla ROC è di 0.97, mostrando un risultato generalmente accettabile per un utilizzo reale.
+Come ultimo test è stato eseguito il training aggiungendo al precedente subset una parte di domini generati da suppobox (Figura~\ref{fig:repall} e~\ref{fig:rocall}). Come si può notare la performance è migliorata sensibilmente, non raggiungendo comunque i risultati eccellenti del primo test, con valori per i domini reali di Precision 94\% e Recall 88\% e rispetto ai domini DGA di precision 89\% e 92\%.
+L'area sottesa dalla ROC è di 0.97, mostrando un risultato generalmente accettabile per un utilizzo reale.
 
 \begin{figure}[!bp]
     \centering
     \includegraphics[width=\columnwidth]{figures/rndf_tra_sup_sup/class_rep.png}
-    \caption{Classificatore Random Forest: Report di classificazione su un subset di domini reali (legit) e malware, comprendenti suppobox (DGA).\label{fig:repall}}
+    \caption{Classificatore Machine Learning: Report di classificazione su un subset di domini reali (legit) e malware, comprendenti suppobox (DGA).\label{fig:repall}}
+
     \centering
     \includegraphics[width=\columnwidth]{figures/rndf_tra_sup_sup/roc_plot.png}
-    \caption{Classificatore Random Forest: Area sottesa dalla curva ROC per il test con domini reali e malware (comprendenti suppobox).\label{fig:rocall}}
+    \caption{Classificatore Machine Learning: Area sottesa dalla curva ROC per il test con domini reali e malware (comprendenti suppobox).\label{fig:rocall}}
 \end{figure}
 
 \newpage
 \section{Classificatore Neurale}
 \label{ris:cnn}
-Il classificatore neurale, nato per superare la performance del classificatore Machine Learning, è stato testato nelle stesse condizioni utilizzate precedentemente: in particolare è stato utilizzato lo stesso dataset mostrato in sezione~\ref{res:crf} e diviso in $\frac{9}{10}$ per la fase di training e $\frac{1}{10}$ per la fase di testing.
+Il classificatore neurale, nato per superare la performance del classificatore Machine Learning, è stato testato nelle stesse condizioni utilizzate precedentemente: in particolare è stato utilizzato lo stesso dataset mostrato in sezione~\ref{res:crf} e diviso in $\frac{9}{10}$ come subset di training e $\frac{1}{10}$ come subset di testing.
 
-In prima fase si sono messe a confronto le tre architetture presentate in sezione~\ref{classificatorenninterno}. Tali architetture hanno dimostrato tre andamenti simili; tuttavia a fronte dei risultati mostrati e della minore richiesta di risorse, il modello intermedio è risultato vincente rispetto agli altri testati. In Figura~\ref{fig:cfrmlp} è possibile vedere un confronto tra i tre modelli: la curva di colore grigio rappresenta il modello ingrandito, la curva di colore arancione rappresenta il modello ridotto mentre la curva di colore rosso rappresenta il modello intermedio; vincente tra i tre, mostrando una accuracy mediamente migliore del 5\% ed una Loss inferiore del 10\%. 
+In prima fase si sono messe a confronto le tre architetture presentate in sezione~\ref{classificatorenninterno}. Tali architetture hanno dimostrato tre andamenti simili; tuttavia a fronte dei risultati mostrati e della minore richiesta di risorse, il modello intermedio è risultato vincente rispetto agli altri testati. In Figura~\ref{fig:cfrmlp} è possibile vedere un confronto tra i tre modelli: la curva di colore grigio rappresenta il modello ingrandito, la curva di colore arancione rappresenta il modello ridotto mentre la curva di colore rosso rappresenta il modello intermedio; vincente tra i tre, mostrando una accuracy mediamente migliore del 8\% ed una Loss inferiore del 22\%. Tale risultato è da attestarsi nella conformazione dell'architettura degli strati del classificatore neurale. Infatti il modello ridotto non è in grado di cogliere le caratteristiche dei domini in maniera efficiente, mentre il modello allargato non riesce a produrre un vettore di features significativo a causa del numero troppo ampio di strati nascosti che lo compongono.
 
 \begin{figure}[!bp] 
 \centering
@@ -151,7 +154,7 @@ Particolare attenzione ha richiesto il tuning degli iperparametri di numero epoc
 
 Tali valori hanno dimostrato di fornire la migliore performance durante la fase di training.
 
-I test effettuati sul dataset hanno mostrato i risultati mostrati in figura~\ref{fig:cnrepall} e~\ref{fig:cnrocall}. Come si può vedere dai grafici il comportamento del classificatore è pressoché identico a quello mostrato dal classificatore Random Forest (figure~\ref{fig:repall} e~\ref{fig:rocall} )
+I test effettuati sul dataset hanno mostrato i risultati mostrati in figura~\ref{fig:cnrepall} e~\ref{fig:cnrocall}. Come si può vedere dai grafici il comportamento del classificatore è pressoché identico a quello mostrato dal Classificatore Machine Learning (figure~\ref{fig:repall} e~\ref{fig:rocall} )
 
 \begin{figure}[!bp]
     \centering
@@ -168,9 +171,9 @@ I test effettuati sul dataset hanno mostrato i risultati mostrati in figura~\ref
 \newpage
 \section{Autoencoder}
 \label{ris:autoenc}
-L'autoencoder come presentato in sezione~\ref{autoencoder} è stato testato con il dataset mostrato in sezione~\ref{imp:autoencoder:dataset}. In fase sperimentale si è proceduto alla quantificazione della configurazione ottimale dell'autoencoder. In particolare si sono messi a confronto i valori di dropout presenti all'interno di encoder e decoder ed i valori di learning rate dei rispettivi compilatori. I valori finali di tali compilatori sono indicati all'interno della sezione~\ref{imp:autoe:enc} e~\ref{imp:autoe:dec}
+L'Autoencoder come presentato in sezione~\ref{autoencoder} è stato testato con il dataset mostrato in sezione~\ref{imp:autoencoder:dataset}. In fase sperimentale si è proceduto alla quantificazione della configurazione ottimale dell'Autoencoder. In particolare si sono messi a confronto i valori di dropout presenti all'interno di encoder e decoder ed i valori di learning rate dei rispettivi compilatori. I valori finali di tali compilatori sono indicati all'interno della sezione~\ref{imp:autoe:enc} e~\ref{imp:autoe:dec}
 
-In figura~\ref{fig:aut1} è possibile notare i risultati della fase di training, per il quale si è trattenuto $\frac{1}{3}$ del training set come subset di validazione.  La prima fase è rappresentata dalla curva arancione, la seconda dalla curva fuchsia mentre la terza fase è rappresentata dalla curva di colore verde. Si può notare come la terza iterazione raggiunga buoni valori di accuracy e loss; pertanto stato scelto come configurazione vincente per la GAN.
+In figura~\ref{fig:aut1} è possibile notare i risultati della fase di training, per il quale si è trattenuto $\frac{1}{3}$ del training set come subset di validazione.  La prima fase è rappresentata dalla curva arancione, la seconda dalla curva fuchsia mentre la terza fase è rappresentata dalla curva di colore verde. Si può notare come la terza iterazione raggiunga valori di accuracy e loss  nettamente migliori; pertanto stato scelto come configurazione vincente per la GAN.
 
 \begin{figure}[!bp]
     \centering
@@ -180,10 +183,10 @@ In figura~\ref{fig:aut1} è possibile notare i risultati della fase di training,
     \begin{minipage}[b]{\linewidth}
     	\includegraphics[width=\linewidth]{figures/autoenc2.png}
     \end{minipage}
-    \caption{Grafici di Accuracy e Loss in funzione del tempo per la fase di training dell'autoencoder. \label{fig:aut1}}
+    \caption{Grafici di Accuracy e Loss in funzione del tempo per la fase di training dell'Autoencoder. \label{fig:aut1}}
 \end{figure}
 
-In figura~\ref{fig:aut2} è possibile vedere i grafici dei valori di accuracy e loss in funzione del tempo durante la fase di testing dell'autoencoder.  La prima fase è rappresentata dalla curva arancione, la seconda dalla curva fuchsia mentre la terza fase è rappresentata dalla curva di colore verde. Si può notare come i valori raggiunti siano molto simili a quelli ottenuti sul dataset di training, indice di qualità del modello rispetto a valori mai visti.
+In figura~\ref{fig:aut2} è possibile vedere i grafici dei valori di accuracy e loss in funzione del tempo durante la fase di testing dell'Autoencoder.  La prima fase è rappresentata dalla curva arancione, la seconda dalla curva fuchsia mentre la terza fase è rappresentata dalla curva di colore verde. Si può notare come i valori raggiunti siano molto simili a quelli ottenuti sul dataset di training, indice di qualità del modello rispetto a valori mai visti.
 
 \begin{figure}[!bp]
     \centering
@@ -194,12 +197,12 @@ In figura~\ref{fig:aut2} è possibile vedere i grafici dei valori di accuracy e 
     	\includegraphics[width=\linewidth]{figures/autoenc4.png}
     \end{minipage}
     
-\caption{Grafici di Accuracy e Loss in funzione del tempo rispetto al subset di validazione dell'autoencoder. \label{fig:aut2} }
+\caption{Grafici di Accuracy e Loss in funzione del tempo rispetto al subset di validazione dell'Autoencoder. \label{fig:aut2} }
 \end{figure}
 
 \newpage
 \subsection{Generazione Domini}
-In tabella~\ref{tab:autoenc} è possibile vedere un esempio di quali domini l'autoencoder produce dato un subset del dataset Alexa in input. Si può notare come siano vagamente simili ai domini reali per quanto riguarda la distribuzione dei caratteri e la lunghezza media dei domini, tuttavia non presenta ulteriori caratteristiche tali da influenzare negativamente i classificatori neurali.
+In tabella~\ref{tab:autoenc} è possibile vedere un esempio di quali domini l'Autoencoder produce dato un subset del dataset Alexa in input. Si può notare come siano vagamente simili ai domini reali per quanto riguarda la distribuzione dei caratteri e la lunghezza media dei domini, tuttavia non presenta ulteriori caratteristiche tali da influenzare negativamente i classificatori neurali.
 
 \begin{table}[!bp]
 \centering
@@ -251,12 +254,11 @@ In tabella~\ref{tab:autoenc} è possibile vedere un esempio di quali domini l'au
 	rrhtsrceu \\
 	\bottomrule
 	\end{tabular}
-\caption{Esempio di domini generati dall'autoencoder. \label{tab:autoenc}}
+\caption{Esempio di domini generati dall'Autoencoder. \label{tab:autoenc}}
 \end{table}
 
 \newpage
-L'utilizzo dei pesi dell'autoencoder come punto di partenza per il training della GAN ha contribuito fortemente a ridurre la instabilità di tale sistema, permettendo ai due sottosistemi generatore e discriminatore di partire da predizioni più precise rispetto all'utilizzo di pesi inizializzati in maniera randomica come generalmente attuato.
-
+L'utilizzo dei pesi dell'Autoencoder come punto di partenza per il training della GAN ha contribuito fortemente a ridurre la instabilità di tale sistema, permettendo ai due sottosistemi generatore e discriminatore di partire da predizioni più precise rispetto all'utilizzo di pesi inizializzati in maniera casuale come generalmente attuato.
 
 
 \newpage
@@ -280,7 +282,7 @@ In particolare si sono incontrati due \textit{failure modes}:
     \caption{Caso di degenerazione 2. Grafico del valore di loss in funzione del tempo. Il generatore (curva di colore azzurro) non produce domini realistici, degenerando a dati inutilizzabili. Il discriminatore (curva di colore rosso) di conseguenza migliora la propria loss a causa della differenza sempre maggiore tra domini realistici e domini sintetici. \label{fig:ganfailure2}}
 \end{figure}
 
-E' stato possibile ottenere la stabilità della GAN, grazie a numerose tecniche empiriche ottenute da~\cite{1606.03498} ed all'utilizzo del pre-training fornendo come inizializzazione i pesi ottenuti dalla fase di training dall'autoencoder. In figura~\ref{fig:ganok} si può vedere l'andamento dei valori di loss di generatore e discriminatore nel caso di equilibrio tra le due reti neurali.
+\`E stato possibile ottenere la stabilità della GAN, grazie a numerose tecniche empiriche ottenute da~\cite{1606.03498} ed all'utilizzo del pre-training fornendo come inizializzazione i pesi ottenuti dalla fase di training dall'Autoencoder. In figura~\ref{fig:ganok} si può vedere l'andamento dei valori di loss di generatore e discriminatore nel caso di equilibrio tra le due reti neurali.
 
 \begin{figure}[!bp]
 \centering
@@ -376,7 +378,7 @@ Il classificatore neurale presentato in sezione~\ref{classificatorenn} è stato 
 Come si può vedere da figura~\ref{fig:repgan} il classificatore si trova in grave difficoltà nel distinguere i domini DGA, raggiungendo un bassissimo valore di recall pari al 12\% e ad un valore medio di precision su entrambe le categorie di domini pari a 54\%. Lo F-Score medio del classificatore ne risulta molto basso rispetto a quello precedentemente mostrato in figura~\ref{fig:cnrepall}, con valori per i domini reali del 67\% e per domini DGA del 19\%.
 In figura~\ref{fig:rocgan} è mostrata la curva ROC del classificatore neurale testato nelle medesime condizioni: la ridottissima area sottesa pari a 0.39 dimostra come il classificatore non sia in grado di distinguere in maniera efficiente i domini reali da quelli generati dalla GAN. 
 
-Tali risultati a confronto con quelli mostrati in sezione~\ref{res:crf} e~\ref{ris:cnn} dimostrano come i domini sintetici generati dalla GAN siano in grado di influenzare negativamente la performance di un classificatore DGA che in precedenza ha dimostrato buoni risultati.
+Tali risultati a confronto con quelli mostrati in sezione~\ref{res:crf} e~\ref{ris:cnn} dimostrano come i domini sintetici generati dalla GAN siano in grado di influenzare negativamente la performance di un classificatore DGA che in precedenza ha dimostrato buoni risultati. La causa di tale risultato è da ricercarsi nella conformazione dei domini, formati a partire da quelli reali e quindi in grado di mimare le caratteristiche linguistiche fondamentali che il classificatore neurale estrae per effettuare la discriminazione.
 
 \begin{figure}[!bp]
     \centering
@@ -410,3 +412,17 @@ Il classificatore così rafforzato tramite Adversarial Examples presenta un comp
     \caption{Classificatore Neurale: Area sottesa dalla curva ROC per il test con domini reali e generati da GAN.\label{fig:rocnngan}}
 \end{figure}
 
+\newpage
+\section{Valutazione Risultati}
+I Risultati mostrati nelle sezioni precedenti hanno mostrato interessanti caratteristiche. 
+\begin{itemize}
+\item Il progetto del classificatore Machine Learning ha dimostrato di essere sufficientemente stabile discriminare con buonissima approssimazione i DGA generati dalla stragrande maggioranza dei malware odierni. 
+
+\item Il caso particolare di Suppobox ha tuttavia ridotto la capacità del classificatore di una percentuale considerevole, ed anche l'architettura alternativa ideata tramite reti neurali non ha sortito l'effetto sperato e recuperato la prestazione perduta. 
+Tale risultato negativo è forse migliorabile utilizzando un'architettura di rete neurale più evoluta, ad esempio tramite l'utilizzo di una Rete Convoluzionale, in grado di eseguire una più precisa rilevazione delle caratteristiche fondamentali che compongono i domini.
+
+\item Successivamente si è utilizzato l'Adversarial Learning per rafforzare il classificatore rispetto a casi non ancora esistenti. L'obiettivo di generare domini realistici tramite l'utilizzo di una GAN è stato in parte raggiunto. I domini generati dimostrano alcune caratteristiche linguistiche proprie dei vocaboli reali ma tuttavia sono ancora distinguibili dal subset reale utilizzato dai classificatori.
+Tale risultato in parte negativo ha comunque dimostrato di mettere in crisi la performance del classificatore neurale durante la fase di testing.
+
+\item Il classificatore neurale successivamente riallenato aggiungendo l'insieme dei domini generati dalla GAN nel subset di training, non ha mostrato i miglioramenti sperati in fase progettuale, ma tuttavia ha dimostrato robustezza nei confronti degli stessi domini.
+\end{itemize}
