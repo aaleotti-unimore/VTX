@@ -1,9 +1,10 @@
 \chapter{Progetto Classificatore}
 \label{projclass}
 In questo capitolo viene mostrato il progetto di un classificatore in grado di distinguere tra domini reali e domini generati algoritmicamente da Malware. In Sezione~\ref{proj:classml} viene mostrato il progetto di un classificatore ideato con algoritmi "\textit{shallow}" per eseguire tale compito di classificazione, in particolare la composizione del dataset di training, l'ingegnerizzazione delle features, la scelta dell'architettura e l'output atteso. 
-Si è successivamente progettato un classificatore più raffinato basato su rete neurale in grado di superare le mancanze de precedente classificatore, definito all'interno della sezione~\ref{classificatorenn}; comprendente della composizione del dataset, la comformazione dell'architettura della rete e l'output atteso. L'obiettivo di tale progetto è ottenere un classificatore stabile in grado di essere successivamente rafforzato tramite Adversarial Learning (Capitolo~\ref{adv}). In Figura~\ref{fig:intro} è mostrato uno schema di alto livello del lavoro presentato all'interno di questi due capitoli.
+Si è successivamente progettato un classificatore più raffinato basato su rete neurale in grado di superare le mancanze del precedente classificatore, definito all'interno della sezione~\ref{classificatorenn}; comprendente della composizione del dataset, la conformazione dell'architettura della rete e l'output atteso. L'obiettivo di tale progetto è ottenere un classificatore stabile in grado di essere successivamente rafforzato tramite Adversarial Learning (Capitolo~\ref{adv}). In Figura~\ref{fig:intro} è mostrato uno schema di alto livello del lavoro presentato all'interno di questi due capitoli.
 
-\begin{figure}[H]
+\newpage
+\begin{figure}[!hp]
     \centering
 	\input{figures/introduction.tex}
 	\caption{Diagramma generale di progetto. \label{fig:intro}}
@@ -13,15 +14,15 @@ Si è successivamente progettato un classificatore più raffinato basato su rete
 \section{Classificatore Machine Learning}
 \label{proj:classml}
 La prima fase di questo studio è stata quella di progettare un classificatore in grado di separare efficacemente domini \textit{DGA} da domini reali basandosi unicamente sulle caratteristiche linguistiche dei domini: infatti, ad un esame preliminare, i domini \textit{DGA} presentano caratteristiche ben differenti dalle semplici frasi o parole che solitamente compongono i domini reali.
-All'interno del classificatore, ogni albero dell'insieme è costruito a partire da un campione estratto con sostituzione dal \textit{training set}. In aggiunta, al momento della divisione del nodo durante la costruzione di un albero, la divisione scelta non è più la migliore soluzione tra tutte le \textit{features}. Al suo posto, la divisone che viene scelta è la migliore divisione all'interno di un \textit{subset} casuale tra tutte le \textit{features}. Come risultato di questa casualità, il \textit{bias} della foresta di solito aumenta leggermente (rispetto al \textit{bias} di un singolo albero non casuale) ma, a causa della media, la sua varianza diminuisce, di solito compensando l'aumento di \textit{bias}, quindi dando un modello generale migliore.
+L'architettura del classificatore è stata decisa dopo una fase sperimentale che ha messo a confronto tre tipologie differenti di algoritmi di classificazione.
 
 \subsection{Dataset}
 \label{pro:randomforestdataset}
-I \textit{dataset} di \textit{training} e \textit{testing} sono stati ricavati due fonti differenti: per quel che riguarda i domini reali si è fatto riferimento alla classifica dei domini più visitati al mondo fornita da \textit{Alexa Internet Inc.}~\cite{amazon:alexa} , per un totale di 1 milione di siti realmente esistenti; mentre grazie al repository fornito da~\cite{github:dgarepo} è stato possibile ottenere un \textit{dataset} esaustivo di esempi \textit{DGA} da diverse famiglie di \textit{malware} tra i quali ransomware come \textit{cryptolocker} e \textit{cryptowall}, trojans bancari come \textit{hesperbot}, e information stealers come \textit{ramnit}. Le tecniche DGA tradizionali variano in complessità da semplici approcci che estraggono caratteri casualmente a quelli che cercano di mimare la distribuzione di lettere o parole trovate nei domini reali. Il DGA di \textit{ramnit}, ad esempio, crea nomi di dominio usando una combinazione di moltiplicazioni, divisioni e resti a partire da un seme randomico. Agli antpodi, \textit{suppobox} crea domini concatenando due parole scelte in maniera pseudo-casuale da un piccolo dizionario Inglese.
+I dataset di \textit{training} e \textit{testing} sono stati ricavati due fonti differenti: per quel che riguarda i domini reali si è fatto riferimento alla classifica dei domini più visitati al mondo fornita da \textit{Alexa Internet Inc.}~\cite{amazon:alexa} , per un totale di 1 milione di siti realmente esistenti; mentre grazie al repository fornito da~\cite{github:dgarepo} è stato possibile ottenere un dataset esaustivo di esempi \textit{DGA} da diverse famiglie di \textit{malware} tra i quali ransomware come \textit{cryptolocker} e \textit{cryptowall}, trojans bancari come \textit{hesperbot}, e information stealers come \textit{ramnit}. Le tecniche DGA tradizionali variano in complessità da semplici approcci che estraggono caratteri casualmente a quelli che cercano di mimare la distribuzione di lettere o parole trovate nei domini reali. Il DGA di \textit{ramnit}, ad esempio, crea nomi di dominio usando una combinazione di moltiplicazioni, divisioni e resti a partire da un seme randomico. Agli antipodi, \textit{suppobox} crea domini concatenando due parole scelte in maniera pseudo-casuale da un piccolo dizionario Inglese.
 In tabella~\ref{tab:dga} vengono mostrati alcuni esempi di domini generati algoritmicamente a seconda delle diverse famiglie di malware.
 La maggior parte dei DGA opera a livello di singoli caratteri, mentre altre tipologie comuni come beebone hanno una struttura rigida, che produce domini come ns1.backdates13.biz e ns1.backdates0.biz.
-Il DGA symmi produce domini vagamente pronunciabili tra i quali “hakeshoubar.ddns.net” estraendo una vocale o una consonante casualmente per ogni indice pari e successivamente estraendo l’opposto all’indice successivo oltre che ad aggiungere un dominio di primo e secondo livello al termine della stringa come \textit{".ddns.net"}
-La distribuzione dei singoli caratteri (unigrammi) per 4 famiglie di DGA e Alexa sono mostrate di seguito. La distribuzione di cryptolocker e ramnit sono entrambe uniformi all’interno dello stesso range. Si tratta di una caratteristica attesa in quanto entrambi sono generati tramite una serie di moltiplicazioni, divisioni e resti basati su di un singolo seme. Suppobox, d’altro canto presenta caratteristiche interessanti in quanto genera unigrammi simili per distribuzione ad Alexa. 
+Il DGA symmi produce domini vagamente pronunciabili tra i quali “hakeshoubar.ddns.net” estraendo una vocale o una consonante casualmente per ogni indice pari e successivamente estraendo l'opposto all'indice successivo oltre che ad aggiungere un dominio di primo e secondo livello al termine della stringa come \textit{".ddns.net"}
+La distribuzione dei singoli caratteri (uni-grammi) per 4 famiglie di DGA e Alexa sono mostrate di seguito. La distribuzione di cryptolocker e ramnit sono entrambe uniformi all'interno dello stesso range. Si tratta di una caratteristica attesa in quanto entrambi sono generati tramite una serie di moltiplicazioni, divisioni e resti basati su di un singolo seme. Suppobox, d'altro canto presenta caratteristiche interessanti in quanto genera uni-grammi simili per distribuzione ad Alexa. 
 
 \begin{table}[p]
     \centering
@@ -64,8 +65,8 @@ La distribuzione dei singoli caratteri (unigrammi) per 4 famiglie di DGA e Alexa
 \end{table}
 
 
-A partire da tale \textit{dataset} combinato si è proceduto alla creazione di un classificatore binario che fosse in grado di distinguere domini reali da domini generati algoritmicamente. 
-Il passo seguente  stato creare una serie di \textit{features} che fossero in grado di descrivere le caratteristiche linguistiche dei domini presi in esame.
+A partire da tale dataset combinato si è proceduto alla creazione di un classificatore binario che fosse in grado di distinguere domini reali da domini generati algoritmicamente. 
+Il passo seguente  stato creare una serie di features che fossero in grado di descrivere le caratteristiche linguistiche dei domini presi in esame.
 
 
 \begin{figure}[!bp]
@@ -76,7 +77,7 @@ Il passo seguente  stato creare una serie di \textit{features} che fossero in gr
 \end{figure}
 
 
-Per raggiungere tale obiettivo si è fatto riferimento a ricerche già esistenti:~\cite{180232}~\cite{Yadav:2010:DAG:1879141.1879148}~\cite{Yadav:2012:DAG:2428696.2428722}~\cite{Schiavoni2014}. Di seguito viene illustrato l'insieme di tali \textit{features}:
+Per raggiungere tale obiettivo si è fatto riferimento a ricerche già esistenti:~\cite{180232}~\cite{Yadav:2010:DAG:1879141.1879148}~\cite{Yadav:2012:DAG:2428696.2428722}~\cite{Schiavoni2014}. Di seguito viene illustrato l'insieme di tali features:
 
 \subsection{Features}
 \label{randomforestinterno}
@@ -91,7 +92,7 @@ Se $p = \text{facebook}$, $R(p) = \frac{(|\text{face}| + |\text{book}|)}{8} = 1$
 
     
 
-\item \textbf{Punteggio di normalità degli n-grammi}: Questa classe di \textit{features} modella la pronunciabilità di un nome di dominio rispetto la lingua Inglese. Più la combinazione di fonemi del dominio è presente  all'interno del Dizionario Inglese più tale dominio è pronunciabile. Domini con un basso numero di tali combinazioni sono probabilmente generati algoritmicamente. Il calcolo avviene estraendo lo n-gramma di $p$ di lunghezza $n \in \left \{1, 2, 3, 4, 5 \right \}$ e contando il numero di occorrenze di tale n-gramma all'interno del Dizionario Inglese. Tali \textit{features} sono quindi parametriche rispetto ad n:
+\item \textbf{Punteggio di normalità degli n-grammi}: Questa classe di features modella la pronunciabilità di un nome di dominio rispetto la lingua Inglese. Più la combinazione di fonemi del dominio è presente  all'interno del Dizionario Inglese più tale dominio è pronunciabile. Domini con un basso numero di tali combinazioni sono probabilmente generati algoritmicamente. Il calcolo avviene estraendo lo n-gramma di $p$ di lunghezza $n \in \left \{1, 2, 3, 4, 5 \right \}$ e contando il numero di occorrenze di tale n-gramma all'interno del Dizionario Inglese. Tali features sono quindi parametriche rispetto ad n:
  
 \[S_n(d) = S_n(p) \:= \frac{\sum_{\text{n-gramma t in p}} count(t)}{\left | p \right | - n + 1}\] 
 
@@ -108,7 +109,7 @@ dove $count(t)$ sono le occorrenze dello n-gramma nel dizionario. Ad esempio $S_
 	
 \end{itemize}
 
-L'implementazione di tali \textit{features} ha permesso di ottenere un \textit{dataset} in grado di modellare le caratteristiche linguistiche dei nomi di dominio mostrati al capitolo~\ref{randomforestdataset}. Da tale spunto è partita la fase iniziale di \textit{testing} 
+L'implementazione di tali features ha permesso di ottenere un dataset in grado di modellare le caratteristiche linguistiche dei nomi di dominio mostrati in sezione~\ref{pro:randomforestdataset}. Da tale spunto è partita la fase iniziale di \textit{testing} 
 
 \subsection{Architettura Interna}
 La scelta della tipologia di architettura da utilizzare per il classificatore è stata ridotta a tre modelli di classificazione differenti: 
@@ -144,7 +145,7 @@ La funzione di decisione è:
 \begin{figure}[!bp]
     \centering
     \includegraphics[width=\columnwidth]{figures/svm.png}
-    \caption{Esempio di iperpiano di una SVM. \label{fig:Chardistr}}
+    \caption{Esempio di iperpiano di una SVM. \label{fig:svm}}
 \end{figure}
 
 \item \textbf{Naive Bayes}: Metodo di classificazione supervisionata basati sul teorema di Bayes con un assunto "\textit{naive}" di indipendenza tra ogni coppia di feature. Data una variabile di classe $y$ e un vettore di features indipendenti $x_1 \dots, x_n$ il teorema di Bayes dimostra la seguente relazione: 
@@ -161,7 +162,7 @@ Il classificatore è stato implementato e testato con i tre modelli. Si confront
 
 \subsection{Output}
 \label{randomforestoutput}
-L'obiettivo di tale classificatore è quello di riuscire a separare in maniera efficace i domini reali da quelli generati algoritmicamente. Durante la fase di sperimentazione il classificatore si è rivelato efficace rispetto la maggior parte delle famiglie di \textit{DGA}; tuttavia il caso particolare della famiglia \textit{suppobox}~\cite{geffner2013end} ha messo in particolare difficoltà il classificatore in quanto tale algoritmo genera domini in maniera pseudo-casuale, concatenando due parole a partire da un \textit{subset} di 384 parole provenienti dal dizionario inglese. Tale caratteristica fa si che le \textit{features} linguistiche estratte da questa famiglia di \textit{malware} siano molto simili a quelle presenti nei domini reali. In tabella~\ref{tab:suppobox} sono mostrati alcuni esempi di domini generati da Suppobox.
+L'obiettivo di tale classificatore è quello di riuscire a separare in maniera efficace i domini reali da quelli generati algoritmicamente. Durante la fase di sperimentazione il classificatore si è rivelato efficace rispetto la maggior parte delle famiglie di \textit{DGA}; tuttavia il caso particolare della famiglia \textit{suppobox}~\cite{geffner2013end} ha messo in particolare difficoltà il classificatore in quanto tale algoritmo genera domini in maniera pseudo-casuale, concatenando due parole a partire da un \textit{subset} di 384 parole provenienti dal dizionario inglese. Tale caratteristica fa si che le features linguistiche estratte da questa famiglia di \textit{malware} siano molto simili a quelle presenti nei domini reali. In tabella~\ref{tab:suppobox} sono mostrati alcuni esempi di domini generati da Suppobox.
 
 
 \begin{table}[!htbp]
@@ -191,15 +192,15 @@ A partire da questo risultato si scelto di procedere con la progettazione di un 
 \newpage
 \section{Classificatore Neurale}
 \label{classificatorenn}
-Questo classificatore neurale nasce con l'intento di superare le difficoltà incontrate dal precedente classificatore basato su \textit{Random Forest}, utilizzando le caratteristiche delle reti neurali, in grado di estrarre \textit{features} a partire dai dati grezzi. Si è scelto di partire dall'architettura di tipo \textit{Multilayer Perceptron} con l'obiettivo di ottenere risultati migliori rispetto al caso mostrato nella sezione precedente.
+Questo classificatore neurale nasce con l'intento di superare le difficoltà incontrate dal precedente classificatore basato su Random Forest, utilizzando le caratteristiche delle reti neurali, in grado di estrarre features a partire dai dati grezzi. Si è scelto di partire dall'architettura di tipo \textit{Multilayer Perceptron} con l'obiettivo di ottenere risultati migliori rispetto al caso mostrato nella sezione precedente.
 
 I passi del progetto sono stati la codificazione dei domini in valori numerici, l'individuazione di una architettura ottimale per classificare i dati in esame ed un'ultima fase di \textit{tuning} degli iperparametri della rete neurale. 
 
 \subsection{Dataset}
 \label{classificatorenninput}
-A partire dal \textit{dataset} creato per il precedente caso, si è deciso di convertire direttamente i nomi di dominio alfanumerici in vettori numerici, mappati secondo il dizionario di tutti i caratteri ammessi~\cite{icann} (lettere minuscole a-z, numeri 0-9, tratto d'unione "-" ). L'obiettivo è quello di fornire al classificatore neurale in questione una rappresentazione il più possibile aderente ai dati reali, senza l'ausilio di \textit{features} ingegnerizzate a priori, lasciando così la libertà alla rete neurale di estrarre le caratteristiche più appropriate per la distinzione dei domini. Come scelta progettuale si è deciso di limitare la dimensione dei domini a 15 caratteri per ognuno, in modo da ottenere un \textit{dataset} di dimensioni fissate e sopperire alle differenti lunghezze di ogni dominio tramite un semplice \textit{padding} di zeri in testa ad ogni stringa codificata.
+A partire dal dataset creato per il precedente caso, si è deciso di convertire direttamente i nomi di dominio alfanumerici in vettori numerici, mappati secondo il dizionario di tutti i caratteri ammessi~\cite{icann} (lettere minuscole a-z, numeri 0-9, tratto d'unione "-" ). L'obiettivo è quello di fornire al classificatore neurale in questione una rappresentazione il più possibile aderente ai dati reali, senza l'ausilio di features ingegnerizzate a priori, lasciando così la libertà alla rete neurale di estrarre le caratteristiche più appropriate per la distinzione dei domini. Come scelta progettuale si è deciso di limitare la dimensione dei domini a 15 caratteri per ognuno, in modo da ottenere un dataset di dimensioni fissate e sopperire alle differenti lunghezze di ogni dominio tramite un semplice padding di zeri in testa ad ogni stringa codificata.
 
-Assieme ai dati codificati è stato generato un vettore di \textit{target} nel quale viene indicato da 0 o da 1 se il dominio in esame è di tipo reale o generato algoritmicamente. L'obiettivo quindi è di attuare un classificatore binario in grado di prevedere correttamente a quale categoria appartiene un dominio esaminato 
+Assieme ai dati codificati è stato generato un vettore di target nel quale viene indicato da 0 o da 1 se il dominio in esame è di tipo reale o generato algoritmicamente. L'obiettivo quindi è di attuare un classificatore binario in grado di prevedere correttamente a quale categoria appartiene un dominio esaminato 
 
 \subsection{Architettura Classificatore Neurale}
 \label{classificatorenninterno}
@@ -233,7 +234,8 @@ Per quel che riguarda la funzione di attivazione del livello di \textit{output} 
     \caption{\textit{fonte:}~\cite{fig:sigmoid}\label{fig:sigmoid}}
 \end{figure}
 
-La struttura finale del \textit{MLP} in esame è stata raggiunta dopo una serie di test sperimentali in cui si sono messi a confronto tre modelli differenti di per numero di neuroni all'interno degli \textit{hidden layer}: 
+La struttura finale del \textit{MLP} in esame è stata raggiunta dopo una serie di test sperimentali in cui si sono messi a confronto tre modelli differenti di per numero di neuroni all'interno degli strati nascosti:
+
 \begin{itemize}
 \item un modello ridotto composto da un layer di input con un numero di neuroni pari alla dimensione delle stringhe codificate, un layer intermedio di dimensione dimezzata rispetto al precedente ed il layer finale di uscita di dimensione 1 per attuare la classificazione binaria, oggetto di studio.
 
@@ -253,7 +255,7 @@ I tre modelli sono stati messi a confronto in fase sperimentale, dovendo procede
 
 \subsection{Output}
 \label{classificatorennoutput}
-L'intento della rete neurale proposta è quello di classificare autonomamente domini reali da domini generati algoritmicamente, con l'obiettivo di superare le fragilità del classificatore precedente (\ref{fig:classml}) ed avere una linea di confronto affidabile per lo \textit{step} di lavoro successivo: l'introduzione di un sistema di \textit{adversarial learning} che possa rafforzare tale classificatore. 
+L'intento della rete neurale proposta è quello di classificare autonomamente domini reali da domini generati algoritmicamente, con l'obiettivo di superare le fragilità del classificatore Machine Learning ed avere una linea di confronto affidabile per lo step di lavoro successivo: l'introduzione di un sistema di adversarial learning che possa rafforzare tale classificatore. 
 
 \newpage
 \chapter{Progetto Adversarial Learning}
@@ -266,7 +268,7 @@ Le \textit{GAN} incorporano due modelli: un generatore ed un discriminatore i qu
 In sezione~\ref{autoencoder} viene mostrato il progetto dell'Autoencoder, il proprio dataset di training e l'architettura interna. In sezione~\ref{encoder} e~\ref{decoder} vengono mostrate nel dettaglio i progetti delle due sotto-reti neurali che compongono l'autoencoder: Encoder e Decoder; comprendenti gli strati ideati per entrambe le architetture. 
 In sezione~\ref{ganintro} è mostrato il progetto della Generative Adversarial Network derivata dall'autoencoder e le componenti di cui è formata.
 
-\begin{figure}[!bp]
+\begin{figure}[htbp]
     \centering 
 	\includegraphics[width=\columnwidth]{figures/auttogan.tex}
 	\caption{Schema generale della progettazione da Autoencoder a Gan. \label{fig:auttogan}}
@@ -276,7 +278,7 @@ In sezione~\ref{ganintro} è mostrato il progetto della Generative Adversarial N
 \newpage
 \section{Autoencoder}
 \label{autoencoder}
-Il punto di partenza per il lavoro di progettazione di una \textit{GAN} è stato l'implementazione di un \textit{Autoencoder} funzionante.  Un \textit{Autoencoder} è un modello di rete neurale non supervisionata con lo scopo di riprodurre il proprio input passando attraverso una rappresentazione codificata, generalmente a dimensione inferiore~\cite{MAL-006}~\cite{Liou:2008:MWP:1411851.1412074}. Si supponga di avere un set di training $\left\{ x^{(1)}, x^{(2)}, x^{(3)}, \ldots \right\}$ dove $x^{(i)} \in \mathbb{R}^n$. L'obiettivo di un autoencoder generico è \[y^{(i)} = x^{(i)}\] cercando di imparare una funzione che approssima x \[h_{W,b}(x) \approx x\]. Un \textit{autoencoder} tipicamente consiste in due macro-componenti:
+Il punto di partenza per il lavoro di progettazione di una \textit{GAN} è stato l'implementazione di un autoencoder funzionante.  Un autoencoder è un modello di rete neurale non supervisionata con lo scopo di riprodurre il proprio input passando attraverso una rappresentazione codificata, generalmente a dimensione inferiore~\cite{MAL-006}~\cite{Liou:2008:MWP:1411851.1412074}. Si supponga di avere un set di training $\left\{ x^{(1)}, x^{(2)}, x^{(3)}, \ldots \right\}$ dove $x^{(i)} \in \mathbb{R}^n$. L'obiettivo di un autoencoder generico è \[y^{(i)} = x^{(i)}\] cercando di imparare una funzione che approssima x \[h_{W,b}(x) \approx x\]. Un autoencoder tipicamente consiste in due macro-componenti:
 \begin{itemize}
 \item funzione \textbf{Encoder} $h = f(x)$ la quale trasforma l'input una rappresentazione codificata (generalmente a dimensione minore)
 \item funzione \textbf{Decoder} $r = g(h)$ in grado di ricostruire l'input a partire dalla rappresentazione codificata. 
@@ -289,11 +291,11 @@ Il punto di partenza per il lavoro di progettazione di una \textit{GAN} è stato
 \label{fig:autoencodergen}}
 \end{figure}
 
-Tuttavia il reale obiettivo di un \textit{autoencoder }non è quello di imparare perfettamente a riprodurre l'input fornito (in quanto sarebbe un'operazione priva di utilità), bensì vengono introdotti vincoli che ne limitano la capacità di riproduzione ad una sola approssimazione dei dati di ingresso. Grazie a tali vincoli il modello è obbligato a dare priorità agli aspetti fondamentali dell'input, imparandone le proprietà principali. L'obiettivo di tale implementazione nel contesto di questo elaborato è poter cogliere le caratteristiche fondamentali che compongono i domini reali, per poterli riprodurre al meglio all'interno della \textit{GAN} e generare domini simili a quelli reali a partire da rumore casuale.
+Tuttavia il reale obiettivo di un autoencoder non è quello di imparare perfettamente a riprodurre l'input fornito (in quanto sarebbe un'operazione priva di utilità), bensì vengono introdotti vincoli che ne limitano la capacità di riproduzione ad una sola approssimazione dei dati di ingresso. Grazie a tali vincoli il modello è obbligato a dare priorità agli aspetti fondamentali dell'input, imparandone le proprietà principali. L'obiettivo di tale implementazione nel contesto di questo elaborato è poter cogliere le caratteristiche fondamentali che compongono i domini reali, per poterli riprodurre al meglio all'interno della \textit{GAN} e generare domini simili a quelli reali a partire da rumore casuale.
 
 \subsection{Dataset Autoencoder}
 \label{datasetautoencoder}
-Il \textit{dataset} utilizzato per il training di tale \textit{autoencoder} è lo stesso mostrato nella sezione~\ref{classificatorenninput}, in cui i domini sono mappati in vettori numerici, secondo il dizionario di caratteri ammissibili per i domini. Durante la fase di implementazione si è reso necessario un ulteriore \textit{step} di \textit{preprocessing}: i domini codificati in sequenze di valori interi sono stati ulteriormente codificati tramite il \textit{one hot encoding}~\cite{onehot} in modo da formare un tensore 2D per ogni dominio, in cui ogni riga è formata da sequenze di bit a 0 tranne il carattere nella posizione indicata dal dizionario, il quale è indicato ad 1. I domini così codificati vengono trattati come una sequenza temporale, in cui ogni \textit{step} è caratterizzato da un vettore nel quale è indicato a 1 quale carattere del dizionario $\mathbb{V}$ vi è rappresentato. 
+Il dataset utilizzato per il training di tale autoencoder è lo stesso mostrato nella sezione~\ref{classificatorenninput}, in cui i domini sono mappati in vettori numerici, secondo il dizionario di caratteri ammissibili per i domini. Durante la fase di implementazione si è reso necessario un ulteriore \textit{step} di \textit{preprocessing}: i domini codificati in sequenze di valori interi sono stati ulteriormente codificati tramite il \textit{one hot encoding}~\cite{onehot} in modo da formare un tensore 2D per ogni dominio, in cui ogni riga è formata da sequenze di bit a 0 tranne il carattere nella posizione indicata dal dizionario, il quale è indicato ad 1. I domini così codificati vengono trattati come una sequenza temporale, in cui ogni \textit{step} è caratterizzato da un vettore nel quale è indicato a 1 quale carattere del dizionario $\mathbb{V}$ vi è rappresentato. 
 
 Questo ulteriore passaggio è diventato necessario durante l'implementazione della \textit{GAN}, in modo da poter utilizzare il tensore di output del \textit{decoder} come ingresso per l'\textit{encoder}.
 
@@ -307,12 +309,12 @@ Al domini codificati come indicato nella sezione precedente, vengono applicati d
 Il \textit{decoder} è lascamente l'inverso del processo di codifica: il dominio codificato dato in input viene ripetuto un numero di volte equivalente alla lunghezza massima di nome di dominio decisa a priori e passato ad una LSTM. La sequenza di emissioni da parte del layer LSTM viene fornita agli stessi filtri convoluzionali presenti all'interno dell'\textit{encoder}. Questo risulta in un vettore $\mathbb{V}$-dimensionale per ogni elemento della sequenza che compone il dominio.
 Lo step finale consiste di un dense layer con distribuzione temporale che agisce come regressore multinomiale. A causa dell'attivazione \textit{softmax} attuata sul \textit{dense layer}, l'output del decoder rappresenta una distribuzione multinomiale dei caratteri di $\mathbb{V}$ per ogni step temporale, la quale può essere campionata per produrre un nuovo nome di dominio contenente le caratteristiche principali dei nomi di dominio usati in input.
 
-In figura~\ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoencoder. Di seguito vengono illustrati in dettaglio le principali componenti che compongono l'\textit{autoencoder}. 
+In figura~\ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoencoder. Di seguito vengono illustrati in dettaglio le principali componenti che compongono l'autoencoder. 
 
 \begin{figure}[!p]
     \centering
 	\includegraphics[width=\columnwidth]{figures/autoencoder.tex}
-	\caption{Struttura dell'\textit{autoencoder} in esame. L'input in ingresso dato dai domini viene codificato attraverso l'\textit{encoder} e dato in ingresso al \textit{decoder} che ne genera una approssimazione.
+	\caption{Struttura dell'autoencoder in esame. L'input in ingresso dato dai domini viene codificato attraverso l'\textit{encoder} e dato in ingresso al \textit{decoder} che ne genera una approssimazione.
 \label{fig:autoencoder1}}
 \end{figure}
 
@@ -340,10 +342,10 @@ Una Rete Convoluzionale è un modello di rete neurale usato generalmente per cla
 
 
 \subsection{Pooling}
-Parte integrante di una rete convoluzionale è il livello di \textit{pooling}, in cui le features più importanti del livello precedente vengono ridotte in un tensore di dimensione inferiore, secondo il valor medio all'interno della \textit{feature map}. La decisione di utilizzare average pooling anziche max pooling è stata presa a causa dell'elevata instabilità intrinseca alle GAN, per le quali max pooling è un fattore contribuente. 
+Parte integrante di una rete convoluzionale è il livello di \textit{pooling}, in cui le features più importanti del livello precedente vengono ridotte in un tensore di dimensione inferiore, secondo il valor medio all'interno della \textit{feature map}. La decisione di utilizzare average pooling anziché max pooling è stata presa a causa dell'elevata instabilità intrinseca alle GAN, per le quali max pooling è un fattore contribuente. 
 
 \subsection{Concatenazione}
-Il layer aggiuntivo di \textit{concatenazione} funge permete di formare un unico vettore mono-dimensionale in grado di fornire le caratteristiche principali dei domini analizzati.
+Il layer aggiuntivo di \textit{concatenazione} permette di formare un unico vettore mono-dimensionale in grado di fornire le caratteristiche principali dei domini analizzati.
 
 \subsection{Long Short-term Memory}
 Seconda fase della sottorete Encoder è la presenza di una Long Short-term Memory Network \textit{(abbr LSTM)}~\cite{LSTM}. Si tratta di un modello di \textit{Recurrent Neral Network (abbr. RNN)} particolare, in grado di apprendere dipendenze a lungo termine all'interno di una sequenza temporale che nasce con l'intento di superare le principale problematiche delle RNN semplici, le quali non sono in grado di gestire dipendenze a lungo termine all'interno di una sequenza temporale. Le celle LSTM consistono di uno stato che può essere letto, scritto e resettato attraverso una serie di \textit{gates}. Siano dati $W$ e $U$ \textit{layer} di una cella LSTM corrispondenti a matrici di pesi per l'input $x$ ed emissione $h$, mentre $b$ vettore di bias. Lo stato $c$ di una cella LSTM ha connessioni periodiche che permettono ad ogni cella di mantenere stato attraverso gli step temporali:
@@ -384,7 +386,7 @@ L'output in uscita da questo encoder è in forma di un tensore monodimensionale,
 \newpage
 \section{Decoder}
 \label{decoder}
-La struttura del decoder è lascamente una copia speculare dell'encoder. L'obiettivo principale è riuscire a ricampionare un dominio partendo da un tensore a domensione inferiore rispetto alla codifica fornita in input all'encoder.
+La struttura del decoder è lascamente una copia speculare dell'encoder. L'obiettivo principale è riuscire a ricampionare un dominio partendo da un tensore a dimensione inferiore rispetto alla codifica fornita in input all'encoder.
 
 La struttura di massima presenta come primo layer un \textit{repeat vector} che ripete il tensore di input per un numero di volte pari alla lunghezza massima di dominio, fissata in fase di codifica del dataset, formando così un tensore 3-dimensionale, dello stessa dimensione dei domini provenienti dal dataset. La sequenza così formata viene data in input ad un layer LSTM avente le identiche caratteristiche del layer LSTM presente all'interno dell'encoder. Successivamente la sequenza di emissioni in output dalla LSTM viene fornita ad due reti convoluzionali parallele identiche al quelle inserite all'interno dell'encoder. il risultato di tale operazione è un vettore di dimensione pari a dizionario di caratteri ammissibili per i domini, per ogni step della sequenza di caratteri che compone un dominio. In Figura~\ref{fig:decoder} viene mostrato lo schema di massima del \textit{decoder}.
 
@@ -407,7 +409,7 @@ Per il campionamento è stato usata una funzione \textit{softmax} utilizzata nel
 
 \[P_t(a) = \frac{\exp(q_t(a)/\tau)}{\sum_{i=1}^n\exp(q_t(i)/\tau)} \text{,}\]
 
-Dove il valore di\textit{ "azione"} $q_{t}(a)$ corrisponde alla "ricompensa" ottenuta per l'azione $a$ e $\tau$  è definito come parametro di \textit{"temperatura"}. Per alte \textit{"temperature"} ( $\tau \to \infty$ ), tutte le azioni hanno la stessa probabilità e più bassa la temperatura, più la "ricompensa" influisce sulla probabilità. Per basse tempeature ($\tau \to 0^{+}$), la probabilità di \textit{azione} con la ricompensa più alta tende ad 1. 
+Dove il valore di\textit{ "azione"} $q_{t}(a)$ corrisponde alla "ricompensa" ottenuta per l'azione $a$ e $\tau$  è definito come parametro di \textit{"temperatura"}. Per alte \textit{"temperature"} ( $\tau \to \infty$ ), tutte le azioni hanno la stessa probabilità e più bassa la temperatura, più la "ricompensa" influisce sulla probabilità. Per basse temperature ($\tau \to 0^{+}$), la probabilità di \textit{azione} con la ricompensa più alta tende ad 1. 
 
 Tramite questa funzione è stato possibile mettere a a punto in fase sperimentale il campionamento dei domini dalla lo rappresentazione in forma di tensore alla rappresentazione testuale.
 
@@ -430,7 +432,7 @@ La struttura dell'autoencoder descritto a partire dalla sezione~\ref{autoencoder
 \label{ganarch}
 Come mostrato in figura~\ref{fig:archgan}, la struttura della GAN in esame è composta fondamentalmente dalle componenti dell'autoencoder, estese in modo da trasformare l'encoder in un discriminatore che possa classificare domini sintetici da domini reali, ed il decoder in un generatore che a partire da uno spazio latente possa generare domini codificati.
 
-Rispetto al lavoro presentato in~\cite{deepdga}, si è deciso di implementare una architettura più semplificata. Come mostrato in~\cite{1606.03498} le GAN sono tipicamente difficoltose da allenare, in quanto l'uso di funzioni di costo porta ad un difficile \textit{tuning} per ottenere un equilibrio di Nash tra le due parti in gioco. La decisione finale è stata presa dopo una serie di test sperimentali, in cui si sono messe a confronto architetture similari comprendenti diverse conformazioni di layers atte ad rendere stabile la fase di training, tra le quali Batch Normalization, come mostrato in~\cite{1502.03167},  l'utilizzo di Leaky Relu~\cite{GANhacks} come layer di attivazione all'interno della sottorete Convoluzionale e Dropout come strumento per evitare il fenomeno di \textit{overfitting}~\cite{dropout}. L'uso di Leaky ReLU come funzione di attivazione è giustificata dalla riduzione della sparsità  del gradiente, la quale generalmente causa instabilità.
+Rispetto al lavoro presentato in~\cite{deepdga}, si è deciso di implementare una architettura più semplificata. Come mostrato in~\cite{1606.03498} le GAN sono tipicamente difficoltose da allenare, in quanto l'uso di funzioni di costo porta ad un difficile \textit{tuning} per ottenere un equilibrio di Nash tra le due parti in gioco. La decisione finale è stata presa dopo una serie di test sperimentali, in cui si sono messe a confronto architetture similari comprendenti diverse conformazioni di layers atte ad rendere stabile la fase di training, tra le quali Batch Normalization, come mostrato in~\cite{1502.03167},  l'utilizzo di Leaky Relu~\cite{GANhacks} come layer di attivazione all'interno della sottorete Convoluzionale e Dropout come strumento per evitare il fenomeno di \textit{overfitting}~\cite{dropout}. L'uso di Leaky ReLU come funzione di attivazione è giustificata dalla riduzione della sparsità del gradiente, la quale generalmente causa instabilità.
 
 \begin{figure}[!htb]
     \centering
@@ -444,7 +446,7 @@ L'utilizzo di Batch Normalization è stato introdotto per contrastare la nota di
 
 \subsection{Generatore}
 \label{generator}
-Il generatore aggiunge in testa alla stuttura del decoder un layer denso che mappa un input randomico in una codifica di dominio, come mostrato in figura~\ref{fig:generator}. All'interno della sottorete convoluzionale è presente l'aggiunta di Batch Normalization, Leaky Relu al posto di ReLU per l'attivazione dei livelli convoluzionali.
+Il generatore aggiunge in testa alla struttura del decoder un layer denso che mappa un input randomico in una codifica di dominio, come mostrato in figura~\ref{fig:generator}. All'interno della sotto-rete convoluzionale è presente l'aggiunta di Batch Normalization, Leaky Relu al posto di ReLU per l'attivazione dei livelli convoluzionali.
 
 Il Generator laye è formato da un generatore di rumore randomico di distribuzione gaussiana, la quale è stata provata come ottimale nel caso di GAN da~\cite{gaussian}. Tale distribuzione, di dimensione fissata, mima un possibile dominio codificato da encoder come descritto in sezione~\ref{encoder}. A partire da tale rumore è possibile per il decoder realizzare una codifica di dominio via via più realistica con l'avanzare delle epoche di training della GAN.
 
@@ -457,7 +459,7 @@ Il Generator laye è formato da un generatore di rumore randomico di distribuzio
 
 \subsection{Discriminatore}
 \label{discriminator}
-Il discriminatore implementa in uscita un layer denso che esegua regressione logistica sui domini codificati dalla sottorete encoder. ( Figura~\ref{fig:discriminator} ). Tale regressione viene attuata tramite un layer denso che effettua classificazione tra domini reali, codificati durante la fase di encoding attuata in~\ref{encoder}. La funzione di attivazione utilizzata all'interno del regressore logistico è la funzione sigmoide come descritto all'interno della sezione~\ref{classificatorenninterno}. Con il passare delle epoche di training, il discriminatore è sempre più in grado di distinguere domini reali da domini sintetici, forniti dal generatore. Tramite un insieme di tecniche sperimentali, è possibile evitare che il discriminatore prevalga sul generatore durante il training, mantenendo un equilibrio tra le due parti. 
+Il discriminatore implementa in uscita un layer denso che esegua regressione logistica sui domini codificati dalla sotto-rete encoder. ( Figura~\ref{fig:discriminator} ). Tale regressione viene attuata tramite un layer denso che effettua classificazione tra domini reali, codificati durante la fase di encoding attuata in~\ref{encoder}. La funzione di attivazione utilizzata all'interno del regressore logistico è la funzione sigmoidea come descritto all'interno della sezione~\ref{classificatorenninterno}. Con il passare delle epoche di training, il discriminatore è sempre più in grado di distinguere domini reali da domini sintetici, forniti dal generatore. Tramite un insieme di tecniche sperimentali, è possibile evitare che il discriminatore prevalga sul generatore durante il training, mantenendo un equilibrio tra le due parti. 
 
 \begin{figure}[htbp]
     \centering
@@ -469,7 +471,7 @@ Il discriminatore implementa in uscita un layer denso che esegua regressione log
 \subsection{Funzionamento}
 Durante la fase di training della GAN, il discriminatore ed il generatore vengono allenati in maniera concorrente. Per ogni step di training si estrae un subset fissato di domini dal dataset di domini reali e si genera un tensore di rumore generato randomicamente di lunghezza equivalente. Tale tensore viene dato in ingresso al generatore che restituisce una serie di domini sintetici codificati.
 
-Successivamente il discriminatore viene allenato a distinguere i due subset estratti precedentemente, grazie ad un vettore di \textit{target} creato ad hoc, che identifica domini reali dai sintetici.
+Successivamente il discriminatore viene allenato a distinguere i due subset estratti precedentemente, grazie ad un vettore di target creato ad hoc, che identifica domini reali dai sintetici.
 
 In ultima fase, i pesi del discriminatore vengono congelati e l'intero impianto della GAN viene allenato fornendo un nuovo tensore di rumore randomico ed un vettore di target ingannevoli, i quali identificano tutti i domini generati sinteticamente come reali. L'output di tale procedura è la funzione di loss del discriminatore, il quale non aggiorna la sua matrice di pesi durante questa fase. Tale funzione di loss indica quindi quanto "reali" sono stati i domini creati dal generatore.
 

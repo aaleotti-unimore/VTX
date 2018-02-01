@@ -66,7 +66,7 @@ Il Machine Learning è impiegato principalmente per la risoluzione di tre tipolo
 
 \begin{itemize}
 \item \textbf{classificazione}, ovvero identificare la classe di un nuovo obiettivo sulla base di conoscenza estratta da un training set. I classificatori estraggono dal dataset un modello che utilizzano poi per classificare le nuove istanze. Se una singola istanza può essere espressa come un vettore in uno spazio numerico $R^n$ il problema della classificazione può essere ricondotto alla ricerca delle superfici chiuse che delimitano le classi. Esistono molte tecniche per costruire un classificatore, in questa tesi si tratterà in particolare l'uso di Alberi di Decisione. Si tratta di un classificatore implementato attraverso una struttura ad albero; è quindi costituito da una struttura gerarchica che applica una strategia “dividi et impera” per classificare i dati. Data la sua struttura di albero può essere facilmente convertito in un set di regole, permettendo così di estrarre conoscenza. La ricerca delle curve che delimitano le classi viene ricondotta alla ricerca ricorsiva di punti di split.
-Ogni nodo interno rappresenta un vincolo che porta a una scelta determinando uno split, e ogni foglia indica la classe di appartenenza dell’elemento. Gli alberi sono tipicamente costruiti con strategie Greedy, che individuano di volta in volta il punto più conveniente in cui effettuare lo split. (Figura~\ref{fig:alberoastratto}).
+Ogni nodo interno rappresenta un vincolo che porta a una scelta determinando uno split, e ogni foglia indica la classe di appartenenza dell'elemento. Gli alberi sono tipicamente costruiti con strategie Greedy, che individuano di volta in volta il punto più conveniente in cui effettuare lo split. (Figura~\ref{fig:alberoastratto}).
 
 \begin{figure}[!h]
 	\centering
@@ -86,7 +86,7 @@ Ad esempio, con l'apprendimento supervisionato, si può fornire ad un algoritmo 
 Un comune uso dell'apprendimento supervisionato è l'uso di dati storici per predire probabili eventi futuri. Può usare informazioni statistiche sull'andamento del mercato azionario ed anticipare fluttuazioni future o utilizzato per filtrare email di spam. E' possibile utilizzare foto di cani etichettate per identificare la razza di un cane unicamente dalla sua foto.
 
 \subsection{Apprendimento non Supervisionato}
-Nell'apprendimento non supervisionato, i dati non sono etichettati. L'algoritmo viene lasciato libero di rilevare affinità tra i dati di input. Siccome i dati non classificati sono molto piu comuni che grandi quantità di dati etichettati, i metodi di Machine Learning che facilitano l'apprendimento non supervisionato sono considerabili come molto pregiati.
+Nell'apprendimento non supervisionato, i dati non sono etichettati. L'algoritmo viene lasciato libero di rilevare affinità tra i dati di input. Siccome i dati non classificati sono molto più comuni che grandi quantità di dati etichettati, i metodi di Machine Learning che facilitano l'apprendimento non supervisionato sono considerabili come molto pregiati.
 
 L'obiettivo dell'apprendimento non supervisionato può essere diretto, come la ricerca di pattern nascosti all'interno dei dati, ma può anche avere l'obiettivo di \textit{feature learning}: l'apprendimento di caratteristiche particolari che permette al sistema di scoprire automaticamente le rappresentazioni necessarie a classificare i dati grezzi.
 
@@ -95,7 +95,7 @@ L'apprendimento non supervisionato viene comunemente utilizzato per dati transaz
 L'apprendimento non supervisionato, grazie alla mancanza di un target da raggiungere, è in grado di analizzare dati che   apparentemente non mostrano relazioni ed estrarne dati significativi. Viene spesso usato per eseguire \textit{anomaly detection}, come l'utilizzo fraudolento di carte di credito; oppure è possibile eseguire classificazione di immagini (come nel precedente caso di razze canine) in maniera autonoma partendo da immagini non categorizzate.
 
 \subsection{Apprendimento Semi Supervisionato}
-Posto a metà tra il supervisonato e il non-supervisionato, l'apprendimento parzialmente supervisionato si basa su dati misti in cui una minima parte è già etichettata e una larghissima maggioranza è costituita da dati non etichettati.  Questo approccio viene utilizzato per migliorare le previsioni fatte dalla macchina sui dati non etichettati e richiede, normalmente, l'intervento di un analista. L'approccio è principalmente usato nei problemi di classificazione e di raggruppamento o nella descrizione delle relazioni causa-effetto tra le variabili.
+Posto a metà tra il supervisionato e il non-supervisionato, l'apprendimento parzialmente supervisionato si basa su dati misti in cui una minima parte è già etichettata e una larghissima maggioranza è costituita da dati non etichettati.  Questo approccio viene utilizzato per migliorare le previsioni fatte dalla macchina sui dati non etichettati e richiede, normalmente, l'intervento di un analista. L'approccio è principalmente usato nei problemi di classificazione e di raggruppamento o nella descrizione delle relazioni causa-effetto tra le variabili.
 
 \subsection{Apprendimento per Rinforzo}
 L'apprendimento per rinforzo (Reinforcement learning) è una tecnica di apprendimento automatico che punta a realizzare sistemi in grado di apprendere ed adattarsi ai cambiamenti dell'ambiente in cui sono immersi attraverso la distribuzione di una “ricompensa” detta rinforzo, data dalla valutazione delle prestazioni.
@@ -122,7 +122,7 @@ di rappresentazione dei dati; infatti il deep learning odierno comprende general
 	\caption{Schema generico di una rete Neurale \label{nn}}
 \end{figure} 
  
-All'interno del deep learning, queste rappresentazioni a più strati sono quasi unicamente apprese attraverso modelli definiti \textbf{reti neurali}, strutturati letteralmente in strati sovrapposti gli uni agli altri. Il termine "rete neurale" deriva dal campo della neurobiologia, tuttavia non si tratta di veri e propri modelli del funzionamento del cervello umano.
+All'interno del deep learning, queste rappresentazioni a più strati sono quasi unicamente apprese attraverso modelli definiti \textit{reti neurali}, strutturati letteralmente in strati sovrapposti gli uni agli altri. Il termine "rete neurale" deriva dal campo della neurobiologia, tuttavia non si tratta di veri e propri modelli del funzionamento del cervello umano.
 
 \begin{figure}[!bp]
 	\centering
@@ -131,7 +131,7 @@ All'interno del deep learning, queste rappresentazioni a più strati sono quasi 
 	~\cite{chollet2017deep} \label{fig:neuralnetwork} }
 \end{figure}
 
-Come è possibile vedere in figura~\ref{fig:neuralnetwork}, la rete neurale trasforma l'immagine di una cifra numerica disegnata a mano in una rappresentazione via via più informativa riguardo il risultato finale. Si può considerare il deep leraning come una operazione di distillazione di informazioni composta da più fasi in cui i dati vengono filtrati in maniera sempre più fine.
+Come è possibile vedere in figura~\ref{fig:neuralnetwork}, la rete neurale trasforma l'immagine di una cifra numerica disegnata a mano in una rappresentazione via via più informativa riguardo il risultato finale. Si può considerare il deep learning come una operazione di distillazione di informazioni composta da più fasi in cui i dati vengono filtrati in maniera sempre più fine.
 
 \subsection{Funzionamento Reti Neurali}
 Le informazioni specifiche riguardo quali operazioni un livello apporta ai dati di input sono immagazzinate all'interno degli strati stessi, nella matrice dei "pesi". La trasformazione implementata da un livello è parametrizzata da tali pesi. Generalmente la fase di apprendimento consiste nel trovare un set di valori per i quali i pesi di tutti gli strati che compongono una rete neurale mappino correttamente i dati di esempio ai loro target associati.
@@ -141,7 +141,7 @@ Per superare tale vincolo, la fase di apprendimento di una rete neurale è compo
 
 Il meccanismo principale nel deep learning è l'uso di questo punteggio come segnale di \textit{feedback} per aggiustare il valore dei pesi in maniera da diminuire il valore del punteggio di loss per l'esempio analizzato. Questo aggiustamento è compito dell'\textit{ottimizzatore}, il quale implementa l'algoritmo di \textit{backpropagation} che attua la modifica dei pesi durante la fase di apprendimento.
 
-Inizialmente i pesi della rete neurale sono assegnati a valori randomici, causando per le prime fasi di apprendimento un valore di loss particolarmente alto. Via via che le fasi di apprendimento mostrano diversi esempi alla rete i pesi vengono aggiustati di una piccola parte nella direzione corretta, causando una decrescita nel punteggo di loss. Questo \textit{training loop} viene ripetuto per un numero sufficiente di volte fino al raggiungimento di un valore minimo di loss e alla produzione di output il più possibile simile a quello desiderato. In figura~\ref{fig:neuralloss} è mostrato uno schema di alto livello.
+Inizialmente i pesi della rete neurale sono assegnati a valori randomici, causando per le prime fasi di apprendimento un valore di loss particolarmente alto. Via via che le fasi di apprendimento mostrano diversi esempi alla rete i pesi vengono aggiustati di una piccola parte nella direzione corretta, causando una decrescita nel punteggio di loss. Questo \textit{training loop} viene ripetuto per un numero sufficiente di volte fino al raggiungimento di un valore minimo di loss e alla produzione di output il più possibile simile a quello desiderato. In figura~\ref{fig:neuralloss} è mostrato uno schema di alto livello.
 
 \begin{figure}[!bp]
 	\centering
@@ -165,7 +165,7 @@ Una differente visione dei problemi di apprendimento antagonista è emersa nel c
 
 L'area dello spam filtering ha richiesto sforzi fondamentali da parte degli esperti in sicurezza; la costante ricerca di tecniche di evasione dei filtri anti-spam ha portato a studi estensivi riguardo vincoli e tecniche robuste di filtering~\cite{dalvi}. 
 
-Il Machine Learning può fornire soluzione a difficili problemi di sicurezza di rete, compresi filtri anti-spam, rilevazione di vari tipologie di attacchi contro server e host, rilevazione di pagine web deliberatamente modificate per manipolare i motori di ricerca sfruttandone le vulnerabilità. Tutte queste problematiche riguardano la manipolazione di grandi quantità di dati in un ambiente altamente variabile e il bisogno di tecniche di classificazione veloci ed accurate. L'esistenza di antagonisti che possono trarre profitto in queste aree complica l'applicazione di Machine Learning e crea una "corsa agli armamenti" tra chi sviluppa classificatori sempre piu robusti e antagonisti che cercano di manipolare tali classificatori. Fortunatamente ogni area di applicazione fornisce vincoli riguardo le azioni antagoniste che rendono la classificazione fattibile. 
+Il Machine Learning può fornire soluzione a difficili problemi di sicurezza di rete, compresi filtri anti-spam, rilevazione di vari tipologie di attacchi contro server e host, rilevazione di pagine web deliberatamente modificate per manipolare i motori di ricerca sfruttandone le vulnerabilità. Tutte queste problematiche riguardano la manipolazione di grandi quantità di dati in un ambiente altamente variabile e il bisogno di tecniche di classificazione veloci ed accurate. L'esistenza di antagonisti che possono trarre profitto in queste aree complica l'applicazione di Machine Learning e crea una "corsa agli armamenti" tra chi sviluppa classificatori sempre più robusti e antagonisti che cercano di manipolare tali classificatori. Fortunatamente ogni area di applicazione fornisce vincoli riguardo le azioni antagoniste che rendono la classificazione fattibile. 
 
 \begin{figure}[!bp]
 	\centering
@@ -178,7 +178,7 @@ Il Machine Learning può fornire soluzione a difficili problemi di sicurezza di 
 \newpage
 \section{Generative Deep Learning}
 \label{sec:gan}
-I recenti risultati ottenuti nell'ambito del Machine Learning e del deep learning hanno permesso di ottenere algoritmi e architetture in grado di modellare complesse strutture di dati come immagini, suoni e testo. Questi avanzamenti sono stati incentrati principalmente in algoritmi di apprendimento supervisionato in grado di stimare una distribuzione di probabilità $p(x|y)$ dato un input ed un output di target. Tali modelli vengono definiti come modelli discriminativi o predditivi.
+I recenti risultati ottenuti nell'ambito del Machine Learning e del deep learning hanno permesso di ottenere algoritmi e architetture in grado di modellare complesse strutture di dati come immagini, suoni e testo. Questi avanzamenti sono stati incentrati principalmente in algoritmi di apprendimento supervisionato in grado di stimare una distribuzione di probabilità $p(x|y)$ dato un input ed un output di target. Tali modelli vengono definiti come modelli discriminativi o predittivi.
 
 I modelli Generativi, al contrario, tentano di apprendere una funzione $p(y,x)$ nota come \textit{probabilità congiunta}. Tali funzioni di probabilità sono correlate secondo la relazione: 
 \[p(x,y)=p(x)p(x|y)\]
@@ -200,13 +200,13 @@ Queste due componenti possono essere connesse assieme, a formare un modello end-
 
 Una volta che il modello è stato appreso, decoder ed encoder possono essere utilizzati indipendentemente, ad esempio per generare nuovi campioni a partire dallo spazio latente.
 
-\subsection{Generative Adversarial Networks}
+\subsection{Generative Adversarial Network}
 La naturale evoluzione delle architetture Autoencoder è la Generative Adversarial Network in cui encoder e decoder vengono rimodellati due reti :discriminatore e generatore. 
 
 Con l'obiettivo di apprendere la distribuzione del \textit{generatore} $p_g$ rispetto ai dati $\bm{x}$, si definisce precedentemente una variabile di rumore input  $p_{\b{z}}(\bm{z})$, e successivamente si rappresenta una mappatura dello spazio dei dati come $G(\bm{z}; \theta_g)$, dove $G$ è una funzione differenziabile rappresentata da una rete neurale a parametri $\theta_g$. Si definisce inoltre una seconda rete neurale \textit{discriminatore}
  $D(\bm{x}; \theta_d)$ che emette un singolo scalare. $D(\bm{x})$ rappresenta la probabilità che tale $\bm{x}$ provenga dai dati reali piuttosto che da $p_g$. 
 A tal scopo si allena $D$ per massimizzare la probabilità di assegnare l'etichetta corretta sia ai campioni di allenamento che a quelli provenienti da $G$.
-Simultaneamente si allema $G$ per minimizzare $\log(1-D(G(\bm{z})))$:
+Simultaneamente si allena $G$ per minimizzare $\log(1-D(G(\bm{z})))$:
 
 In altri termini, $D$ e $G$ eseguono una partita a due giocatori di minimo-massimo con funzione di valore $V(G, D)$: 
 
@@ -220,7 +220,7 @@ In pratica è necessario implementare la partita in maniera iterativa. L'ottimiz
 In pratica l'equazione~~\ref{eq:minimaxgame-definition} può non fornire un gradiente sufficiente per permettere a $G$ di apprendere. Nelle fasi iniziali dove $G$ è debole, $D$ può rifiutare i campioni con buona certezza in quanto chiaramente differenti dai dati di training. In tal caso, $\log ( 1- D(G(\bm{z})))$ satura. Piuttosto che allenare $G$ al fine di minimizzare $\log (1 - D(G(\bm{z})))$ si allena per massimizzare $\log D(G(\bm{z}))$. 
 Questa funzione obiettivo risulta nello stesso punto fisso che forma la dinamica di $G$ and $D$ ma fornisce un gradiente molto più stabile nelle fasi iniziali.
 
-In figura~\ref{fig:intuition} viene mostrata la fase di apprendimento di una GAN. Tale architettura è allenata aggiornando simultaneamente il gradiente della distribuzione discriminativa ($D$, linea blu tratteggiata) in modo che discrimini tra campioni della distribuzione generatrice di dati (linea nera tratteggata) $p_{\bm{x}}$ e i campioni provenienti dalla distribuzione del generatore $p_g$ (G) (linea verde).
+In figura~\ref{fig:intuition} viene mostrata la fase di apprendimento di una GAN. Tale architettura è allenata aggiornando simultaneamente il gradiente della distribuzione discriminativa ($D$, linea blu tratteggiata) in modo che discrimini tra campioni della distribuzione generatrice di dati (linea nera tratteggiata) $p_{\bm{x}}$ e i campioni provenienti dalla distribuzione del generatore $p_g$ (G) (linea verde).
 La linea nera orizzontale da cui $\bm{z}$ è campionato è in questo caso uniforme; mentre la linea nera superiore è parte del dominio di $\bm{x}$. Le frecce indicano come la mappatura $\bm{x}=G(\bm{z})$ imponga una distribuzione non uniforme $p_g$ sui campioni trasformati. $G$ si contrae in regioni ad alta densità ed espande in regioni a bassa densità $p_g$. 
 Di seguito la descrizione di quanto mostrato in figura~\ref{fig:intuition}
 \begin{itemize}
@@ -277,7 +277,7 @@ Se $G$ e $D$ hanno sufficiente capacità e ad ogni step dell'algoritmo~\ref{alg:
 allora $p_g$ convergerà a $p_\text{data}$.
 
 \subsubsection{Vantaggi e Svantaggi}
-Questo framework moderno presenta vantaggie  e svantaggi relativi ai precedenti framework. Gli svantaggi primariamente sono che non esiste una esplicita rappresentazione di $p_g(\bm{x})$, e che $D$ deve essere ben sincronizzato con $G$ durante la fase di training (in particolare, $G$ non deve essere allenato troppo senza aggiornare $D$, in modo da evitare uno scenario degenerativo in cui $G$ collassa troppi valori di $\mathbf{z}$ verso lo stesso valore di $\mathbf{x}$ per ottenere abbastanza diversità da modellare $p_\text{data}$). 
+Questo framework moderno presenta vantaggi  e svantaggi relativi ai precedenti framework. Gli svantaggi primariamente sono che non esiste una esplicita rappresentazione di $p_g(\bm{x})$, e che $D$ deve essere ben sincronizzato con $G$ durante la fase di training (in particolare, $G$ non deve essere allenato troppo senza aggiornare $D$, in modo da evitare uno scenario degenerativo in cui $G$ collassa troppi valori di $\mathbf{z}$ verso lo stesso valore di $\mathbf{x}$ per ottenere abbastanza diversità da modellare $p_\text{data}$). 
 I vantaggi rispetto a modelli alternativi come le Catene di Markov sono principalmente di tipo computazionale. I modelli antagonisti possono trarre un vantaggio statistico non dovendo aggiornare la rete generatrice con campioni di dati ma solamente tramite il flusso di gradiente che attraversa il discriminatore. Questo significa che le componenti dell'input non sono copiate direttamente nei parametri del generatore. Un ulteriore vantaggio delle reti antagoniste è la capacità di rappresentare distribuzioni molto nette mentre metodi alternativi basati su Catene di Markov richiedono che la distribuzione sia meno distinta in modo da garantire alle catene la capacità di mischiare le modalità.
 
 \begin{algorithm}[p]
@@ -286,7 +286,7 @@ il numero di passi applicati al discriminatore, $k$, è un iperparametro della r
 }
 \begin{algorithmic}
 \label{alg:AGF}
-\FOR{numero di iterazioni di trainingons}
+\FOR{numero di iterazioni di training}
   \FOR{$k$ passi}
     \STATE{$\bullet$ Campionare un mini-batch di $m$ campioni generati da rumore $\{ \bm{z}^{(1)}, \dots, \bm{z}^{(m)} \}$ dal rumore precedente $p_g(\bm{z})$.}
     \STATE{$\bullet$ Campionare un mini-batch di $m$ esempi $\{ \bm{x}^{(1)}, \dots, \bm{x}^{(m)} \}$ dalla distribuzione di dati reali $p_\text{data}(\bm{x})$.}
