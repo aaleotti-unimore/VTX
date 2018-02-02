@@ -43,7 +43,7 @@ for i in range(min_subtr, len(str(domain_name))):
 return maxl / int(len(str(domain_name)))
 \end{lstlisting}
 
-\item \textbf{NormalityScoreExtractor} estrae il punteggio di normalità degli n-grammi. A differenza del lavoro propsoto in \cite{Schiavoni2014}, si è scelto di estrarre il \textit{normality score} per gli n-grammi di lunghezza 1,2,3,4,5 caratteri, in quanto in fase sperimentale hanno dimostrato di fornire un apporto significativo alla precisione del classificatore. \`E definito dal seguente algoritmo, dove il valore $self.n$ identifica la lunghezza dell'n-gramma da valutare. L'algoritmo separa in n-grammi di dimensione $n$ la stringa e per ogni tupla di caratteri $s$, somma il numero di occorrenze di tale tupla all'interno del vocabolario inglese, ritornando il rapporto tra il valore complessivo delle occorenze delle tuple nel vocabolario inglese e la lunghezza della stringa meno $n+1$. Listato \ref{NormalityScoreExtractor}.
+\item \textbf{NormalityScoreExtractor} estrae il punteggio di normalità degli n-grammi. A differenza del lavoro propsoto in \cite{Schiavoni2014}, si è scelto di estrarre il \textit{normality score} per gli n-grammi di lunghezza 1,2,3,4,5 caratteri, in quanto in fase sperimentale hanno dimostrato di fornire un apporto significativo alla precisione del classificatore. \`E definito dal seguente algoritmo, dove il valore $self.n$ identifica la lunghezza dell'n-gramma da valutare. L'algoritmo separa in n-grammi di dimensione $n$ la stringa e per ogni tupla di caratteri $s$, somma il numero di occorrenze di tale tupla all'interno del vocabolario inglese, ritornando il rapporto tra il valore complessivo delle occorrenze delle tuple nel vocabolario inglese e la lunghezza della stringa meno $n+1$. Listato \ref{NormalityScoreExtractor}.
 
 \begin{lstlisting}[language=Python, caption={NormalityScoreExtractor}, label={NormalityScoreExtractor}]
 if len(str(domain_name)) < self.n:
@@ -277,7 +277,7 @@ Per completezza di seguito è elencato il codice essenziale che compone l'encode
 
 \subsection{Decoder}
 \label{imp:autoe:dec}
-La composizione del decoder è pressochè identica a quella mostrata dall'encoder e ricalca il progetto mostrato in sezione \ref{decoder}. Di seguito sono elencati gli iperparametri che compongono il modello decoder. Si può notare come siano identici a quelli mostrati dall'encoder a differenza del \lstinline!dropout_value!, il quale gioca un ruolo maggiore nel pilotare l'equilibrio tra i due modelli.
+La composizione del decoder è pressoché identica a quella mostrata dall'encoder e ricalca il progetto mostrato in sezione \ref{decoder}. Di seguito sono elencati gli iperparametri che compongono il modello decoder. Si può notare come siano identici a quelli mostrati dall'encoder a differenza del \lstinline!dropout_value!, il quale gioca un ruolo maggiore nel pilotare l'equilibrio tra i due modelli.
 
 \lstinputlisting[language=Python, caption={Iperarametri Decoder.},label={lst:par_dec},lastline=10]{code/decoder.py}
 
@@ -288,7 +288,7 @@ Per completezza si riporta l'implementazione del decoder all'interno del listato
 
 
 \subsection{Training}
-Durante la fase di training si è realizzato il modello generale che compone l'autoencoder, sottoforma di modello sequenziale Keras \lstinline!keras.models.Sequential!. Tale modello è composto da due livelli: Encoder e Decoder
+Durante la fase di training si è realizzato il modello generale che compone l'autoencoder, sotto forma di modello sequenziale Keras \lstinline!keras.models.Sequential!. Tale modello è composto da due livelli: Encoder e Decoder
 Il modello è compilato con l'uso dell'ottimizzatore \textit{adam} e \textit{Categorical Cross Entropy} come funzione di \textit{loss}. Tale scelta è dovuta alla natura dell'autoencoder, al quale viene dato come target per il training lo stesso dataset da input al fine di mimare il più correttamente possibile l'input iniziale passando per una codifica a minore dimensione.
 
 \lstinputlisting[language={},basicstyle=\ttfamily\footnotesize,caption={Composizione di massima dell'autoencoder},label={lst:aenc}]{code/autoencoder.txt}
@@ -357,7 +357,7 @@ Tali valori sono il frutto di una fase sperimentale molto lunga, durante la qual
 Entrambi i sottosistemi sono stati compilati con l'uso di \textit{binary crossentropy} come funzione di loss, in quanto l'output di entrambi è rappresentato dal layer denso, in uscita dal discriminatore.
 
 Nella fase successiva il dataset è stato suddiviso secondo la dimensione impostata dal valore di \lstinline!batch_size!, in modo da poter garantire una passata completa a tutto il dataset per ogni epoca di training.
-Per ogni epoca e per ogni minibatch del dataset si è proceduto con il seguente metodo: 
+Per ogni epoca e per ogni mini-batch del dataset si è proceduto con il seguente metodo: 
 \begin{itemize}
 	\item Si genera un vettore di valori randomici, di dimensione identica all'input accettato dal Generatore. 
 	\item A partire da tale vettore si sono generati domini sintetici.

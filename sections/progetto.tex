@@ -284,7 +284,7 @@ Il punto di partenza per il lavoro di progettazione di una \textit{GAN} è stato
 \item funzione \textbf{Decoder} $r = g(h)$ in grado di ricostruire l'input a partire dalla rappresentazione codificata. 
 \end{itemize}
 
-\begin{figure}[htb]
+\begin{figure}[!bp]
     \centering
 	\includegraphics[width=\columnwidth]{figures/autoencoder_general.tex}
 	\caption{Struttura generica di un autoencoder, il quale mappa l'input $x$ in un output $r$ attraverso una rappresentazione codificata $h$.
@@ -323,7 +323,7 @@ In figura~\ref{fig:autoencoder1} è mostrata la struttura di massima dell'autoen
 \label{encoder}
 La composizione interna dell'\textit{encoder} è formata da una Rete Convoluzionale accoppiata ad una LSTM. A differenza del lavoro proposto in~\cite{deepdga}, si è voluto mantenere la composizione dell'autoencoder il più semplice possibile, in quanto la trasformazione in \textit{GAN} ed il suo \textit{tuning} in fase di \textit{training} è notoriamente difficoltoso in presenza di molti parametri. In Figura~\ref{fig:encoder} viene mostrata la struttura semplificata dell'encoder.
 
-\begin{figure}[!bp]
+\begin{figure}[!p]
     \centering
 	\input{figures/encoder.tex}
 	\caption{Struttura dell'\textit{encoder}.
@@ -333,7 +333,7 @@ La composizione interna dell'\textit{encoder} è formata da una Rete Convoluzion
 \subsection{Rete Convoluzionale}
 Una Rete Convoluzionale è un modello di rete neurale usato generalmente per classificazione di immagini, in alternativa ai layer densamente connessi. Il vantaggio nell'uso delle reti convoluzionali è la capacità di quest'ultime di memorizzare pattern locali all'interno dello spazio di input mentre layer densamente connessi sono in grado di riconoscere solo pattern globali. Nel caso in esame si sono applicati due filtri convoluzionali in parallelo, con l'obiettivo di cogliere pattern locali all'interno dei domini, ovvero n-grammi significativi da poter replicare. Generalmente i filtri convoluzionali lavorano su di un tensore 3-dimensionale, chiamato \textit{feature map}, avente due assi spaziali ("altezza" e "larghezza") ed un asse di profondità; nel caso di riconoscimento di immagini tali assi corrispondono alle dimensioni dell'immagine di input ed al numero dei canali colore. Nel caso in esame si sono trattati di input tridimensionali ad altezza 1, larghezza equivalente alla dimensione massima dei domini nel dataset e canale di dimensione 1. L'operazione di convoluzione estrae frammenti dalla \textit{feature map} di input ed applica una trasformazione a tutti i frammenti, generando una \textit{output feature map} la quale è ancora in forma di tensore 3D, di dimensione ridotta, contenente sull'asse della profondità i valori dei \textit{filtri}. I filtri codificano determinati aspetti caratteristici dell'input, analizzando l'input in una "finestra" di dimensione fissata che scorre lungo la sequenza; ad ogni passo il filtro estrae il sotto-tensore 3-dimensionale per trasformarlo(tramite un prodotto tensore con una matrice di pesi (chiamato \textit{convolutional kernel}) in un vettore 1D di dimensione fissata. L'insieme di vettori vengono riassemblati in un tensore 3D con altezza e larghezza identiche alle precedenti e l'inseme di features come terzo asse. In figura~\ref{fig:cnn} è possibile vedere un diagramma del funzionamento di una rete convoluzionale.
 
-\begin{figure}[!htbp]
+\begin{figure}[!bp]
     \centering
 	\includegraphics[width=\columnwidth]{figures/CNN.png}
 	\caption{Funzionamento di una Convolutional Neural Network,\textit{ fonte}~\cite{fig:cnnfonte}.
@@ -348,7 +348,7 @@ Parte integrante di una rete convoluzionale è il livello di \textit{pooling}, i
 Il layer aggiuntivo di \textit{concatenazione} permette di formare un unico vettore mono-dimensionale in grado di fornire le caratteristiche principali dei domini analizzati.
 
 \subsection{Long Short-term Memory}
-Seconda fase della sottorete Encoder è la presenza di una Long Short-term Memory Network \textit{(abbr LSTM)}~\cite{LSTM}. Si tratta di un modello di \textit{Recurrent Neral Network (abbr. RNN)} particolare, in grado di apprendere dipendenze a lungo termine all'interno di una sequenza temporale che nasce con l'intento di superare le principale problematiche delle RNN semplici, le quali non sono in grado di gestire dipendenze a lungo termine all'interno di una sequenza temporale. Le celle LSTM consistono di uno stato che può essere letto, scritto e resettato attraverso una serie di \textit{gates}. Siano dati $W$ e $U$ \textit{layer} di una cella LSTM corrispondenti a matrici di pesi per l'input $x$ ed emissione $h$, mentre $b$ vettore di bias. Lo stato $c$ di una cella LSTM ha connessioni periodiche che permettono ad ogni cella di mantenere stato attraverso gli step temporali:
+Seconda fase della sottorete Encoder è la presenza di una Long Short-term Memory Network \textit{(abbr LSTM)}~\cite{LSTM}. Si tratta di un modello di \textit{Recurrent Neural Network (abbr. RNN)} particolare, in grado di apprendere dipendenze a lungo termine all'interno di una sequenza temporale che nasce con l'intento di superare le principale problematiche delle RNN semplici, le quali non sono in grado di gestire dipendenze a lungo termine all'interno di una sequenza temporale. Le celle LSTM consistono di uno stato che può essere letto, scritto e resettato attraverso una serie di \textit{gates}. Siano dati $W$ e $U$ \textit{layer} di una cella LSTM corrispondenti a matrici di pesi per l'input $x$ ed emissione $h$, mentre $b$ vettore di bias. Lo stato $c$ di una cella LSTM ha connessioni periodiche che permettono ad ogni cella di mantenere stato attraverso gli step temporali:
 
 \[c_t = f \cdot c_{t-1} + i_t \cdot g_t\]
 
@@ -357,7 +357,7 @@ dove $\cdot$ denota moltiplicazione tra elementi. Gli stati possono essere aggio
 \[g_t = tanh(W^gx_t + U^gh_{t-1}+b^g)\]
 
 
-attraverso i gate di inpu $i$, in grado di moltiplicare l'aggiornamento di stato di un numero che varia da 0 ad 1. Alla stessa maniera il \textit{forget gate} $f$ modula la connessione \textit{self-recurrent} tra ogni cella di un numero compreso tra 0 ed 1. In tal maniera è possibile ignorare l'input e mantenere lo stato, oppure sovrascrivere lo stato corrente o resettarlo a 0.
+attraverso i gate di input $i$, in grado di moltiplicare l'aggiornamento di stato di un numero che varia da 0 ad 1. Alla stessa maniera il \textit{forget gate} $f$ modula la connessione \textit{self-recurrent} tra ogni cella di un numero compreso tra 0 ed 1. In tal maniera è possibile ignorare l'input e mantenere lo stato, oppure sovrascrivere lo stato corrente o resettarlo a 0.
 L'output gate $o$ modula il contributo fornito dallo stato di ogni cella come
 
 \[h_t = o_t \cdot tanh(c_t),\]
@@ -371,17 +371,13 @@ il quale è propagato agli input gate dei livelli successivi. In particolare i g
 
 Il design delle celle LSTM con gate moltiplicativi permette ad una rete neurale di immagazzinare ed accedere allo stato attraverso lunghe sequenze, mitigando le problematiche presenti all'interno delle \textit{RNN} semplici. Nel contesto di questo progetto, lo spazio degli stati è inteso a catturare le combinazioni di tokens (n-grammi) che sono importanti per modellare nomi di dominio realistici. In figura~\ref{fig:lstm} è indicata la struttura di una cella LSTM.
 
-\begin{figure}[htb]
+\begin{figure}[!bp]
     \centering
 	\includegraphics[width=\columnwidth]{figures/LSTM3-chain.png}
 	\caption{Struttura di una cella LSTM. \textit{fonte:}~\cite{lstmblog}.
 \label{fig:lstm}}
 \end{figure}
 
-\subsection{Output Encoder}
-L'output in uscita da questo encoder è in forma di un tensore monodimensionale, di dimensione fissata, contenente le caratteristiche principali che compongono un nome di dominio.
-
-\todo{ampliare}
 
 \newpage
 \section{Decoder}
@@ -416,7 +412,7 @@ Tramite questa funzione è stato possibile mettere a a punto in fase sperimental
 \newpage
 \section{Generative Adversarial Network}
 \label{ganintro}
-La \textit{Generative Adversarial Network (abbr. GAN)} èun modello di rete neurale formata da due reti che competono l'una contro l'altra: un \textit{generatore} che cerca di creare dati sintetici basati sulla vera distribuzione, con l'aggiunta di rumore in input ed un \textit{discriminatore}, che riceve un campione e deve predire se appartiene al set reale o sintetico. Questo processo continua in forma di competizione tra le due reti, nella quale il discriminatore apprende in maniera sempre più accurata a distinguere i campioni ed il generatore apprende la costruzione di dati sintetici sempre più realistici. Notevole è la struttura della GAN, la quale rende particolarmente difficoltosa la fase di \textit{training}: a differenza di reti neurali più semplici, non è possibile fissare un minimo da ottimizzare. Normalmente si attua una di discesa del gradiente, la quale fornisce l'ottimo per la fase di training, mentre nel caso di GAN, ogni passo effettuato durante la discesa del gradiente causa un cambiamento nella conformazione superficie di discesa. La composizione della GAN fa si che sia necessario invece trovare un equilibrio tra le due forze in gioco, impersonate da discriminatore e generatore. In figura~\ref{fig:gan} si può vedere una struttura di massima di una GAN.
+La \textit{Generative Adversarial Network (abbr. GAN)} è un modello di rete neurale formata da due reti che competono l'una contro l'altra: un \textit{generatore} che cerca di creare dati sintetici basati sulla vera distribuzione, con l'aggiunta di rumore in input ed un \textit{discriminatore}, che riceve un campione e deve predire se appartiene al set reale o sintetico. Questo processo continua in forma di competizione tra le due reti, nella quale il discriminatore apprende in maniera sempre più accurata a distinguere i campioni ed il generatore apprende la costruzione di dati sintetici sempre più realistici. Notevole è la struttura della GAN, la quale rende particolarmente difficoltosa la fase di \textit{training}: a differenza di reti neurali più semplici, non è possibile fissare un minimo da ottimizzare. Normalmente si attua una di discesa del gradiente, la quale fornisce l'ottimo per la fase di training, mentre nel caso di GAN, ogni passo effettuato durante la discesa del gradiente causa un cambiamento nella conformazione superficie di discesa. La composizione della GAN fa si che sia necessario invece trovare un equilibrio tra le due forze in gioco, impersonate da discriminatore e generatore. In figura~\ref{fig:gan} si può vedere una struttura di massima di una GAN.
 
 \begin{figure}[!bp]
     \centering
@@ -434,7 +430,7 @@ Come mostrato in figura~\ref{fig:archgan}, la struttura della GAN in esame è co
 
 Rispetto al lavoro presentato in~\cite{deepdga}, si è deciso di implementare una architettura più semplificata. Come mostrato in~\cite{1606.03498} le GAN sono tipicamente difficoltose da allenare, in quanto l'uso di funzioni di costo porta ad un difficile \textit{tuning} per ottenere un equilibrio di Nash tra le due parti in gioco. La decisione finale è stata presa dopo una serie di test sperimentali, in cui si sono messe a confronto architetture similari comprendenti diverse conformazioni di layers atte ad rendere stabile la fase di training, tra le quali Batch Normalization, come mostrato in~\cite{1502.03167},  l'utilizzo di Leaky Relu~\cite{GANhacks} come layer di attivazione all'interno della sottorete Convoluzionale e Dropout come strumento per evitare il fenomeno di \textit{overfitting}~\cite{dropout}. L'uso di Leaky ReLU come funzione di attivazione è giustificata dalla riduzione della sparsità del gradiente, la quale generalmente causa instabilità.
 
-\begin{figure}[!htb]
+\begin{figure}[!p]
     \centering
 	\includegraphics[width=\columnwidth]{figures/ganarch.tex}
 	\caption{Struttura della GAN evoluta dell'autoencoder.
@@ -450,7 +446,7 @@ Il generatore aggiunge in testa alla struttura del decoder un layer denso che ma
 
 Il Generator laye è formato da un generatore di rumore randomico di distribuzione gaussiana, la quale è stata provata come ottimale nel caso di GAN da~\cite{gaussian}. Tale distribuzione, di dimensione fissata, mima un possibile dominio codificato da encoder come descritto in sezione~\ref{encoder}. A partire da tale rumore è possibile per il decoder realizzare una codifica di dominio via via più realistica con l'avanzare delle epoche di training della GAN.
 
-\begin{figure}[htbp]
+\begin{figure}[!p]
     \centering
 	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{figures/generator.tex}
 	\caption{Struttura del generatore.
@@ -461,9 +457,9 @@ Il Generator laye è formato da un generatore di rumore randomico di distribuzio
 \label{discriminator}
 Il discriminatore implementa in uscita un layer denso che esegua regressione logistica sui domini codificati dalla sotto-rete encoder. ( Figura~\ref{fig:discriminator} ). Tale regressione viene attuata tramite un layer denso che effettua classificazione tra domini reali, codificati durante la fase di encoding attuata in~\ref{encoder}. La funzione di attivazione utilizzata all'interno del regressore logistico è la funzione sigmoidea come descritto all'interno della sezione~\ref{classificatorenninterno}. Con il passare delle epoche di training, il discriminatore è sempre più in grado di distinguere domini reali da domini sintetici, forniti dal generatore. Tramite un insieme di tecniche sperimentali, è possibile evitare che il discriminatore prevalga sul generatore durante il training, mantenendo un equilibrio tra le due parti. 
 
-\begin{figure}[htbp]
+\begin{figure}[!p]
     \centering
-	\includegraphics[width=0.5\columnwidth]{figures/discriminator.tex}
+	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{figures/discriminator.tex}
 	\caption{Struttura del discriminatore.
 \label{fig:discriminator}}
 \end{figure}

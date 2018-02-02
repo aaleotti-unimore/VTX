@@ -53,7 +53,7 @@ Il classificatore è stato inizialmente testato con le famiglie di malware elenc
 \caption{\label{tab:malware}}
 \end{table}
 
-I risultati della predizione sul subset di testing sono mostrati in figure~\ref{fig:repdga},~\ref{fig:repsvc},~\ref{fig:repgnb}. A fianco dell'etichette \textit{legit} e \textit{DGA} è indicato il numero di campioni utilizzati per le due categorie. Come si può notare la performance del Classificatore Machine Learning è molto positiva, mostrando valori pari al 99\% in tutte le categorie di valutazione.  Si ipotizza che tale risultato sia dovuto alla forte differenza linguistica tra domini reali e domini DGA; pertanto il classificatore soffre di un errore praticamente nullo. 
+I risultati della predizione sul subset di testing sono mostrati in figure~\ref{fig:repdga},~\ref{fig:repsvc},~\ref{fig:repgnb}. A fianco dell'etichetta \textit{legit} e \textit{DGA} è indicato il numero di campioni utilizzati per le due categorie. Come si può notare la performance del Classificatore Machine Learning è molto positiva, mostrando valori pari al 99\% in tutte le categorie di valutazione.  Si ipotizza che tale risultato sia dovuto alla forte differenza linguistica tra domini reali e domini DGA; pertanto il classificatore soffre di un errore praticamente nullo. 
 
 \begin{figure}[!bp]
     \centering
@@ -63,7 +63,7 @@ I risultati della predizione sul subset di testing sono mostrati in figure~\ref{
 
 I classificatori SVC e Naive Bayes non hanno mostrato risultati altrettanto eccellenti. In particolare SVC ha dimostrato una recall sui domini reali molto bassa, pari al 30\%; mentre lo stesso valore per i DGA è eccellente. Anche il valore di precision rispetto ai DGA è decisamente inferiore rispetto al Classificatore Machine Learning, infatti si attesta ad un valore del 70\%. Il valore di F-Score, che mostra una media dell'andamento del classificatore, mostra un basso valore per quel che riguarda i domini reali: 45\% ed un valore appena sufficiente per domini DGA: 82\%.
 Il classificatore Naive Bayes si piazza a metà tra i due casi precedenti, mostrando buoni risultati nel caso di DGA (Precision 96\%, Recall 91\%) e risultati intermedi per quel che riguarda i domini reali (Precision 87\% e Recall 93\%). A causa di questi risultati si è deciso di proseguire il resto del lavoro utilizzando Random Forest, dati gli eccellenti risultati nelle condizioni di esperimento più semplici. 
-In figura~\ref{fig:rocdga} è possibile vedere la curva ROC per il cassificatore Random Forest per l'esperimento in questione, confermando i risultati precedenti, con un'area sottesa dalla curva approssimata ad 1.00.
+In figura~\ref{fig:rocdga} è possibile vedere la curva ROC per il classificatore Random Forest per l'esperimento in questione, confermando i risultati precedenti, con un'area sottesa dalla curva approssimata ad 1.00.
 
 \begin{figure}[!bp]
   	\centering
@@ -149,7 +149,7 @@ Particolare attenzione ha richiesto il tuning degli iperparametri di numero epoc
 
 \begin{itemize}
 \item \textbf{numero epoche} $= 60$
-\item \textbf{dimensione minibatch} $= 35$ 
+\item \textbf{dimensione mini-batch} $= 35$ 
 \end{itemize}
 
 Tali valori hanno dimostrato di fornire la migliore performance durante la fase di training.
